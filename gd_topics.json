@@ -1,0 +1,521 @@
+[
+  {
+    "id": 1,
+    "title": "Modernization of Indian Armed Forces: Priority Areas",
+    "category": "Defense & Security",
+    "context": "Faced with evolving two-front security challenges and gray-zone hybrid warfare, how should India allocate its modernization capital?",
+    "leads": [
+      "1. Indigenous R&D and Make in India (Atmanirbharta)",
+      "2. Cyber, Space, and AI-enabled Electronic Warfare",
+      "3. Joint Theater Commands & Tri-Services Integration"
+    ],
+    "peer_dialogues": [
+      {
+        "speaker": "Chest 2",
+        "time_sec": 15,
+        "lead": 1,
+        "text": "Gentlemen, recent global conflicts demonstrate that foreign supply dependencies during wartime can choke frontline operational readiness. Indigenous manufacturing must be our number one priority."
+      },
+      {
+        "speaker": "Chest 4",
+        "time_sec": 50,
+        "lead": 2,
+        "text": "I see your point, but modern conflicts are decided before ground troops engage. A single coordinated cyber assault on power grids and satellite communications can neutralize our command networks."
+      },
+      {
+        "speaker": "Chest 7",
+        "time_sec": 95,
+        "lead": 1,
+        "text": "Adding to Chest 2's point, our private defense startups are already delivering loitering munitions and indigenous radar systems at one-third the cost of imports."
+      },
+      {
+        "speaker": "Chest 9",
+        "time_sec": 140,
+        "lead": 3,
+        "text": "Friends, while platforms and technology are vital, without Joint Theater Commands, our tri-services will continue operating in individual silos. Operational synergy is the true force multiplier."
+      },
+      {
+        "speaker": "Chest 2",
+        "time_sec": 210,
+        "lead": 2,
+        "text": "Indeed, China's Strategic Support Force combines space, cyber, and electronic warfare. India needs dedicated cyber defense commands with private tech partnership."
+      },
+      {
+        "speaker": "Chest 7",
+        "time_sec": 280,
+        "lead": 3,
+        "text": "Let us also evaluate budgetary constraints. Indigenous production saves foreign exchange, which can then be funneled into joint command data links."
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "India's Strategic Posture in the Indo-Pacific: QUAD vs Non-Alignment",
+    "category": "Geopolitics & Foreign Affairs",
+    "context": "As maritime trade corridors and the South China Sea face increasing militarization, how should India navigate strategic partnerships?",
+    "leads": [
+      "1. Deepening Military Interoperability with QUAD (US, Japan, Australia)",
+      "2. Preserving Strategic Autonomy & Diversified Multipolarity",
+      "3. Expanding Naval Power Projection across the Indian Ocean Region (IOR)"
+    ],
+    "peer_dialogues": [
+      {
+        "speaker": "Chest 2",
+        "time_sec": 15,
+        "lead": 1,
+        "text": "Friends, the Malacca Strait is our economic lifeline. Enhancing Malabar naval drills and maritime domain awareness through QUAD guarantees regional deterrence."
+      },
+      {
+        "speaker": "Chest 4",
+        "time_sec": 55,
+        "lead": 2,
+        "text": "However, we must remember that QUAD is not a treaty alliance like NATO. If a continental land border conflict flares up, India stands alone. Strategic autonomy must remain paramount."
+      },
+      {
+        "speaker": "Chest 9",
+        "time_sec": 105,
+        "lead": 3,
+        "text": "Gentlemen, rather than relying on external pacts, our primary objective must be building a 200-ship navy with indigenous aircraft carriers and nuclear attack submarines in the IOR."
+      },
+      {
+        "speaker": "Chest 7",
+        "time_sec": 160,
+        "lead": 1,
+        "text": "I agree with Chest 9 on indigenous strength, but logistics exchange agreements like LEMOA and COMCASA give our fleet access to naval ports from Bahrain to Guam."
+      },
+      {
+        "speaker": "Chest 4",
+        "time_sec": 230,
+        "lead": 2,
+        "text": "We must also consider our defense imports from Russia. Over-tilting toward Western security frameworks could alienate long-standing energy and defense partnerships."
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Agnipath Scheme: Transforming the Military Demographic Profile",
+    "category": "Defense & Human Resource",
+    "context": "The recruitment model for soldiers, sailors, and airmen aims to create a youthful, tech-savvy fighting force while optimizing pension expenditure.",
+    "leads": [
+      "1. Operational Fitness & Tech-Savvy Profile of Youth",
+      "2. Retention Ratio and Retention of Specialized Combat Skills",
+      "3. Re-employment and Corporate Integration of Demobilized Agniveers"
+    ],
+    "peer_dialogues": [
+      {
+        "speaker": "Chest 2",
+        "time_sec": 15,
+        "lead": 1,
+        "text": "Gentlemen, the average age of Indian soldiers was 32 years compared to 26 globally. Agnipath lowers our combat age profile, bringing superior physical stamina to high-altitude warfare."
+      },
+      {
+        "speaker": "Chest 4",
+        "time_sec": 55,
+        "lead": 2,
+        "text": "While stamina is important, 4 years is too short to master modern missile batteries, radar systems, and armored crew coordination. We risk losing technical institutional memory."
+      },
+      {
+        "speaker": "Chest 7",
+        "time_sec": 110,
+        "lead": 3,
+        "text": "On post-service rehabilitation, paramilitary forces and state police quotas are already reserving 10% vacancies. A disciplined, trained youth entering the civilian workforce benefits the nation."
+      },
+      {
+        "speaker": "Chest 9",
+        "time_sec": 170,
+        "lead": 2,
+        "text": "A middle ground would be raising the permanent retention percentage from 25% to 50% for high-skill technical cadres like aviation technicians and sonar operators."
+      },
+      {
+        "speaker": "Chest 2",
+        "time_sec": 240,
+        "lead": 1,
+        "text": "Let us not forget that saving nearly 50% of revenue budgets on pensions allows the military to divert thousands of crores toward capital weapon procurements."
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "One Nation, One Election: Feasibility and Democratic Impact",
+    "category": "National Governance & Polity",
+    "context": "Simultaneous elections for Lok Sabha and State Legislative Assemblies are proposed to curb governance paralysis and recurring public expenditure.",
+    "leads": [
+      "1. Reducing Continuous Election Expenditure and Governance Paralysis",
+      "2. Constitutional Feasibility and Impact on Federal Autonomy",
+      "3. Regional Priorities versus National Narrative Dominance"
+    ],
+    "peer_dialogues": [
+      {
+        "speaker": "Chest 4",
+        "time_sec": 20,
+        "lead": 1,
+        "text": "Friends, India is in a perpetual state of election mode. The Model Code of Conduct halts developmental decisions for 4 to 5 months every single year."
+      },
+      {
+        "speaker": "Chest 7",
+        "time_sec": 65,
+        "lead": 2,
+        "text": "While economic savings are valid, our Constitution establishes a federal union. Dissolving or truncating elected state assembly tenures artificially undermines voter mandate."
+      },
+      {
+        "speaker": "Chest 2",
+        "time_sec": 120,
+        "lead": 3,
+        "text": "Regional concerns are crucial. In simultaneous polls, national security and defense issues often overshadow local water disputes, farmer distress, and state civic deficits."
+      },
+      {
+        "speaker": "Chest 9",
+        "time_sec": 180,
+        "lead": 1,
+        "text": "The Kovind Committee's two-phase framework proposes harmonizing municipal elections separately, which balances federalism while cutting down deployment of security forces."
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "title": "Artificial Intelligence & Automation: Job Destroyer or Productivity Revolution",
+    "category": "Economy & Technology",
+    "context": "Rapid proliferation of generative AI and robotic process automation is restructuring India's IT services and white-collar employment landscape.",
+    "leads": [
+      "1. Disruption in Routine BPO and Entry-Level Software Engineering",
+      "2. Creation of High-Value Technical Roles and Enterprise Productivity",
+      "3. National Reskilling Initiatives & Ethical AI Regulation"
+    ],
+    "peer_dialogues": [
+      {
+        "speaker": "Chest 2",
+        "time_sec": 15,
+        "lead": 1,
+        "text": "Gentlemen, India's IT industry employs over 5 million people, largely in maintenance and testing. Code-generating AI models will drastically compress entry-level hiring."
+      },
+      {
+        "speaker": "Chest 9",
+        "time_sec": 60,
+        "lead": 2,
+        "text": "Historically, technological shifts\u2014from computers in the 1990s to ATM machines\u2014initially sparked fears of job loss, but ultimately expanded economic output and created new job sectors."
+      },
+      {
+        "speaker": "Chest 4",
+        "time_sec": 115,
+        "lead": 3,
+        "text": "The transition will not be automatic. We need urgent curriculum overhauls in Tier-2 and Tier-3 engineering colleges to focus on prompt engineering, AI safety, and data governance."
+      },
+      {
+        "speaker": "Chest 7",
+        "time_sec": 175,
+        "lead": 1,
+        "text": "In agriculture and healthcare, AI diagnostics and crop monitoring can revolutionize grassroots rural productivity if deployed responsibly."
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "title": "Uniform Civil Code (UCC): Gender Justice vs Cultural Diversity",
+    "category": "Social & Constitutional Affairs",
+    "context": "Article 44 of the Directive Principles envisions a common code for marriage, divorce, inheritance, and succession across all citizens.",
+    "leads": [
+      "1. Gender Justice and Equal Rights for Women across Personal Laws",
+      "2. Protection of Tribal Customs and Pluralistic Traditions",
+      "3. Incremental Law Commission Reforms vs Sweeping Legislation"
+    ],
+    "peer_dialogues": [
+      {
+        "speaker": "Chest 7",
+        "time_sec": 15,
+        "lead": 1,
+        "text": "Friends, the core foundation of UCC must be viewed through gender justice. Every Indian woman, irrespective of faith, deserves equal inheritance and alimony protections."
+      },
+      {
+        "speaker": "Chest 4",
+        "time_sec": 65,
+        "lead": 2,
+        "text": "We must also recognize that tribal communities in Nagaland, Meghalaya, and Jharkhand have customary land and family laws protected under Article 371."
+      },
+      {
+        "speaker": "Chest 2",
+        "time_sec": 120,
+        "lead": 3,
+        "text": "Uttarakhand's model exempted scheduled tribes while standardizing marriage registration and live-in relationships. A phased, consensus-based state adoption is pragmatic."
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "title": "Space Weaponization and India's Strategic Anti-Satellite Capabilities",
+    "category": "Defense & Security",
+    "context": "With low Earth orbit satellites directing military communications and GPS targeting, outer space is emerging as the fourth domain of warfare.",
+    "leads": [
+      "1. Mission Shakti & Kinetic vs Non-Kinetic ASAT Deterrence",
+      "2. Commercial Space Megaconstellations and Space Debris Management",
+      "3. Expanding Defence Space Agency (DSA) and Tri-Service Operations"
+    ],
+    "peer_dialogues": [
+      {
+        "speaker": "Chest 2",
+        "time_sec": 20,
+        "lead": 1,
+        "text": "Mission Shakti demonstrated India's kinetic kill capability. However, modern space threats involve electronic jamming and cyber blinding of satellites without space debris."
+      },
+      {
+        "speaker": "Chest 9",
+        "time_sec": 70,
+        "lead": 2,
+        "text": "Space debris poses an existential risk to all nations. Kinetic ASAT strikes create thousands of fragments that can damage international satellites. Laser dazzlers are the future."
+      },
+      {
+        "speaker": "Chest 4",
+        "time_sec": 130,
+        "lead": 3,
+        "text": "Our Defence Space Agency must integrate NavIC civilian navigation with encrypted military bands to ensure precision missile guidance in denied electronic warfare zones."
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "title": "Internal Security Challenges: Eradication of Left-Wing Extremism (Naxalism)",
+    "category": "National Security",
+    "context": "Security forces have drastically compressed the Red Corridor, but remote pockets in Bastar and Dandakaranya continue to demand sustained operational strategy.",
+    "leads": [
+      "1. Coordinated Security Operations and Forward Operating Bases (FOBs)",
+      "2. Road Infrastructure, Telecom, and Tribal Land Rights",
+      "3. Surrender & Rehabilitation Policies and Local Intelligence Networks"
+    ],
+    "peer_dialogues": [
+      {
+        "speaker": "Chest 4",
+        "time_sec": 15,
+        "lead": 1,
+        "text": "Gentlemen, setting up Forward Operating Bases in interior forests has denied safe havens to naxal commanders and enabled security forces to dominate core insurgent redoubts."
+      },
+      {
+        "speaker": "Chest 7",
+        "time_sec": 65,
+        "lead": 2,
+        "text": "Security force presence alone will not eliminate extremism permanently. Road connectivity, primary health centers, and fair market prices for minor forest produce win tribal trust."
+      },
+      {
+        "speaker": "Chest 2",
+        "time_sec": 125,
+        "lead": 3,
+        "text": "Local tribal youth recruited into specialized police battalions like Bastar Fighters provide indigenous terrain intelligence that out-of-state forces cannot match."
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "title": "Indo-China Border Dispute: Kinetic Escalation vs Economic Containment",
+    "category": "Geopolitics & Defense",
+    "context": "Following the Galwan clash and standoff in Eastern Ladakh, how should India balance strategic deterrence against China?",
+    "leads": [
+      "1. Infrastructure Mirroring on LAC (Bridges, Tunnels, Forward Helipads)",
+      "2. Trade Decoupling and Scrutiny of Chinese FDI and Electronics",
+      "3. Diplomatic Coalition Building with Indo-Pacific Democracies"
+    ],
+    "peer_dialogues": [
+      {
+        "speaker": "Chest 4",
+        "time_sec": 15,
+        "lead": 1,
+        "text": "Gentlemen, the BRO's rapid construction of the Sela Tunnel and all-weather roads along the LAC has neutralized China's mobilization speed advantage."
+      },
+      {
+        "speaker": "Chest 2",
+        "time_sec": 65,
+        "lead": 2,
+        "text": "While military infrastructure is essential, India's bilateral trade deficit with China still exceeds 80 billion dollars. We must reduce critical dependencies in APIs and electronics."
+      },
+      {
+        "speaker": "Chest 7",
+        "time_sec": 120,
+        "lead": 3,
+        "text": "A multi-pronged approach is necessary. Bilateral deterrence combined with multilateral pressure through QUAD and ASEAN prevents unilateral border alterations."
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "title": "Women in Combat Arms and Armed Forces Leadership Roles",
+    "category": "Defense & Social Reform",
+    "context": "With permanent commission and entry through NDA, women officers are commanding units and flying combat aircraft. What are the key priorities?",
+    "leads": [
+      "1. Gender-Neutral Physical Standards vs Combat Effectiveness",
+      "2. Infrastructure, Logistics, and Field Deployment Policies",
+      "3. Cultural Integration and Equal Command Opportunities"
+    ],
+    "peer_dialogues": [
+      {
+        "speaker": "Chest 7",
+        "time_sec": 15,
+        "lead": 3,
+        "text": "Friends, modern warfare is driven by technology, cognitive decision-making, and tactical leadership. Women officers flying fighter jets have proven equal operational merit."
+      },
+      {
+        "speaker": "Chest 2",
+        "time_sec": 60,
+        "lead": 1,
+        "text": "I agree with command equality, but physical standards in frontline infantry and special forces must remain uncompromised regardless of gender."
+      },
+      {
+        "speaker": "Chest 9",
+        "time_sec": 115,
+        "lead": 2,
+        "text": "Forward post logistics and habitat modifications are practical realities. Gradual, phased expansion into combat arms ensures smooth operational cohesion."
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "title": "Defense Indigenization: Role of Private Sector vs Public Sector DPSUs",
+    "category": "Defense & Industry",
+    "context": "To achieve 70% indigenous defense capital acquisition, what should be the optimal balance between state-run ordnance factories and private enterprise?",
+    "leads": [
+      "1. Corporatization of Ordnance Factory Board and Accountability",
+      "2. Promoting Private Defense Majors and MSME Component Ecosystems",
+      "3. Intellectual Property (IP) Ownership and Transfer of Technology (ToT)"
+    ],
+    "peer_dialogues": [
+      {
+        "speaker": "Chest 2",
+        "time_sec": 15,
+        "lead": 2,
+        "text": "Private industry brings agility, commercial R&D speed, and export competitiveness, as seen in Tata and Kalyani Group delivering modern armored vehicles."
+      },
+      {
+        "speaker": "Chest 4",
+        "time_sec": 60,
+        "lead": 1,
+        "text": "However, DPSUs like HAL and Mazagon Dock have built heavy strategic capital infrastructure over decades that private firms cannot replicate overnight."
+      },
+      {
+        "speaker": "Chest 7",
+        "time_sec": 110,
+        "lead": 3,
+        "text": "A collaborative model is the answer\u2014DPSUs handling complex strategic platforms while private MSMEs handle critical sub-assemblies and avionics."
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "title": "Revamping Indian School Education: NEP 2020 vs Ground Implementation",
+    "category": "Social & National Policy",
+    "context": "The National Education Policy proposes 5+3+3+4 schooling, vocational exposure, and mother-tongue education.",
+    "leads": [
+      "1. Vocational Integration and Skill Development from Middle School",
+      "2. Teacher Training and Infrastructure in Rural Government Schools",
+      "3. Digital Divide and Multilingual Instruction Challenges"
+    ],
+    "peer_dialogues": [
+      {
+        "speaker": "Chest 4",
+        "time_sec": 20,
+        "lead": 1,
+        "text": "Vocational education from class 6 bridge the divide between theoretical rote learning and actual workplace employability."
+      },
+      {
+        "speaker": "Chest 7",
+        "time_sec": 70,
+        "lead": 2,
+        "text": "Yet, policy without trained teachers cannot succeed. Over 1 million teacher vacancies and lack of functional computer labs in rural schools must be resolved first."
+      },
+      {
+        "speaker": "Chest 9",
+        "time_sec": 125,
+        "lead": 3,
+        "text": "Early education in mother tongue aids cognitive grasp, but English proficiency remains essential for global technical and scientific competitiveness."
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "title": "Crypto Currency & Central Bank Digital Currency (CBDC): Future of Money",
+    "category": "Economy & Finance",
+    "context": "As decentralized cryptocurrencies challenge monetary sovereign control, RBI's digital rupee offers an alternative.",
+    "leads": [
+      "1. Risks of Decentralized Crypto in Terror Financing and Hawala",
+      "2. CBDC (e-Rupee) Efficiency in Cross-Border Payments and Settlements",
+      "3. Regulatory Taxation vs Outright Prohibition of Virtual Assets"
+    ],
+    "peer_dialogues": [
+      {
+        "speaker": "Chest 2",
+        "time_sec": 15,
+        "lead": 1,
+        "text": "Unregulated anonymous cryptocurrencies create major national security vulnerabilities in cross-border terror funding and cyber ransom."
+      },
+      {
+        "speaker": "Chest 9",
+        "time_sec": 60,
+        "lead": 2,
+        "text": "RBI's sovereign e-Rupee provides the speed of blockchain while retaining sovereign monetary backing and financial stability."
+      },
+      {
+        "speaker": "Chest 4",
+        "time_sec": 115,
+        "lead": 3,
+        "text": "Taxing crypto transactions at 30% with 1% TDS brings transparency and discourages speculative retail gambling while allowing blockchain R&D."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "title": "Nuclear Energy in India's Clean Energy Transition: SMRs vs Renewables",
+    "category": "Energy & Geopolitics",
+    "context": "To achieve net-zero carbon emissions by 2070 while sustaining industrial growth, what role should nuclear fission play?",
+    "leads": [
+      "1. Base-load Reliability of Nuclear vs Intermittent Solar/Wind",
+      "2. Small Modular Reactors (SMRs) and Private Sector Participation",
+      "3. Safety Concerns, Nuclear Waste Disposal, and Civil Liability Laws"
+    ],
+    "peer_dialogues": [
+      {
+        "speaker": "Chest 4",
+        "time_sec": 15,
+        "lead": 1,
+        "text": "Renewable solar and wind require massive battery storage for night baseload. Nuclear is the only carbon-free baseload capable of powering heavy industry 24/7."
+      },
+      {
+        "speaker": "Chest 7",
+        "time_sec": 65,
+        "lead": 2,
+        "text": "Small Modular Reactors built on factory assembly lines drastically reduce construction gestation time from 10 years to under 3 years."
+      },
+      {
+        "speaker": "Chest 2",
+        "time_sec": 120,
+        "lead": 3,
+        "text": "India's three-stage nuclear program utilizing domestic thorium reserves is our ultimate energy independence guarantee."
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "title": "Drone Warfare and Counter-UAS Systems on Western and Northern Borders",
+    "category": "Defense & Modern Warfare",
+    "context": "Low-cost quadcopters dropping narcotics/arms across the Punjab border and swarm drones in Ukraine necessitate rapid counter-drone deployment.",
+    "leads": [
+      "1. Soft-Kill Electronic Jamming vs Hard-Kill Laser/Kinetic Systems",
+      "2. Border Surveillance Integration (Radars, Acoustic, RF Detectors)",
+      "3. Drone Swarm Capabilities for Offensive Counter-Strikes"
+    ],
+    "peer_dialogues": [
+      {
+        "speaker": "Chest 2",
+        "time_sec": 15,
+        "lead": 1,
+        "text": "Soft-kill RF jamming disrupts commercial drone frequencies, but autonomous military drones with inertial navigation require hard-kill directed energy lasers."
+      },
+      {
+        "speaker": "Chest 4",
+        "time_sec": 60,
+        "lead": 2,
+        "text": "Along the Punjab and Jammu borders, low radar cross-section drones fly at 200 feet. Multi-sensor acoustic and thermal nets are essential for early detection."
+      },
+      {
+        "speaker": "Chest 9",
+        "time_sec": 115,
+        "lead": 3,
+        "text": "Offense is the best defense. Developing AI-coordinated indigenous drone swarms allows India to saturate enemy air defenses at fractional cost."
+      }
+    ]
+  }
+]

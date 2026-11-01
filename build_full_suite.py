@@ -23,7 +23,7 @@ for idx, s in enumerate(wat_sets_data):
 with open(os.path.join(out_dir, 'srt_data.json'), 'r', encoding='utf-8') as f:
     srt_sets = json.load(f)
 
-# Build TAT Sets from 137 images
+# Load TAT Sets
 total_tat_images = 137
 tat_sets = []
 pics_per_set = 11
@@ -53,17 +53,26 @@ for s_idx in range(num_full_sets):
         'slides': slides
     })
 
+# Load GTO Datasets
+with open(os.path.join(out_dir, 'lecturette_topics.json'), 'r', encoding='utf-8') as f:
+    lecturette_data = json.load(f)
+
+with open(os.path.join(out_dir, 'gd_topics.json'), 'r', encoding='utf-8') as f:
+    gd_topics_data = json.load(f)
+
 wat_sets_json = json.dumps(wat_sets)
 all_wat_words_json = json.dumps(all_wat_words)
 srt_sets_json = json.dumps(srt_sets)
 tat_sets_json = json.dumps(tat_sets)
+lecturette_data_json = json.dumps(lecturette_data)
+gd_topics_json = json.dumps(gd_topics_data)
 
 html = f'''<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SSB Testing Suite — DIPR Psychological Testing & OIR Simulator</title>
+  <title>SSB Master Suite — Complete DIPR Psychology, GTO & OIR Testing Platform</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -76,10 +85,6 @@ html = f'''<!DOCTYPE html>
     }}
   </script>
   <style>
-    /* ==========================================================================
-       DESIGN SYSTEM: MILITARY SPEC / DIPR DISCIPLINED INTERFACE
-       Zero decorative emoji clutter. Clean geometric typography and matte slate.
-       ========================================================================== */
     :root {{
       --bg-base: #070a10;
       --bg-surface: #0e1420;
@@ -146,7 +151,7 @@ html = f'''<!DOCTYPE html>
       transition: background-color 0.25s ease, color 0.25s ease;
     }}
 
-    /* --- TOP COMMAND CONSOLE --- */
+    /* TOP COMMAND CONSOLE */
     .top-console {{
       background: var(--bg-surface);
       border-bottom: 1px solid var(--border-subtle);
@@ -231,7 +236,7 @@ html = f'''<!DOCTYPE html>
       border-color: var(--text-tertiary);
     }}
 
-    /* --- OPERATIONAL NAVIGATION BAR --- */
+    /* OPERATIONAL NAVIGATION TABS */
     .operational-nav {{
       background: var(--bg-base);
       border-bottom: 1px solid var(--border-subtle);
@@ -284,7 +289,7 @@ html = f'''<!DOCTYPE html>
       border-bottom-color: var(--accent-intel);
     }}
 
-    /* --- MAIN VIEWPORT & WORKSPACE --- */
+    /* MAIN VIEWPORT & WORKSPACE */
     main {{
       flex: 1;
       max-width: 1400px;
@@ -310,7 +315,6 @@ html = f'''<!DOCTYPE html>
       to {{ opacity: 1; transform: translateY(0); }}
     }}
 
-    /* --- DISCIPLINED COMMAND PANELS --- */
     .command-panel {{
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
@@ -333,10 +337,9 @@ html = f'''<!DOCTYPE html>
       font-size: 0.92rem;
       margin-bottom: 1.5rem;
       line-height: 1.5;
-      max-width: 720px;
+      max-width: 760px;
     }}
 
-    /* Tactical Meta Ribbon */
     .tactical-ribbon {{
       background: var(--bg-surface-elevated);
       border: 1px solid var(--border-subtle);
@@ -364,7 +367,6 @@ html = f'''<!DOCTYPE html>
       font-size: 0.85rem;
     }}
 
-    /* Form Fields */
     .param-group {{
       margin-bottom: 1.25rem;
     }}
@@ -408,7 +410,6 @@ html = f'''<!DOCTYPE html>
       }}
     }}
 
-    /* Action Buttons */
     .btn-engage {{
       background: var(--accent-brass);
       color: #05080f;
@@ -455,7 +456,6 @@ html = f'''<!DOCTYPE html>
       border-color: var(--text-tertiary);
     }}
 
-    /* Selector Cards (Paper vs Digital) */
     .format-selector {{
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -492,7 +492,7 @@ html = f'''<!DOCTYPE html>
       display: block;
     }}
 
-    /* --- THE TESTING THEATER (FOCUSED ACTIVE CANVAS) --- */
+    /* TESTING THEATER (WAT) */
     .theater-canvas {{
       background: #020408;
       border: 1px solid var(--border-subtle);
@@ -545,7 +545,6 @@ html = f'''<!DOCTYPE html>
       transition: width 0.1s linear;
     }}
 
-    /* Circular Precision Clock */
     .precision-clock {{
       width: 72px;
       height: 72px;
@@ -585,7 +584,7 @@ html = f'''<!DOCTYPE html>
       color: var(--text-primary);
     }}
 
-    /* --- TAT OBSERVATION STAGE --- */
+    /* TAT OBSERVATION FRAME */
     .tat-observation-frame {{
       background: #020408;
       border: 1px solid var(--border-subtle);
@@ -626,7 +625,7 @@ html = f'''<!DOCTYPE html>
       color: var(--accent-ready);
     }}
 
-    /* --- SRT LOG BOOKLET --- */
+    /* SRT LOG BOOKLET */
     .srt-scroll-deck {{
       display: flex;
       flex-direction: column;
@@ -662,7 +661,7 @@ html = f'''<!DOCTYPE html>
       margin-bottom: 0.75rem;
     }}
 
-    /* --- DIGITAL OMR PUNCH SHEET --- */
+    /* DIGITAL OMR */
     .omr-grid-scroll {{
       flex: 1;
       overflow-y: auto;
@@ -722,7 +721,223 @@ html = f'''<!DOCTYPE html>
       border-color: var(--accent-brass);
     }}
 
-    /* --- INTELLIGENCE / AI DISPATCH CARD --- */
+    /* GROUP DISCUSSION (GD) SYNDICATE DECK */
+    .gd-roster {{
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }}
+
+    @media (max-width: 768px) {{
+      .gd-roster {{
+        grid-template-columns: repeat(3, 1fr);
+      }}
+    }}
+
+    .syndicate-avatar {{
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 0.5rem;
+      text-align: center;
+      position: relative;
+      transition: all 0.2s ease;
+    }}
+
+    .syndicate-avatar.speaking {{
+      border-color: var(--accent-brass);
+      box-shadow: 0 0 16px var(--accent-brass-glow);
+    }}
+
+    .syndicate-avatar.you {{
+      border-color: var(--accent-intel);
+    }}
+    .syndicate-avatar.you.speaking {{
+      border-color: var(--accent-ready);
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.35);
+    }}
+
+    .avatar-chest {{
+      font-family: var(--font-tactical);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: block;
+    }}
+
+    .avatar-archetype {{
+      font-size: 0.72rem;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 0.15rem;
+      display: block;
+    }}
+
+    .avatar-status {{
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.1rem 0.4rem;
+      border-radius: var(--radius-sm);
+      margin-top: 0.4rem;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-secondary);
+    }}
+    .syndicate-avatar.speaking .avatar-status {{
+      background: var(--accent-brass);
+      color: #000;
+    }}
+    .syndicate-avatar.you.speaking .avatar-status {{
+      background: var(--accent-ready);
+      color: #000;
+    }}
+
+    .gd-leads-banner {{
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      margin-bottom: 1.25rem;
+    }}
+
+    .leads-grid {{
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }}
+
+    @media (max-width: 768px) {{
+      .leads-grid {{
+        grid-template-columns: 1fr;
+      }}
+    }}
+
+    .lead-box {{
+      background: var(--bg-base);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+    }}
+
+    .lead-box.active {{
+      border-color: var(--accent-brass);
+      color: var(--text-primary);
+      background: var(--accent-brass-subtle);
+    }}
+
+    .gd-feed {{
+      height: 280px;
+      overflow-y: auto;
+      background: var(--bg-base);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }}
+
+    .feed-entry {{
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface-elevated);
+      border-left: 3px solid var(--border-subtle);
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }}
+    .feed-entry.you {{
+      border-left-color: var(--accent-ready);
+      background: rgba(16, 185, 129, 0.08);
+    }}
+    .feed-entry.peer {{
+      border-left-color: var(--accent-brass);
+    }}
+
+    .feed-meta {{
+      font-family: var(--font-tactical);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent-brass);
+      margin-bottom: 0.2rem;
+      display: flex;
+      justify-content: space-between;
+    }}
+    .feed-entry.you .feed-meta {{
+      color: var(--accent-ready);
+    }}
+
+    .airtime-bar-wrap {{
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }}
+
+    /* LECTURETTE CUE CARD & STAGE */
+    .lecturette-card {{
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      max-width: 680px;
+      margin: 0 auto 1.5rem auto;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }}
+
+    .topic-tier-row {{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-base);
+      border: 1px solid var(--border-subtle);
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }}
+    .topic-tier-row:hover {{
+      border-color: var(--accent-brass);
+    }}
+    .topic-tier-row.selected {{
+      border-color: var(--accent-brass);
+      background: var(--accent-brass-subtle);
+    }}
+
+    .tier-tag {{
+      font-family: var(--font-tactical);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-sm);
+    }}
+    .tier-1 {{ background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid #ef4444; }}
+    .tier-2 {{ background: rgba(217, 119, 6, 0.15); color: #fbbf24; border: 1px solid #d97706; }}
+    .tier-3 {{ background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid #38bdf8; }}
+    .tier-4 {{ background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid #10b981; }}
+
+    .posture-mirror-video {{
+      width: 100%;
+      max-width: 380px;
+      height: 240px;
+      object-fit: cover;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      background: #000;
+      transform: scaleX(-1); /* Mirror view */
+    }}
+
+    /* EVALUATION DISPATCH CARD */
     .eval-dispatch-card {{
       background: var(--accent-intel-subtle);
       border: 1px solid rgba(56, 189, 248, 0.3);
@@ -791,10 +1006,10 @@ html = f'''<!DOCTYPE html>
     .chip-claude {{ background: rgba(217, 119, 6, 0.15); border: 1px solid #d97706; color: #fbbf24; }}
     .chip-gemini {{ background: rgba(56, 189, 248, 0.15); border: 1px solid var(--accent-intel); color: var(--accent-intel); }}
 
-    /* --- PROGRESS & MASTERY METRICS --- */
+    /* PROGRESS & MASTERY METRICS */
     .metric-grid {{
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1rem;
       margin-bottom: 2rem;
     }}
@@ -873,7 +1088,6 @@ html = f'''<!DOCTYPE html>
       color: var(--accent-ready);
     }}
 
-    /* Toast */
     #tacticalToast {{
       position: fixed;
       bottom: 24px;
@@ -912,7 +1126,7 @@ html = f'''<!DOCTYPE html>
         <span class="insignia">DIPR</span>
         <div class="title-group">
           <h1>SSB Master Suite</h1>
-          <span>Official Psychology & Officer Intelligence Rating Simulator</span>
+          <span>Official Psychology, GTO & Officer Intelligence Rating Simulator</span>
         </div>
       </div>
       <div class="console-actions">
@@ -925,21 +1139,19 @@ html = f'''<!DOCTYPE html>
       </div>
     </div>
 
-    <!-- OPERATIONAL NAVIGATION TABS (CLEAN, NO DECORATIVE EMOJIS) -->
+    <!-- OPERATIONAL NAVIGATION TABS -->
     <nav class="operational-nav">
       <div class="nav-track">
-        <button class="op-tab active" data-tab="tab-progress">
-          Mission Mastery
-        </button>
+        <button class="op-tab active" data-tab="tab-progress">Mission Mastery</button>
         <button class="op-tab" data-tab="tab-wat">WAT (60 Words)</button>
         <button class="op-tab" data-tab="tab-tat">TAT (12 Slides)</button>
         <button class="op-tab" data-tab="tab-srt">SRT (60 Scenarios)</button>
         <button class="op-tab" data-tab="tab-sdt">SDT (Self Description)</button>
         <button class="op-tab" data-tab="tab-oir">OIR (OMR Console)</button>
+        <button class="op-tab" data-tab="tab-gd">Group Discussion (GD)</button>
+        <button class="op-tab" data-tab="tab-lecturette">Lecturette (250+ Topics)</button>
         <button class="op-tab" data-tab="tab-fullmock">Full Mock Battery</button>
-        <button class="op-tab intel-tab" data-tab="tab-ai-assessor">
-          AI Evaluation Dispatch
-        </button>
+        <button class="op-tab intel-tab" data-tab="tab-ai-assessor">AI Evaluation Dispatch</button>
       </div>
     </nav>
   </header>
@@ -956,7 +1168,7 @@ html = f'''<!DOCTYPE html>
           <div>
             <h2 class="module-heading">Preparation & Performance Tracker</h2>
             <p class="module-desc" style="margin-bottom: 0;">
-              Zero-repeat operational control. Complete all official sets systematically prior to your SSB reporting date.
+              Zero-repeat operational control. Track psychological tests, OIR sets, and GTO verbal drills systematically.
             </p>
           </div>
           <div style="display: flex; gap: 0.5rem;">
@@ -984,9 +1196,14 @@ html = f'''<!DOCTYPE html>
             <div class="metric-bar-bg"><div class="metric-bar-fill" id="progSrtBar" style="width: 0%; background: var(--accent-ready);"></div></div>
           </div>
           <div class="metric-slate">
-            <span class="metric-label">Completed Sessions</span>
-            <div class="metric-digit" id="progTotalSessions">0</div>
-            <span style="font-size: 0.75rem; color: var(--text-tertiary);">Tracked without repetition</span>
+            <span class="metric-label">GD Sessions Completed</span>
+            <div class="metric-digit" id="progGdVal" style="color: var(--accent-brass);">0</div>
+            <span style="font-size: 0.75rem; color: var(--text-tertiary);">Simulated syndicate drills</span>
+          </div>
+          <div class="metric-slate">
+            <span class="metric-label">Lecturettes Delivered</span>
+            <div class="metric-digit" id="progLecVal" style="color: #a855f7;">0</div>
+            <span style="font-size: 0.75rem; color: var(--text-tertiary);">From 250+ topic bank</span>
           </div>
         </div>
 
@@ -1041,7 +1258,7 @@ html = f'''<!DOCTYPE html>
                 <tr style="background: var(--bg-surface-elevated); color: var(--accent-brass); font-family: var(--font-tactical); font-size: 0.9rem; letter-spacing: 0.5px; text-transform: uppercase;">
                   <th style="padding: 0.6rem 1rem;">Timestamp</th>
                   <th style="padding: 0.6rem 1rem;">Module</th>
-                  <th style="padding: 0.6rem 1rem;">Set</th>
+                  <th style="padding: 0.6rem 1rem;">Set / Item</th>
                   <th style="padding: 0.6rem 1rem;">Status</th>
                 </tr>
               </thead>
@@ -1056,8 +1273,6 @@ html = f'''<!DOCTYPE html>
          1. WAT MODULE
          ============================================================== -->
     <section class="workspace-module" id="tab-wat">
-      
-      <!-- WAT SETUP -->
       <div class="command-panel" id="watSetupScreen" style="max-width: 860px;">
         <h2 class="module-heading">Word Association Test (WAT)</h2>
         <p class="module-desc">
@@ -1167,7 +1382,6 @@ html += f'''            </optgroup>
           <button class="btn-aux" onclick="copyWatResponses()">Copy Raw Words</button>
         </div>
 
-        <!-- AI DISPATCH CARD -->
         <div class="eval-dispatch-card">
           <div class="dispatch-header">
             <div>
@@ -1207,15 +1421,12 @@ html += f'''            </optgroup>
         </div>
         <button class="btn-aux" onclick="resetWatToSetup()">Return to Setup</button>
       </div>
-
     </section>
 
     <!-- ==============================================================
          2. TAT MODULE
          ============================================================== -->
     <section class="workspace-module" id="tab-tat">
-      
-      <!-- TAT SETUP -->
       <div class="command-panel" id="tatSetupScreen" style="max-width: 860px;">
         <h2 class="module-heading">Thematic Apperception Test (TAT)</h2>
         <p class="module-desc">
@@ -1340,7 +1551,6 @@ html += f'''            </optgroup>
           <button class="btn-aux" onclick="copyTatResponses()">Copy Raw Stories</button>
         </div>
 
-        <!-- MULTIMODAL AI EVALUATION PACKAGE -->
         <div class="eval-dispatch-card">
           <div class="dispatch-header">
             <div>
@@ -1372,15 +1582,12 @@ html += f'''            </optgroup>
         <div id="tatReviewList" style="max-height: 520px; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;"></div>
         <button class="btn-aux" onclick="resetTatToSetup()">Return to Setup</button>
       </div>
-
     </section>
 
     <!-- ==============================================================
          3. SRT MODULE
          ============================================================== -->
     <section class="workspace-module" id="tab-srt">
-      
-      <!-- SRT SETUP -->
       <div class="command-panel" id="srtSetupScreen" style="max-width: 860px;">
         <h2 class="module-heading">Situation Reaction Test (SRT)</h2>
         <p class="module-desc">
@@ -1449,7 +1656,6 @@ html += f'''            </optgroup>
           <button class="btn-aux" onclick="copySrtResponses()">Copy Reactions</button>
         </div>
 
-        <!-- AI DISPATCH CARD -->
         <div class="eval-dispatch-card">
           <div class="dispatch-header">
             <div>
@@ -1478,7 +1684,6 @@ html += f'''            </optgroup>
         <div id="srtReviewContent" style="max-height: 480px; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;"></div>
         <button class="btn-aux" onclick="resetSrtToSetup()">Return to Setup</button>
       </div>
-
     </section>
 
     <!-- ==============================================================
@@ -1501,7 +1706,6 @@ html += f'''            </optgroup>
           </div>
         </div>
 
-        <!-- AI DISPATCH CARD FOR SDT -->
         <div class="eval-dispatch-card">
           <div class="dispatch-header">
             <div>
@@ -1562,7 +1766,7 @@ html += f'''            </optgroup>
     </section>
 
     <!-- ==============================================================
-         5. OIR MODULE (SPLIT VIEWPORT)
+         5. OIR MODULE
          ============================================================== -->
     <section class="workspace-module" id="tab-oir">
       <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
@@ -1582,7 +1786,6 @@ html += f'''            </optgroup>
       </div>
 
       <div style="display: grid; grid-template-columns: 1.35fr 1fr; gap: 1.25rem; width: 100%; height: calc(100vh - 160px);">
-        <!-- PDF VIEWPORT -->
         <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); overflow: hidden; display: flex; flex-direction: column; height: 100%;">
           <div id="oirPdfPlaceholder" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center;">
             <h3 style="font-family: var(--font-tactical); font-size: 1.5rem; margin-bottom: 0.4rem;">No OIR Paper Loaded</h3>
@@ -1596,7 +1799,6 @@ html += f'''            </optgroup>
           <iframe id="oirPdfIframe" style="width: 100%; height: 100%; border: none; display: none;"></iframe>
         </div>
 
-        <!-- DIGITAL OMR PUNCH SHEET -->
         <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; flex-direction: column; height: 100%; overflow: hidden;">
           <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.75rem;">
             <div>
@@ -1616,13 +1818,440 @@ html += f'''            </optgroup>
     </section>
 
     <!-- ==============================================================
-         6. FULL MOCK BATTERY
+         6. GROUP DISCUSSION (GD) MODULE (NEW)
+         ============================================================== -->
+    <section class="workspace-module" id="tab-gd">
+      <!-- GD SETUP -->
+      <div class="command-panel" id="gdSetupScreen" style="max-width: 900px;">
+        <h2 class="module-heading">Group Discussion (GD) Syndicate Simulator</h2>
+        <p class="module-desc">
+          Experience an authentic 8-candidate SSB syndicate debate. Virtual peers present arguments across 3 GTO leads. Test your ability to intervene, articulate points without shouting, influence the group, and maintain optimal airtime.
+        </p>
+
+        <div class="tactical-ribbon">
+          <div class="ribbon-item">Syndicate Size: <strong>8 Candidates (Chest 2, 4, 7, 9 & YOU)</strong></div>
+          <div class="ribbon-item">Debate Protocol: <strong>3 Distinct GTO Leads (15 Minutes)</strong></div>
+        </div>
+
+        <div class="param-group">
+          <label class="param-label">Select Discussion Topic</label>
+          <select id="gdSelectTopic">
+            <option value="random" selected>Random Syndicate Topic (Recommended)</option>
+'''
+
+for sc in gd_topics_data:
+    html += f'            <option value="{sc["id"]}">{sc["title"]} [{sc["category"]}]</option>\n'
+
+html += f'''          </select>
+        </div>
+
+        <div class="grid-duo">
+          <div class="param-group">
+            <label class="param-label">Session Duration</label>
+            <select id="gdSelectDuration">
+              <option value="900" selected>15 Minutes (Official DIPR Standard)</option>
+              <option value="600">10 Minutes (Accelerated Pressure Drill)</option>
+              <option value="1200">20 Minutes (Full GTO Session)</option>
+            </select>
+          </div>
+          <div class="param-group">
+            <label class="param-label">Virtual Syndicate Voice Audio</label>
+            <select id="gdSelectAudio">
+              <option value="voice_on" selected>Voice Synthesis Enabled (Peers Speak Aloud)</option>
+              <option value="voice_off">Muted (Visual Transcript Dialogue Only)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="param-group">
+          <label class="param-label">Your Input Mode</label>
+          <div class="format-selector">
+            <div class="format-card selected" id="gdModeVoice" onclick="setGdInputMode('voice')">
+              <strong>Microphone & Voice Input (Recommended)</strong>
+              <span>Speak into your mic. Your interventions are transcribed live into the syndicate transcript.</span>
+            </div>
+            <div class="format-card" id="gdModeText" onclick="setGdInputMode('text')">
+              <strong>Keyboard Text Input</strong>
+              <span>Type your arguments and submit points via text for quiet environments.</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-engage" onclick="startGdSession()">Commence Group Discussion</button>
+      </div>
+
+      <!-- GD ACTIVE SYNDICATE ARENA -->
+      <div class="command-panel" id="gdActiveScreen" style="display: none; max-width: 1040px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-brass); text-transform: uppercase; letter-spacing: 0.5px;" id="gdActiveCategory">
+              Defense & Security
+            </div>
+            <h3 style="font-family: var(--font-tactical); font-size: 1.35rem; color: var(--text-primary); margin-top: 0.2rem;" id="gdActiveTitle">
+              Topic Title
+            </h3>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="font-family: var(--font-tactical); font-size: 2.2rem; font-weight: 700; color: var(--accent-brass);" id="gdMasterTimer">
+              15:00
+            </div>
+            <button class="btn-aux" style="color: var(--accent-alert);" onclick="abortGdSession()">Abort Session</button>
+          </div>
+        </div>
+
+        <!-- SYNDICATE ROSTER -->
+        <div class="gd-roster">
+          <div class="syndicate-avatar" id="avatarChest2">
+            <span class="avatar-chest">CHEST 2</span>
+            <span class="avatar-archetype">Analytical / Facts</span>
+            <span class="avatar-status" id="statusChest2">Listening</span>
+          </div>
+          <div class="syndicate-avatar" id="avatarChest4">
+            <span class="avatar-chest">CHEST 4</span>
+            <span class="avatar-archetype">Assertive / Fast</span>
+            <span class="avatar-status" id="statusChest4">Listening</span>
+          </div>
+          <div class="syndicate-avatar you" id="avatarYou">
+            <span class="avatar-chest">YOU</span>
+            <span class="avatar-archetype">Candidate</span>
+            <span class="avatar-status" id="statusYou">Floor Free</span>
+          </div>
+          <div class="syndicate-avatar" id="avatarChest7">
+            <span class="avatar-chest">CHEST 7</span>
+            <span class="avatar-archetype">Consensus / Diplomat</span>
+            <span class="avatar-status" id="statusChest7">Listening</span>
+          </div>
+          <div class="syndicate-avatar" id="avatarChest9">
+            <span class="avatar-chest">CHEST 9</span>
+            <span class="avatar-archetype">Contrarian / Depth</span>
+            <span class="avatar-status" id="statusChest9">Listening</span>
+          </div>
+        </div>
+
+        <!-- 3 LEADS PROGRESSION BANNER -->
+        <div class="gd-leads-banner">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+            <strong style="font-family: var(--font-tactical); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent-brass);">
+              GTO Discussion Leads (Topic Angles)
+            </strong>
+            <span style="font-size: 0.8rem; color: var(--text-tertiary);" id="gdPhaseLeadTag">Focusing on Lead 1</span>
+          </div>
+          <div class="leads-grid" id="gdLeadsGrid">
+            <div class="lead-box active" id="gdLeadBox1">Lead 1</div>
+            <div class="lead-box" id="gdLeadBox2">Lead 2</div>
+            <div class="lead-box" id="gdLeadBox3">Lead 3</div>
+          </div>
+        </div>
+
+        <!-- AIRTIME GAUGE -->
+        <div class="airtime-bar-wrap">
+          <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; white-space: nowrap;">
+            Your Airtime: <strong id="gdAirtimePercent" style="color: var(--accent-ready);">0%</strong>
+          </span>
+          <div style="flex: 1; height: 6px; background: var(--bg-surface-elevated); border-radius: 3px; overflow: hidden;">
+            <div id="gdAirtimeFill" style="width: 0%; height: 100%; background: var(--accent-ready); transition: width 0.3s ease;"></div>
+          </div>
+          <span style="font-size: 0.78rem; color: var(--text-secondary);" id="gdAirtimeAdvice">Target: 15% - 22%</span>
+        </div>
+
+        <!-- SYNDICATE TRANSCRIPT FEED -->
+        <div class="gd-feed" id="gdTranscriptFeed">
+          <div style="color: var(--text-tertiary); font-size: 0.85rem; text-align: center; margin: auto;">
+            Discussion commencing. The GTO has laid down the topic. Listen to peers and prepare to intervene.
+          </div>
+        </div>
+
+        <!-- CANDIDATE ACTION DOCK -->
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+            <button class="btn-engage" id="btnIntervene" style="flex: 1; margin-top: 0; background: var(--accent-ready); font-size: 1.05rem;" onclick="toggleCandidateIntervention()">
+              Intervene & Speak (Microphone)
+            </button>
+            <button class="btn-aux" id="btnToggleGdAudio" onclick="toggleGdAudioMute()">
+              Mute Voices
+            </button>
+          </div>
+
+          <div id="gdTextInputArea" style="display: none; gap: 0.5rem;">
+            <input type="text" id="gdTextInput" placeholder="Type your argument/counter-point and press Enter..." onkeydown="if(event.key==='Enter') submitCandidateTextArgument()">
+            <button class="btn-aux" style="border-color: var(--accent-ready); color: var(--accent-ready); white-space: nowrap;" onclick="submitCandidateTextArgument()">
+              Submit Point
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- GD REVIEW & AI GTO DISPATCH SCREEN -->
+      <div class="command-panel" id="gdReviewScreen" style="display: none; max-width: 960px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem;">
+          <div>
+            <h2 class="module-heading">Group Discussion Session Complete</h2>
+            <p class="module-desc" style="margin-bottom: 0;" id="gdReviewSummary">Session review & GTO performance analysis.</p>
+          </div>
+          <button class="btn-aux" onclick="copyGdTranscript()">Copy Full Transcript</button>
+        </div>
+
+        <!-- GTO AI EVALUATION DISPATCH -->
+        <div class="eval-dispatch-card">
+          <div class="dispatch-header">
+            <div>
+              <div class="dispatch-title">
+                GTO AI Evaluation Dispatch (ChatGPT / Claude / Gemini)
+              </div>
+              <p class="dispatch-desc">
+                Evaluate your performance using an AI prompted as a <strong>Senior Services Selection Board Group Testing Officer (GTO)</strong>. It assesses reasoning ability, group influence, power of expression, listening courtesy, and recommends model interventions.
+              </p>
+            </div>
+            <div class="dispatch-actions">
+              <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.55rem 1.25rem; font-size: 0.9rem; background: var(--accent-intel);" onclick="copyGdAiPrompt()">Copy GTO Evaluation Prompt</button>
+              <button class="btn-aux" onclick="downloadGdAiDossier()">Download Dossier</button>
+            </div>
+          </div>
+          <div class="model-links-row">
+            <span style="font-size: 0.8rem; color: var(--text-tertiary);">Step 2: Paste into free AI chat:</span>
+            <div style="display: flex; gap: 0.5rem;">
+              <a href="https://chatgpt.com" target="_blank" class="model-chip chip-chatgpt">ChatGPT ↗</a>
+              <a href="https://claude.ai" target="_blank" class="model-chip chip-claude">Claude ↗</a>
+              <a href="https://gemini.google.com" target="_blank" class="model-chip chip-gemini">Gemini ↗</a>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem;">
+          <h4 style="font-family: var(--font-tactical); font-size: 1.15rem; color: var(--accent-brass); margin-bottom: 0.5rem; text-transform: uppercase;">
+            Participation Telemetry
+          </h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; font-size: 0.9rem;">
+            <div>Interventions Made: <strong id="telemetryInterventions" style="color: var(--accent-ready);">0</strong></div>
+            <div>Airtime Share: <strong id="telemetryAirtime" style="color: var(--accent-ready);">0%</strong></div>
+            <div>Target Ideal: <strong>15% - 22%</strong></div>
+          </div>
+        </div>
+
+        <div style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; background: var(--bg-base); margin-bottom: 1.5rem;" id="gdReviewTranscript"></div>
+
+        <button class="btn-aux" onclick="resetGdToSetup()">Return to Setup</button>
+      </div>
+    </section>
+
+    <!-- ==============================================================
+         7. LECTURETTE MODULE (250+ TOPICS) (NEW)
+         ============================================================== -->
+    <section class="workspace-module" id="tab-lecturette">
+      <!-- LECTURETTE SETUP -->
+      <div class="command-panel" id="lecSetupScreen" style="max-width: 900px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h2 class="module-heading">Lecturette Trainer (250+ DIPR Topics)</h2>
+            <p class="module-desc" style="margin-bottom: 0;">
+              3 Minutes Preparation followed by 3 Minutes Delivery. Master structure, pacing, posture, and poise. Acoustic warning bells sound at 2:30 (single chime) and 3:00 (double chime).
+            </p>
+          </div>
+          <button class="btn-aux" onclick="shuffleLecturetteCard()">Draw Random Card</button>
+        </div>
+
+        <div class="tactical-ribbon">
+          <div class="ribbon-item">Topic Repository: <strong>251 Authentic SSB Topics</strong></div>
+          <div class="ribbon-item">Card Structure: <strong>4 Tiers (Defense, National, Social, Basic)</strong></div>
+        </div>
+
+        <!-- 4-TIER CUE CARD DISPLAY -->
+        <div class="lecturette-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.5rem;">
+            <strong style="font-family: var(--font-tactical); font-size: 1.1rem; color: var(--accent-brass); text-transform: uppercase;" id="lecCardTitle">
+              DIPR Cue Card #1
+            </strong>
+            <span style="font-size: 0.8rem; color: var(--text-tertiary);">Select 1 topic to deliver:</span>
+          </div>
+
+          <div id="lecCardTopicsList"></div>
+        </div>
+
+        <!-- ON-DEMAND TOPIC SEARCH -->
+        <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem;">
+          <label class="param-label">Or Search All 251 Topics</label>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
+            <input type="text" id="lecSearchInput" placeholder="Filter by keyword (e.g. Space, Defense, Education, China, EV)..." oninput="filterLecturetteTopics()">
+            <select id="lecFilterTier" onchange="filterLecturetteTopics()" style="width: 200px;">
+              <option value="all">All 4 Tiers</option>
+              <option value="tier1">Tier 1: Geopolitics & Defense</option>
+              <option value="tier2">Tier 2: National Strategy</option>
+              <option value="tier3">Tier 3: Social & Science</option>
+              <option value="tier4">Tier 4: Basic & Sports</option>
+            </select>
+          </div>
+          <div id="lecSearchResults" style="max-height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.4rem;"></div>
+        </div>
+
+        <div class="grid-duo">
+          <div class="param-group">
+            <label class="param-label">Preparation Time</label>
+            <select id="lecPrepDuration">
+              <option value="180" selected>3 Minutes (Official DIPR Standard)</option>
+              <option value="90">1.5 Minutes (Fast Mental Drill)</option>
+              <option value="0">Skip Prep (Immediate Delivery)</option>
+            </select>
+          </div>
+          <div class="param-group">
+            <label class="param-label">Posture & Eye Contact Mirror</label>
+            <select id="lecMirrorOption">
+              <option value="mirror_on" selected>Webcam Mirror Enabled (Check Stance & Eye Contact)</option>
+              <option value="mirror_off">Mirror Disabled</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn-engage" id="btnStartLecturette" onclick="startLecturetteFlow()">
+          Commence 3-Minute Preparation
+        </button>
+      </div>
+
+      <!-- LECTURETTE PREPARATION STAGE (3 MINS) -->
+      <div class="command-panel" id="lecPrepScreen" style="display: none; max-width: 900px; padding: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem;">
+          <div>
+            <span class="phase-pill observe">PREPARATION PHASE (3:00)</span>
+            <h3 style="font-family: var(--font-tactical); font-size: 1.6rem; color: var(--accent-brass); margin-top: 0.35rem;" id="lecPrepTopicTitle">
+              Selected Topic
+            </h3>
+          </div>
+          <div class="precision-clock">
+            <svg class="clock-svg" viewBox="0 0 80 80">
+              <circle class="clock-track" cx="40" cy="40" r="36" />
+              <circle class="clock-fill" id="lecPrepClockCircle" cx="40" cy="40" r="36" />
+            </svg>
+            <div class="clock-digits" id="lecPrepClockNum">3:00</div>
+          </div>
+        </div>
+
+        <div class="param-group">
+          <label class="param-label">Mental Scratchpad (Structure your points)</label>
+          <p style="font-size: 0.82rem; color: var(--text-tertiary); margin-bottom: 0.4rem;">
+            Recommended Formula: 1. Introduction & Background (30s) ➔ 2. Key Dimensions & Data (90s) ➔ 3. Challenges & Ground Realities (30s) ➔ 4. Conclusion & Officer's Way Forward (30s).
+          </p>
+          <textarea id="lecScratchpad" style="height: 180px;" placeholder="Jot down quick bullet points (Intro, Pros/Cons, Way forward)..."></textarea>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem;">
+          <button class="btn-engage" style="width: auto; margin-top: 0; background: var(--accent-ready);" onclick="advanceToLecturetteDelivery()">
+            Ready to Speak ➔ Proceed to Delivery
+          </button>
+          <button class="btn-aux" style="color: var(--accent-alert);" onclick="abortLecturette()">Abort Drill</button>
+        </div>
+      </div>
+
+      <!-- LECTURETTE DELIVERY STAGE (3 MINS) -->
+      <div class="command-panel" id="lecDeliveryScreen" style="display: none; max-width: 960px; padding: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem;">
+          <div>
+            <span class="phase-pill write" id="lecDeliveryPhaseTag">DELIVERY PHASE (3:00)</span>
+            <h3 style="font-family: var(--font-tactical); font-size: 1.7rem; color: var(--accent-brass); margin-top: 0.35rem;" id="lecDeliveryTopicTitle">
+              Selected Topic
+            </h3>
+          </div>
+          <div class="precision-clock">
+            <svg class="clock-svg" viewBox="0 0 80 80">
+              <circle class="clock-track" cx="40" cy="40" r="36" />
+              <circle class="clock-fill" id="lecDeliveryClockCircle" cx="40" cy="40" r="36" />
+            </svg>
+            <div class="clock-digits" id="lecDeliveryClockNum">3:00</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+          <!-- POSTURE MIRROR -->
+          <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; margin-bottom: 0.5rem;">
+              Posture & Eye Contact Mirror
+            </div>
+            <video id="lecWebcamVideo" class="posture-mirror-video" autoplay playsinline muted></video>
+            <span style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.4rem;">Maintains local camera stream only. No video leaves your browser.</span>
+          </div>
+
+          <!-- SPEECH TRANSCRIPT / SCRATCHPAD -->
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase;">
+              Live Transcribed Speech
+            </div>
+            <div id="lecLiveTranscript" style="flex: 1; min-height: 180px; max-height: 240px; overflow-y: auto; background: var(--bg-base); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem; font-size: 0.9rem; line-height: 1.5; color: var(--text-secondary);">
+              Microphone active. Begin your delivery. Speech will be transcribed live for AI GTO grading.
+            </div>
+            <div style="font-size: 0.78rem; color: var(--accent-brass);" id="lecBellStatus">
+              Acoustic Bell: Warning chime at 2:30 (30s remaining), Final bell at 3:00.
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; justify-content: center;">
+          <button class="btn-engage" style="width: auto; margin-top: 0; background: var(--accent-ready);" onclick="finishLecturette()">
+            Conclude Lecturette Ahead of Time
+          </button>
+          <button class="btn-aux" style="color: var(--accent-alert);" onclick="abortLecturette()">Abort</button>
+        </div>
+      </div>
+
+      <!-- LECTURETTE REVIEW & AI GTO EVALUATION -->
+      <div class="command-panel" id="lecReviewScreen" style="display: none; max-width: 960px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem;">
+          <div>
+            <h2 class="module-heading">Lecturette Delivery Complete</h2>
+            <p class="module-desc" style="margin-bottom: 0;" id="lecReviewSubtitle">Topic review & speech transcript.</p>
+          </div>
+          <button class="btn-aux" onclick="copyLecturetteTranscript()">Copy Speech Transcript</button>
+        </div>
+
+        <div class="eval-dispatch-card">
+          <div class="dispatch-header">
+            <div>
+              <div class="dispatch-title">
+                GTO AI Lecturette Evaluation (ChatGPT / Claude / Gemini)
+              </div>
+              <p class="dispatch-desc">
+                Evaluate your delivery using an AI prompted as a <strong>Senior Services Selection Board Group Testing Officer (GTO)</strong>. It assesses structure (Intro-Body-Conclusion), factual depth, speech pacing, clarity, and provides a model officer lecturette outline.
+              </p>
+            </div>
+            <div class="dispatch-actions">
+              <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.55rem 1.25rem; font-size: 0.9rem; background: var(--accent-intel);" onclick="copyLecturetteAiPrompt()">Copy GTO Evaluation Prompt</button>
+              <button class="btn-aux" onclick="downloadLecturetteAiDossier()">Download Dossier</button>
+            </div>
+          </div>
+          <div class="model-links-row">
+            <span style="font-size: 0.8rem; color: var(--text-tertiary);">Step 2: Paste into free AI chat:</span>
+            <div style="display: flex; gap: 0.5rem;">
+              <a href="https://chatgpt.com" target="_blank" class="model-chip chip-chatgpt">ChatGPT ↗</a>
+              <a href="https://claude.ai" target="_blank" class="model-chip chip-claude">Claude ↗</a>
+              <a href="https://gemini.google.com" target="_blank" class="model-chip chip-gemini">Gemini ↗</a>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem;">
+          <h4 style="font-family: var(--font-tactical); font-size: 1.15rem; color: var(--accent-brass); margin-bottom: 0.5rem; text-transform: uppercase;">
+            Delivery Summary
+          </h4>
+          <div style="font-size: 0.92rem; line-height: 1.6;">
+            <div>Topic: <strong id="lecReviewTopic" style="color: var(--accent-brass);">Topic Name</strong></div>
+            <div>Delivery Duration: <strong id="lecReviewDuration" style="color: var(--accent-ready);">3:00 Minutes</strong></div>
+          </div>
+        </div>
+
+        <div class="param-group">
+          <label class="param-label">Your Speech Transcript</label>
+          <div id="lecFinalTranscriptBox" style="background: var(--bg-base); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.15rem; font-size: 0.92rem; line-height: 1.6; max-height: 320px; overflow-y: auto;"></div>
+        </div>
+
+        <button class="btn-aux" onclick="resetLecturetteToSetup()">Return to Setup</button>
+      </div>
+    </section>
+
+    <!-- ==============================================================
+         8. FULL MOCK BATTERY
          ============================================================== -->
     <section class="workspace-module" id="tab-fullmock">
       <div class="command-panel" style="max-width: 820px; text-align: center;">
-        <h2 class="module-heading">Stage 2 Psychological Battery Simulation</h2>
+        <h2 class="module-heading">Stage 2 Full Battery Simulation</h2>
         <p class="module-desc" style="margin: 0 auto 2rem auto;">
-          Experience the authentic, unbroken 3-hour psychological testing schedule of Services Selection Board (SSB).
+          Experience the authentic, unbroken testing schedule of Services Selection Board (SSB) across Psychology and GTO.
         </p>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: left; margin-bottom: 2rem;">
@@ -1639,8 +2268,8 @@ html += f'''            </optgroup>
             <p style="font-size: 0.85rem; color: var(--text-secondary);">60 Real-world challenging situations to solve in exactly 30 minutes.</p>
           </div>
           <div style="background: var(--bg-surface-elevated); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
-            <strong style="font-family: var(--font-tactical); font-size: 1.1rem; color: var(--accent-brass); display: block; margin-bottom: 0.25rem;">4. SDT (Self Description)</strong>
-            <p style="font-size: 0.85rem; color: var(--text-secondary);">5 Comprehensive paragraphs (Parents, Teachers, Friends, Self, Future Aim). 15 minutes.</p>
+            <strong style="font-family: var(--font-tactical); font-size: 1.1rem; color: var(--accent-brass); display: block; margin-bottom: 0.25rem;">4. GTO Verbal Battery</strong>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">15-Minute Syndicate Group Discussion + 3-Minute Lecturette Delivery.</p>
           </div>
         </div>
 
@@ -1651,25 +2280,24 @@ html += f'''            </optgroup>
     </section>
 
     <!-- ==============================================================
-         7. AI ASSESSOR DISPATCH HUB
+         9. AI ASSESSOR DISPATCH HUB
          ============================================================== -->
     <section class="workspace-module" id="tab-ai-assessor">
       <div class="command-panel" style="max-width: 1040px;">
         <div style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 1.25rem; margin-bottom: 1.5rem;">
-          <h2 class="module-heading" style="color: var(--accent-intel);">AI Psychologist Evaluation Hub</h2>
+          <h2 class="module-heading" style="color: var(--accent-intel);">AI Psychologist & GTO Evaluation Hub</h2>
           <p class="module-desc" style="margin-bottom: 0;">
-            Zero-cost, professional psychological grading using free foundation models (ChatGPT-4o, Claude 3.5 Sonnet, or Google Gemini). Download stimuli packages (including high-resolution TAT images) and copy expert Senior DIPR Psychologist prompts with 1 click.
+            Zero-cost, professional grading across Psychological tests (TAT, WAT, SRT, SDT) and GTO verbal drills (GD, Lecturette) using free foundation models (ChatGPT-4o, Claude 3.5 Sonnet, or Google Gemini).
           </p>
         </div>
 
-        <!-- 3-STEP PROTOCOL -->
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
           <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem;">
             <div style="font-family: var(--font-tactical); font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;">
               1. Extract Stimuli & Prompt
             </div>
             <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
-              Select any TAT set to download a <strong>ready-to-upload ZIP</strong> containing the slide images and your stories, or copy the formatted prompt for WAT, SRT, or SDT.
+              Select any test set (WAT, TAT image ZIP, SRT, SDT, GD, Lecturette) to copy the expert DIPR Assessor evaluation prompt.
             </p>
           </div>
           <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem;">
@@ -1677,7 +2305,7 @@ html += f'''            </optgroup>
               2. Deploy to Free AI Chat
             </div>
             <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
-              Open <a href="https://chatgpt.com" target="_blank" style="color: var(--accent-ready); font-weight: 600;">ChatGPT</a>, <a href="https://claude.ai" target="_blank" style="color: #fbbf24; font-weight: 600;">Claude</a>, or <a href="https://gemini.google.com" target="_blank" style="color: var(--accent-intel); font-weight: 600;">Gemini</a>. No API keys or paid accounts required.
+              Open <a href="https://chatgpt.com" target="_blank" style="color: var(--accent-ready); font-weight: 600;">ChatGPT</a>, <a href="https://claude.ai" target="_blank" style="color: #fbbf24; font-weight: 600;">Claude</a>, or <a href="https://gemini.google.com" target="_blank" style="color: var(--accent-intel); font-weight: 600;">Gemini</a>. Zero developer API key required.
             </p>
           </div>
           <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem;">
@@ -1690,13 +2318,12 @@ html += f'''            </optgroup>
           </div>
         </div>
 
-        <!-- ON-DEMAND STIMULI GENERATOR -->
         <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 2rem;">
           <h3 style="font-family: var(--font-tactical); font-size: 1.25rem; font-weight: 700; color: var(--accent-brass); margin-bottom: 0.35rem; text-transform: uppercase;">
             On-Demand Test Package Downloader
           </h3>
           <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
-            Practicing in a physical notebook? Select any set below to generate the exact DIPR prompt and slide images package for AI review.
+            Select any test below to generate the exact prompt dossier or stimulus package for AI review:
           </p>
 
           <div class="grid-duo">
@@ -1707,10 +2334,12 @@ html += f'''            </optgroup>
                 <option value="wat">Word Association Test (WAT) — 60 Words List</option>
                 <option value="srt">Situation Reaction Test (SRT) — 60 Scenarios</option>
                 <option value="sdt">Self Description Test (SDT) — 5 Dimensions</option>
+                <option value="gd">Group Discussion (GD) — Full Syndicate Debate</option>
+                <option value="lecturette">Lecturette — 4-Tier Topic Outline</option>
               </select>
             </div>
             <div class="param-group">
-              <label class="param-label">Select Set</label>
+              <label class="param-label">Select Specific Item / Set</label>
               <select id="hubSelectSet"></select>
             </div>
           </div>
@@ -1724,68 +2353,20 @@ html += f'''            </optgroup>
             </button>
           </div>
         </div>
-
-        <!-- 15 OLQS REFERENCE MATRIX -->
-        <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
-          <h3 style="font-family: var(--font-tactical); font-size: 1.2rem; color: var(--text-primary); margin-bottom: 1rem; text-transform: uppercase;">
-            Official 15 Officer Like Qualities (OLQ) Assessment Matrix
-          </h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
-            <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.15rem;">
-              <strong style="font-family: var(--font-tactical); color: var(--accent-brass); font-size: 1.05rem; display: block; margin-bottom: 0.4rem;">Factor I: Planning & Organising</strong>
-              <ul style="font-size: 0.82rem; color: var(--text-secondary); padding-left: 1.2rem; line-height: 1.7;">
-                <li>1. Effective Intelligence</li>
-                <li>2. Reasoning Ability</li>
-                <li>3. Organising Ability</li>
-                <li>4. Power of Expression</li>
-              </ul>
-            </div>
-            <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.15rem;">
-              <strong style="font-family: var(--font-tactical); color: var(--accent-intel); font-size: 1.05rem; display: block; margin-bottom: 0.4rem;">Factor II: Social Adjustment</strong>
-              <ul style="font-size: 0.82rem; color: var(--text-secondary); padding-left: 1.2rem; line-height: 1.7;">
-                <li>5. Social Adaptability</li>
-                <li>6. Co-operation</li>
-                <li>7. Sense of Responsibility</li>
-              </ul>
-            </div>
-            <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.15rem;">
-              <strong style="font-family: var(--font-tactical); color: var(--accent-ready); font-size: 1.05rem; display: block; margin-bottom: 0.4rem;">Factor III: Social Effectiveness</strong>
-              <ul style="font-size: 0.82rem; color: var(--text-secondary); padding-left: 1.2rem; line-height: 1.7;">
-                <li>8. Initiative</li>
-                <li>9. Self-Confidence</li>
-                <li>10. Speed of Decision</li>
-                <li>11. Ability to Influence Group</li>
-                <li>12. Liveliness</li>
-              </ul>
-            </div>
-            <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.15rem;">
-              <strong style="font-family: var(--font-tactical); color: var(--accent-alert); font-size: 1.05rem; display: block; margin-bottom: 0.4rem;">Factor IV: Dynamic</strong>
-              <ul style="font-size: 0.82rem; color: var(--text-secondary); padding-left: 1.2rem; line-height: 1.7;">
-                <li>13. Determination</li>
-                <li>14. Courage</li>
-                <li>15. Stamina</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
       </div>
     </section>
 
   </main>
 
   <script>
-    // ==============================================================
-    // DATA REPOSITORY
-    // ==============================================================
+    // DATA REPOSITORIES
     const WAT_SETS = {wat_sets_json};
     const ALL_WAT_WORDS = {all_wat_words_json};
     const SRT_SETS = {srt_sets_json};
     const TAT_SETS = {tat_sets_json};
+    const LECTURETTE_DATA = {lecturette_data_json};
+    const GD_TOPICS = {gd_topics_json};
 
-    // ==============================================================
-    // TACTICAL TOAST
-    // ==============================================================
     function showToast(msg) {{
       const t = document.getElementById('tacticalToast');
       t.textContent = msg;
@@ -1793,9 +2374,7 @@ html += f'''            </optgroup>
       setTimeout(() => t.classList.remove('visible'), 2200);
     }}
 
-    // ==============================================================
-    // NAVIGATION TABS
-    // ==============================================================
+    // NAVIGATION
     const tabs = document.querySelectorAll('.op-tab');
     const modules = document.querySelectorAll('.workspace-module');
 
@@ -1811,20 +2390,19 @@ html += f'''            </optgroup>
       }});
     }});
 
-    // ==============================================================
-    // PROGRESS TRACKER & ZERO-REPEAT LOGIC
-    // ==============================================================
+    // PROGRESS TRACKER
     const STORAGE_KEY = 'ssb_master_progress';
 
     function getProgressData() {{
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) {{
-        return {{ watCompleted: [], tatCompleted: [], srtCompleted: [], history: [] }};
-      }}
+      if (!raw) return {{ watCompleted: [], tatCompleted: [], srtCompleted: [], gdCompleted: 0, lecCompleted: 0, history: [] }};
       try {{
-        return JSON.parse(raw);
+        const parsed = JSON.parse(raw);
+        if (!parsed.gdCompleted) parsed.gdCompleted = 0;
+        if (!parsed.lecCompleted) parsed.lecCompleted = 0;
+        return parsed;
       }} catch (e) {{
-        return {{ watCompleted: [], tatCompleted: [], srtCompleted: [], history: [] }};
+        return {{ watCompleted: [], tatCompleted: [], srtCompleted: [], gdCompleted: 0, lecCompleted: 0, history: [] }};
       }}
     }}
 
@@ -1837,48 +2415,47 @@ html += f'''            </optgroup>
     function markWatSetDone(id) {{
       const p = getProgressData();
       if (!p.watCompleted.includes(id)) p.watCompleted.push(id);
-      p.history.unshift({{
-        date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {{hour: '2-digit', minute:'2-digit'}}),
-        module: 'WAT',
-        item: `Set ${{id}} (60 Words)`,
-        result: 'Completed'
-      }});
+      p.history.unshift({{ date: getFormattedTimestamp(), module: 'WAT', item: `Set ${{id}} (60 Words)`, result: 'Completed' }});
       saveProgressData(p);
     }}
 
     function markTatSetDone(id) {{
       const p = getProgressData();
       if (!p.tatCompleted.includes(id)) p.tatCompleted.push(id);
-      p.history.unshift({{
-        date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {{hour: '2-digit', minute:'2-digit'}}),
-        module: 'TAT',
-        item: `Set ${{id}} (12 Slides)`,
-        result: 'Completed'
-      }});
+      p.history.unshift({{ date: getFormattedTimestamp(), module: 'TAT', item: `Set ${{id}} (12 Slides)`, result: 'Completed' }});
       saveProgressData(p);
     }}
 
     function markSrtSetDone(id) {{
       const p = getProgressData();
       if (!p.srtCompleted.includes(id)) p.srtCompleted.push(id);
-      p.history.unshift({{
-        date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {{hour: '2-digit', minute:'2-digit'}}),
-        module: 'SRT',
-        item: `Set ${{id}} (60 Scenarios)`,
-        result: 'Completed'
-      }});
+      p.history.unshift({{ date: getFormattedTimestamp(), module: 'SRT', item: `Set ${{id}} (60 Scenarios)`, result: 'Completed' }});
+      saveProgressData(p);
+    }}
+
+    function markGdDone(topicTitle, airtime) {{
+      const p = getProgressData();
+      p.gdCompleted = (p.gdCompleted || 0) + 1;
+      p.history.unshift({{ date: getFormattedTimestamp(), module: 'GD', item: topicTitle, result: `${{airtime}}% Airtime` }});
+      saveProgressData(p);
+    }}
+
+    function markLecturetteDone(topicTitle) {{
+      const p = getProgressData();
+      p.lecCompleted = (p.lecCompleted || 0) + 1;
+      p.history.unshift({{ date: getFormattedTimestamp(), module: 'Lecturette', item: topicTitle, result: 'Delivered (3m)' }});
       saveProgressData(p);
     }}
 
     function logCompletedSession(mod, item, result) {{
       const p = getProgressData();
-      p.history.unshift({{
-        date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {{hour: '2-digit', minute:'2-digit'}}),
-        module: mod,
-        item: item,
-        result: result
-      }});
+      p.history.unshift({{ date: getFormattedTimestamp(), module: mod, item: item, result: result }});
       saveProgressData(p);
+    }}
+
+    function getFormattedTimestamp() {{
+      const d = new Date();
+      return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {{hour: '2-digit', minute:'2-digit'}});
     }}
 
     function clearPracticeHistory() {{
@@ -1909,8 +2486,6 @@ html += f'''            </optgroup>
           if (parsed && Array.isArray(parsed.watCompleted)) {{
             saveProgressData(parsed);
             alert("Progress state restored successfully!");
-          }} else {{
-            alert("Unrecognized backup file format.");
           }}
         }} catch(err) {{
           alert("Error parsing backup JSON: " + err.message);
@@ -1934,7 +2509,8 @@ html += f'''            </optgroup>
       document.getElementById('progSrtVal').textContent = `${{srtDone}} / 2`;
       document.getElementById('progSrtBar').style.width = `${{(srtDone / 2) * 100}}%`;
 
-      document.getElementById('progTotalSessions').textContent = p.history.length;
+      document.getElementById('progGdVal').textContent = p.gdCompleted || 0;
+      document.getElementById('progLecVal').textContent = p.lecCompleted || 0;
 
       // Pills for WAT
       const pillsWat = document.getElementById('pillsWat');
@@ -1981,7 +2557,6 @@ html += f'''            </optgroup>
         pillsSrt.appendChild(pill);
       }});
 
-      // Next Recommendation
       calculateNextRecommendation(p);
 
       // History Table
@@ -2060,12 +2635,6 @@ html += f'''            </optgroup>
       }}
     }}
 
-    function loadProgress() {{
-      updateProgressDashboard();
-      updateDropdownBadges();
-      updateHubOptions();
-    }}
-
     // ==============================================================
     // 1. WAT ENGINE
     // ==============================================================
@@ -2122,7 +2691,6 @@ html += f'''            </optgroup>
       document.getElementById('watSetupScreen').style.display = 'none';
       document.getElementById('watReviewScreen').style.display = 'none';
       document.getElementById('watActiveScreen').style.display = 'block';
-
       document.getElementById('watTypingArea').style.display = watMode === 'typing' ? 'block' : 'none';
 
       displayWatWord();
@@ -2151,9 +2719,7 @@ html += f'''            </optgroup>
         watRemaining--;
         updateWatTimerUI();
 
-        if (watRemaining <= 0) {{
-          nextWatWord();
-        }}
+        if (watRemaining <= 0) nextWatWord();
       }}, 1000);
     }}
 
@@ -2196,11 +2762,8 @@ html += f'''            </optgroup>
 
     function finishWatTest() {{
       clearInterval(watInterval);
-      if (watCurrentSetId) {{
-        markWatSetDone(watCurrentSetId);
-      }} else {{
-        logCompletedSession('WAT', 'Random 60 Drill', 'Completed');
-      }}
+      if (watCurrentSetId) markWatSetDone(watCurrentSetId);
+      else logCompletedSession('WAT', 'Random 60 Drill', 'Completed');
 
       document.getElementById('watActiveScreen').style.display = 'none';
       document.getElementById('watReviewScreen').style.display = 'block';
@@ -2282,12 +2845,7 @@ html += f'''            </optgroup>
           src: `tat_images/tat_${{String(idx).padStart(3, '0')}}.jpg`,
           label: `Picture ${{i + 1}}`
         }}));
-        tatSlides.push({{
-          num: 12,
-          type: 'blank',
-          src: '',
-          label: 'Slide 12 — Blank Slide (Candidate Story)'
-        }});
+        tatSlides.push({{ num: 12, type: 'blank', src: '', label: 'Slide 12 — Blank Slide (Candidate Story)' }});
       }}
 
       tatIndex = 0;
@@ -2304,10 +2862,8 @@ html += f'''            </optgroup>
     function commenceTatSlide() {{
       const s = tatSlides[tatIndex];
       document.getElementById('tatSlideTag').textContent = `SLIDE ${{s.num}} / ${{tatSlides.length}}`;
-
       const inp = document.getElementById('tatStoryInput');
       inp.value = tatStories[s.num] || '';
-
       startTatPhase('viewing');
     }}
 
@@ -2368,11 +2924,8 @@ html += f'''            </optgroup>
         updateTatTimerUI();
 
         if (tatRemaining <= 0) {{
-          if (tatPhase === 'viewing') {{
-            startTatPhase('writing');
-          }} else {{
-            advanceTatSlide();
-          }}
+          if (tatPhase === 'viewing') startTatPhase('writing');
+          else advanceTatSlide();
         }}
       }}, 1000);
     }}
@@ -2391,21 +2944,15 @@ html += f'''            </optgroup>
     }}
 
     function advanceTatPhaseEarly() {{
-      if (tatPhase === 'viewing') {{
-        startTatPhase('writing');
-      }} else {{
-        advanceTatSlide();
-      }}
+      if (tatPhase === 'viewing') startTatPhase('writing');
+      else advanceTatSlide();
     }}
 
     function advanceTatSlide() {{
       recordTatStory();
       tatIndex++;
-      if (tatIndex >= tatSlides.length) {{
-        finishTatTest();
-      }} else {{
-        commenceTatSlide();
-      }}
+      if (tatIndex >= tatSlides.length) finishTatTest();
+      else commenceTatSlide();
     }}
 
     function toggleTatPause() {{
@@ -2419,11 +2966,8 @@ html += f'''            </optgroup>
 
     function finishTatTest() {{
       clearInterval(tatInterval);
-      if (tatCurrentSetId) {{
-        markTatSetDone(tatCurrentSetId);
-      }} else {{
-        logCompletedSession('TAT', 'Random 11+Blank Drill', 'Completed');
-      }}
+      if (tatCurrentSetId) markTatSetDone(tatCurrentSetId);
+      else logCompletedSession('TAT', 'Random 11+Blank Drill', 'Completed');
 
       document.getElementById('tatActiveScreen').style.display = 'none';
       document.getElementById('tatReviewScreen').style.display = 'block';
@@ -2513,7 +3057,6 @@ html += f'''            </optgroup>
     function renderSrtBooklet() {{
       const wrap = document.getElementById('srtBookletList');
       wrap.innerHTML = '';
-
       srtList.forEach((sit, idx) => {{
         const item = document.createElement('div');
         item.className = 'srt-entry';
@@ -2557,16 +3100,11 @@ html += f'''            </optgroup>
     function submitSrtTest() {{
       clearInterval(srtInterval);
       const filled = Object.values(srtResponses).filter(v => v.trim().length > 0).length;
-
-      if (srtCurrentSetId) {{
-        markSrtSetDone(srtCurrentSetId);
-      }} else {{
-        logCompletedSession('SRT', `Attempted ${{filled}} Scenarios`, 'Submitted');
-      }}
+      if (srtCurrentSetId) markSrtSetDone(srtCurrentSetId);
+      else logCompletedSession('SRT', `Attempted ${{filled}} Scenarios`, 'Submitted');
 
       document.getElementById('srtActiveScreen').style.display = 'none';
       document.getElementById('srtReviewScreen').style.display = 'block';
-
       document.getElementById('srtReviewStats').textContent = `Attempted ${{filled}} / ${{srtList.length}} Scenarios in allotted 30 minutes`;
 
       const wrap = document.getElementById('srtReviewContent');
@@ -2740,19 +3278,679 @@ html += f'''            </optgroup>
     }}
 
     // ==============================================================
-    // 6. FULL MOCK BATTERY LAUNCHER
+    // 6. GROUP DISCUSSION (GD) ENGINE
+    // ==============================================================
+    let gdCurrentScenario = null;
+    let gdRemainingSec = 900;
+    let gdTotalDuration = 900;
+    let gdInterval = null;
+    let gdSpeechMuted = false;
+    let gdInputMode = 'voice';
+    let gdCandidateSpeaking = false;
+    let gdCandidateSpeakingSec = 0;
+    let gdCandidateInterventions = 0;
+    let gdTranscriptHistory = [];
+    let gdRecognition = null;
+    let gdPeerQueue = [];
+
+    function setGdInputMode(m) {{
+      gdInputMode = m;
+      document.getElementById('gdModeVoice').classList.toggle('selected', m === 'voice');
+      document.getElementById('gdModeText').classList.toggle('selected', m === 'text');
+      const txtArea = document.getElementById('gdTextInputArea');
+      if (txtArea) txtArea.style.display = m === 'text' ? 'flex' : 'none';
+    }}
+
+    function toggleGdAudioMute() {{
+      gdSpeechMuted = !gdSpeechMuted;
+      document.getElementById('btnToggleGdAudio').textContent = gdSpeechMuted ? 'Unmute Voices' : 'Mute Voices';
+      if (gdSpeechMuted && window.speechSynthesis) window.speechSynthesis.cancel();
+    }}
+
+    function startGdSession() {{
+      const topicChoice = document.getElementById('gdSelectTopic').value;
+      gdTotalDuration = parseInt(document.getElementById('gdSelectDuration').value, 10);
+      gdRemainingSec = gdTotalDuration;
+      gdSpeechMuted = document.getElementById('gdSelectAudio').value === 'voice_off';
+      document.getElementById('btnToggleGdAudio').textContent = gdSpeechMuted ? 'Unmute Voices' : 'Mute Voices';
+
+      if (topicChoice === 'random') {{
+        const rIdx = Math.floor(Math.random() * GD_TOPICS.length);
+        gdCurrentScenario = GD_TOPICS[rIdx];
+      }} else {{
+        const id = parseInt(topicChoice, 10);
+        gdCurrentScenario = GD_TOPICS.find(x => x.id === id) || GD_TOPICS[0];
+      }}
+
+      // Init telemetry
+      gdCandidateSpeaking = false;
+      gdCandidateSpeakingSec = 0;
+      gdCandidateInterventions = 0;
+      gdTranscriptHistory = [];
+      gdPeerQueue = [...gdCurrentScenario.peer_dialogues];
+
+      document.getElementById('gdSetupScreen').style.display = 'none';
+      document.getElementById('gdReviewScreen').style.display = 'none';
+      document.getElementById('gdActiveScreen').style.display = 'block';
+
+      document.getElementById('gdActiveTitle').textContent = gdCurrentScenario.title;
+      document.getElementById('gdActiveCategory').textContent = gdCurrentScenario.category;
+
+      // Populate leads
+      document.getElementById('gdLeadBox1').textContent = gdCurrentScenario.leads[0];
+      document.getElementById('gdLeadBox2').textContent = gdCurrentScenario.leads[1];
+      document.getElementById('gdLeadBox3').textContent = gdCurrentScenario.leads[2];
+
+      document.getElementById('gdTranscriptFeed').innerHTML = `
+        <div style="color: var(--text-tertiary); font-size: 0.85rem; text-align: center; margin: 0.5rem 0;">
+          GTO has initiated the floor. Topic: "${{gdCurrentScenario.title}}". Listen actively and intervene strategically.
+        </div>
+      `;
+
+      initSpeechRecognition();
+      runGdMasterTimer();
+    }}
+
+    function initSpeechRecognition() {{
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {{
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        gdRecognition = new SpeechRec();
+        gdRecognition.continuous = true;
+        gdRecognition.interimResults = true;
+        gdRecognition.lang = 'en-IN';
+
+        gdRecognition.onresult = (event) => {{
+          let interimTranscript = '';
+          for (let i = event.resultIndex; i < event.results.length; ++i) {{
+            if (event.results[i].isFinal) {{
+              const finalTxt = event.results[i][0].transcript.trim();
+              if (finalTxt.length > 0) recordCandidateContribution(finalTxt);
+            }}
+          }}
+        }};
+      }}
+    }}
+
+    function runGdMasterTimer() {{
+      clearInterval(gdInterval);
+      gdInterval = setInterval(() => {{
+        gdRemainingSec--;
+        const elapsedSec = gdTotalDuration - gdRemainingSec;
+        const m = Math.floor(gdRemainingSec / 60);
+        const s = gdRemainingSec % 60;
+        document.getElementById('gdMasterTimer').textContent = `${{String(m).padStart(2, '0')}}:${{String(s).padStart(2, '0')}}`;
+
+        if (gdCandidateSpeaking) {{
+          gdCandidateSpeakingSec++;
+        }}
+
+        updateAirtimeTelemetry();
+        checkLeadPhase(elapsedSec);
+        checkPeerDialogueQueue(elapsedSec);
+
+        if (gdRemainingSec <= 0) {{
+          clearInterval(gdInterval);
+          finishGdSession();
+        }}
+      }}, 1000);
+    }}
+
+    function checkLeadPhase(elapsedSec) {{
+      const third = Math.floor(gdTotalDuration / 3);
+      const b1 = document.getElementById('gdLeadBox1');
+      const b2 = document.getElementById('gdLeadBox2');
+      const b3 = document.getElementById('gdLeadBox3');
+      const tag = document.getElementById('gdPhaseLeadTag');
+
+      if (elapsedSec < third) {{
+        b1.classList.add('active'); b2.classList.remove('active'); b3.classList.remove('active');
+        tag.textContent = 'Focusing on Lead 1';
+      }} else if (elapsedSec < third * 2) {{
+        b1.classList.remove('active'); b2.classList.add('active'); b3.classList.remove('active');
+        tag.textContent = 'Progressed to Lead 2';
+      }} else {{
+        b1.classList.remove('active'); b2.classList.remove('active'); b3.classList.add('active');
+        tag.textContent = 'Consensus on Lead 3';
+      }}
+    }}
+
+    function checkPeerDialogueQueue(elapsedSec) {{
+      if (gdCandidateSpeaking) return; // Yield when candidate is speaking
+      if (gdPeerQueue.length === 0) return;
+
+      const nextItem = gdPeerQueue[0];
+      if (elapsedSec >= nextItem.time_sec) {{
+        gdPeerQueue.shift();
+        triggerPeerSpeech(nextItem.speaker, nextItem.text);
+      }}
+    }}
+
+    function triggerPeerSpeech(speaker, text) {{
+      setAvatarSpeaking(speaker, true);
+      addFeedEntry('peer', speaker, text);
+
+      if (!gdSpeechMuted && window.speechSynthesis) {{
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-IN';
+        if (speaker === 'Chest 2') {{ utterance.pitch = 1.0; utterance.rate = 1.05; }}
+        else if (speaker === 'Chest 4') {{ utterance.pitch = 1.15; utterance.rate = 1.15; }}
+        else if (speaker === 'Chest 7') {{ utterance.pitch = 0.9; utterance.rate = 0.95; }}
+        else {{ utterance.pitch = 1.0; utterance.rate = 1.0; }}
+
+        utterance.onend = () => setAvatarSpeaking(speaker, false);
+        utterance.onerror = () => setAvatarSpeaking(speaker, false);
+        window.speechSynthesis.speak(utterance);
+      }} else {{
+        setTimeout(() => setAvatarSpeaking(speaker, false), 5000);
+      }}
+    }}
+
+    function setAvatarSpeaking(speaker, isSpeaking) {{
+      const map = {{
+        'Chest 2': {{ el: 'avatarChest2', st: 'statusChest2' }},
+        'Chest 4': {{ el: 'avatarChest4', st: 'statusChest4' }},
+        'Chest 7': {{ el: 'avatarChest7', st: 'statusChest7' }},
+        'Chest 9': {{ el: 'avatarChest9', st: 'statusChest9' }}
+      }};
+      const target = map[speaker];
+      if (target) {{
+        const node = document.getElementById(target.el);
+        const statusNode = document.getElementById(target.st);
+        if (node) node.classList.toggle('speaking', isSpeaking);
+        if (statusNode) statusNode.textContent = isSpeaking ? 'Speaking' : 'Listening';
+      }}
+    }}
+
+    function toggleCandidateIntervention() {{
+      gdCandidateSpeaking = !gdCandidateSpeaking;
+      const btn = document.getElementById('btnIntervene');
+      const avatarYou = document.getElementById('avatarYou');
+      const statusYou = document.getElementById('statusYou');
+
+      if (gdCandidateSpeaking) {{
+        gdCandidateInterventions++;
+        if (window.speechSynthesis) window.speechSynthesis.cancel();
+        clearAllPeerSpeakingStyles();
+
+        btn.textContent = 'Yield Floor / Finished Speaking';
+        btn.style.background = 'var(--accent-alert)';
+        avatarYou.classList.add('speaking');
+        statusYou.textContent = 'Floor Held';
+
+        if (gdRecognition) {{
+          try {{ gdRecognition.start(); }} catch(e) {{}}
+        }}
+      }} else {{
+        btn.textContent = 'Intervene & Speak (Microphone)';
+        btn.style.background = 'var(--accent-ready)';
+        avatarYou.classList.remove('speaking');
+        statusYou.textContent = 'Floor Free';
+
+        if (gdRecognition) {{
+          try {{ gdRecognition.stop(); }} catch(e) {{}}
+        }}
+      }}
+    }}
+
+    function clearAllPeerSpeakingStyles() {{
+      ['avatarChest2', 'avatarChest4', 'avatarChest7', 'avatarChest9'].forEach(id => {{
+        const node = document.getElementById(id);
+        if (node) node.classList.remove('speaking');
+      }});
+      ['statusChest2', 'statusChest4', 'statusChest7', 'statusChest9'].forEach(id => {{
+        const node = document.getElementById(id);
+        if (node) node.textContent = 'Listening';
+      }});
+    }}
+
+    function submitCandidateTextArgument() {{
+      const inp = document.getElementById('gdTextInput');
+      const txt = inp.value.trim();
+      if (!txt) return;
+      recordCandidateContribution(txt);
+      inp.value = '';
+    }}
+
+    function recordCandidateContribution(txt) {{
+      addFeedEntry('you', 'YOU (Candidate)', txt);
+      gdCandidateSpeakingSec += 8; // Credit text points as airtime
+      updateAirtimeTelemetry();
+    }}
+
+    function addFeedEntry(type, speaker, text) {{
+      const feed = document.getElementById('gdTranscriptFeed');
+      const div = document.createElement('div');
+      div.className = `feed-entry ${{type}}`;
+      div.innerHTML = `
+        <div class="feed-meta">
+          <span>${{speaker}}</span>
+          <span style="font-size: 0.75rem; color: var(--text-tertiary);">${{getFormattedTimestamp()}}</span>
+        </div>
+        <div>${{escapeHtml(text)}}</div>
+      `;
+      feed.appendChild(div);
+      feed.scrollTop = feed.scrollHeight;
+      gdTranscriptHistory.push({{ speaker: speaker, text: text }});
+    }}
+
+    function updateAirtimeTelemetry() {{
+      const elapsed = Math.max(gdTotalDuration - gdRemainingSec, 1);
+      const pct = Math.min(Math.round((gdCandidateSpeakingSec / elapsed) * 100), 100);
+      document.getElementById('gdAirtimePercent').textContent = `${{pct}}%`;
+      document.getElementById('gdAirtimeFill').style.width = `${{pct}}%`;
+
+      const advice = document.getElementById('gdAirtimeAdvice');
+      if (pct < 10) advice.textContent = 'Low participation — step in soon';
+      else if (pct <= 25) advice.textContent = 'Optimal participation window (15% - 22%)';
+      else advice.textContent = 'High airtime — allow peers to contribute';
+    }}
+
+    function abortGdSession() {{
+      if (confirm("Terminate Group Discussion session? Current contributions will be logged.")) finishGdSession();
+    }}
+
+    function finishGdSession() {{
+      clearInterval(gdInterval);
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      if (gdRecognition) {{
+        try {{ gdRecognition.stop(); }} catch(e) {{}}
+      }}
+
+      const elapsed = Math.max(gdTotalDuration - gdRemainingSec, 1);
+      const pct = Math.min(Math.round((gdCandidateSpeakingSec / elapsed) * 100), 100);
+      markGdDone(gdCurrentScenario.title, pct);
+
+      document.getElementById('gdActiveScreen').style.display = 'none';
+      document.getElementById('gdReviewScreen').style.display = 'block';
+
+      document.getElementById('gdReviewSummary').textContent = `Topic: "${{gdCurrentScenario.title}}" | Completed in ${{Math.floor(elapsed/60)}} mins`;
+      document.getElementById('telemetryInterventions').textContent = gdCandidateInterventions;
+      document.getElementById('telemetryAirtime').textContent = `${{pct}}%`;
+
+      const wrap = document.getElementById('gdReviewTranscript');
+      wrap.innerHTML = '';
+      if (gdTranscriptHistory.length === 0) {{
+        wrap.innerHTML = '<div style="color: var(--text-tertiary); text-align: center;">No dialogue recorded during this session.</div>';
+      }} else {{
+        gdTranscriptHistory.forEach(item => {{
+          const p = document.createElement('div');
+          p.style.marginBottom = '0.75rem';
+          const isYou = item.speaker.includes('YOU');
+          p.innerHTML = `<strong style="color: ${{isYou ? 'var(--accent-ready)' : 'var(--accent-brass)'}};">${{item.speaker}}:</strong> ${{escapeHtml(item.text)}}`;
+          wrap.appendChild(p);
+        }});
+      }}
+    }}
+
+    function copyGdTranscript() {{
+      let t = `=== GROUP DISCUSSION TRANSCRIPT ===\\nTopic: ${{gdCurrentScenario.title}}\\n\\n`;
+      gdTranscriptHistory.forEach(item => {{
+        t += `[${{item.speaker}}]: ${{item.text}}\\n\\n`;
+      }});
+      navigator.clipboard.writeText(t).then(() => showToast("GD TRANSCRIPT COPIED"));
+    }}
+
+    function copyGdAiPrompt() {{
+      const prompt = buildGdAiPrompt();
+      navigator.clipboard.writeText(prompt).then(() => showToast("GTO EVALUATION PROMPT COPIED"));
+    }}
+
+    function downloadGdAiDossier() {{
+      const prompt = buildGdAiPrompt();
+      downloadTextFile(`GD_Evaluation_Dossier_${{gdCurrentScenario.id}}.txt`, prompt);
+    }}
+
+    function buildGdAiPrompt() {{
+      let t = `Act as an expert Senior Services Selection Board Group Testing Officer (GTO) evaluating a candidate for the Indian Armed Forces in a Group Discussion (GD).\\n\\n`;
+      t += `TOPIC: "${{gdCurrentScenario.title}}" [Category: ${{gdCurrentScenario.category}}]\\n`;
+      t += `GTO LEADS:\\n1. ${{gdCurrentScenario.leads[0]}}\\n2. ${{gdCurrentScenario.leads[1]}}\\n3. ${{gdCurrentScenario.leads[2]}}\\n\\n`;
+      t += `CANDIDATE TELEMETRY:\\n- Interventions Made: ${{gdCandidateInterventions}}\\n- Airtime Share: ${{Math.round((gdCandidateSpeakingSec / Math.max(gdTotalDuration - gdRemainingSec, 1)) * 100)}}% (Ideal: 15% - 22%)\\n\\n`;
+      t += `COMPLETE SYNDICATE DISCUSSION TRANSCRIPT:\\n`;
+      gdTranscriptHistory.forEach(item => {{
+        t += `[${{item.speaker}}]: ${{item.text}}\\n`;
+      }});
+      t += `\\n### GTO EVALUATION DIRECTIVES:\\n`;
+      t += `1. **OLQ Assessment**: Assess Reasoning Ability, Power of Expression, Ability to Influence the Group, and Cooperation.\\n`;
+      t += `2. **Substance vs Rhetoric**: Did the candidate cite facts and logical frameworks, or speak superficial generic generalities?\\n`;
+      t += `3. **Group Dynamics**: Did the candidate listen and build on peer points, or talk over others aggressively?\\n`;
+      t += `4. **Model Officer Interventions**: Provide 2 exemplary, high-impact statements showing how a recommended candidate would have guided this debate.\\n`;
+      t += `5. **GTO Verdict**: (Recommended / Borderline / Not Recommended) with concrete remediation advice.\\n`;
+      return t;
+    }}
+
+    function resetGdToSetup() {{
+      document.getElementById('gdReviewScreen').style.display = 'none';
+      document.getElementById('gdSetupScreen').style.display = 'block';
+    }}
+
+    // ==============================================================
+    // 7. LECTURETTE ENGINE (250+ TOPICS)
+    // ==============================================================
+    let lecCurrentCard = null;
+    let lecSelectedTopic = null;
+    let lecPrepRemaining = 180;
+    let lecPrepInterval = null;
+    let lecDeliveryRemaining = 180;
+    let lecDeliveryInterval = null;
+    let lecWebcamStream = null;
+    let lecRecognition = null;
+    let lecTranscribedSpeech = '';
+
+    function shuffleLecturetteCard() {{
+      const cards = LECTURETTE_DATA.cards;
+      const rIdx = Math.floor(Math.random() * cards.length);
+      renderLecturetteCard(cards[rIdx]);
+    }}
+
+    function renderLecturetteCard(card) {{
+      lecCurrentCard = card;
+      document.getElementById('lecCardTitle').textContent = card.title;
+      const wrap = document.getElementById('lecCardTopicsList');
+      wrap.innerHTML = '';
+
+      card.topics.forEach((item, idx) => {{
+        const row = document.createElement('div');
+        row.className = `topic-tier-row ${{idx === 0 ? 'selected' : ''}}`;
+        if (idx === 0) lecSelectedTopic = item;
+
+        row.onclick = () => {{
+          wrap.querySelectorAll('.topic-tier-row').forEach(r => r.classList.remove('selected'));
+          row.classList.add('selected');
+          lecSelectedTopic = item;
+        }};
+
+        row.innerHTML = `
+          <div>
+            <strong style="color: var(--text-primary); font-size: 0.95rem;">${{item.topic}}</strong>
+            <div style="font-size: 0.78rem; color: var(--text-tertiary);">${{item.tier_name}}</div>
+          </div>
+          <span class="tier-tag tier-${{item.tier}}">Tier ${{item.tier}}</span>
+        `;
+        wrap.appendChild(row);
+      }});
+    }}
+
+    function filterLecturetteTopics() {{
+      const q = document.getElementById('lecSearchInput').value.trim().toLowerCase();
+      const tierFilter = document.getElementById('lecFilterTier').value;
+      const resultsWrap = document.getElementById('lecSearchResults');
+      resultsWrap.innerHTML = '';
+
+      if (!q && tierFilter === 'all') {{
+        resultsWrap.innerHTML = '<div style="font-size: 0.8rem; color: var(--text-tertiary);">Type in the box above to filter 251 topics.</div>';
+        return;
+      }}
+
+      let matches = [];
+      const tiers = LECTURETTE_DATA.tiers;
+
+      ['tier1', 'tier2', 'tier3', 'tier4'].forEach(tKey => {{
+        if (tierFilter === 'all' || tierFilter === tKey) {{
+          tiers[tKey].forEach(topicStr => {{
+            if (!q || topicStr.toLowerCase().includes(q)) {{
+              const tierNum = tKey.replace('tier', '');
+              matches.push({{ topic: topicStr, tier: tierNum }});
+            }}
+          }});
+        }}
+      }});
+
+      if (matches.length === 0) {{
+        resultsWrap.innerHTML = '<div style="font-size: 0.8rem; color: var(--text-tertiary);">No matching topics found.</div>';
+        return;
+      }}
+
+      matches.slice(0, 20).forEach(m => {{
+        const item = document.createElement('div');
+        item.style = 'background: var(--bg-base); border: 1px solid var(--border-subtle); padding: 0.45rem 0.75rem; border-radius: var(--radius-sm); font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer;';
+        item.innerHTML = `<span>${{m.topic}}</span> <span class="tier-tag tier-${{m.tier}}">Tier ${{m.tier}}</span>`;
+        item.onclick = () => {{
+          lecSelectedTopic = {{ topic: m.topic, tier: m.tier, tier_name: `Tier ${{m.tier}} Topic` }};
+          showToast(`Selected: ${{m.topic}}`);
+          startLecturetteFlow();
+        }};
+        resultsWrap.appendChild(item);
+      }});
+    }}
+
+    function startLecturetteFlow() {{
+      if (!lecSelectedTopic) lecSelectedTopic = lecCurrentCard ? lecCurrentCard.topics[0] : {{ topic: 'Cyber Warfare', tier: 1 }};
+      const prepChoice = parseInt(document.getElementById('lecPrepDuration').value, 10);
+
+      document.getElementById('lecSetupScreen').style.display = 'none';
+      document.getElementById('lecReviewScreen').style.display = 'none';
+
+      if (prepChoice === 0) {{
+        advanceToLecturetteDelivery();
+      }} else {{
+        document.getElementById('lecPrepScreen').style.display = 'block';
+        document.getElementById('lecPrepTopicTitle').textContent = lecSelectedTopic.topic;
+        lecPrepRemaining = prepChoice;
+        runLecturettePrepTimer();
+      }}
+    }}
+
+    function runLecturettePrepTimer() {{
+      clearInterval(lecPrepInterval);
+      updateLecturettePrepUI();
+
+      lecPrepInterval = setInterval(() => {{
+        lecPrepRemaining--;
+        updateLecturettePrepUI();
+
+        if (lecPrepRemaining <= 0) {{
+          clearInterval(lecPrepInterval);
+          advanceToLecturetteDelivery();
+        }}
+      }}, 1000);
+    }}
+
+    function updateLecturettePrepUI() {{
+      const m = Math.floor(lecPrepRemaining / 60);
+      const s = lecPrepRemaining % 60;
+      document.getElementById('lecPrepClockNum').textContent = `${{m}}:${{String(s).padStart(2, '0')}}`;
+      const circle = document.getElementById('lecPrepClockCircle');
+      const offset = 226 - (lecPrepRemaining / 180) * 226;
+      circle.style.strokeDashoffset = offset;
+    }}
+
+    function advanceToLecturetteDelivery() {{
+      clearInterval(lecPrepInterval);
+      document.getElementById('lecPrepScreen').style.display = 'none';
+      document.getElementById('lecDeliveryScreen').style.display = 'block';
+
+      document.getElementById('lecDeliveryTopicTitle').textContent = lecSelectedTopic.topic;
+      lecDeliveryRemaining = 180;
+      lecTranscribedSpeech = '';
+      document.getElementById('lecLiveTranscript').textContent = 'Listening... Speak clearly. Warning bell at 2:30.';
+
+      initLecturetteSpeechRec();
+
+      const mirrorOpt = document.getElementById('lecMirrorOption').value;
+      if (mirrorOpt === 'mirror_on') startWebcamMirror();
+
+      runLecturetteDeliveryTimer();
+    }}
+
+    function startWebcamMirror() {{
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {{
+        navigator.mediaDevices.getUserMedia({{ video: true, audio: false }})
+          .then(stream => {{
+            lecWebcamStream = stream;
+            const video = document.getElementById('lecWebcamVideo');
+            video.srcObject = stream;
+          }})
+          .catch(err => console.warn('Webcam permission not granted:', err));
+      }}
+    }}
+
+    function stopWebcamMirror() {{
+      if (lecWebcamStream) {{
+        lecWebcamStream.getTracks().forEach(t => t.stop());
+        lecWebcamStream = null;
+      }}
+    }}
+
+    function initLecturetteSpeechRec() {{
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {{
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        lecRecognition = new SpeechRec();
+        lecRecognition.continuous = true;
+        lecRecognition.interimResults = true;
+        lecRecognition.lang = 'en-IN';
+
+        lecRecognition.onresult = (event) => {{
+          let interim = '';
+          for (let i = event.resultIndex; i < event.results.length; ++i) {{
+            if (event.results[i].isFinal) {{
+              lecTranscribedSpeech += event.results[i][0].transcript.trim() + ' ';
+            }} else {{
+              interim += event.results[i][0].transcript;
+            }}
+          }}
+          document.getElementById('lecLiveTranscript').textContent = lecTranscribedSpeech + (interim ? ` (${{interim}}...)` : '');
+        }};
+
+        try {{ lecRecognition.start(); }} catch(e) {{}}
+      }}
+    }}
+
+    function runLecturetteDeliveryTimer() {{
+      clearInterval(lecDeliveryInterval);
+      updateLecturetteDeliveryUI();
+
+      lecDeliveryInterval = setInterval(() => {{
+        lecDeliveryRemaining--;
+        updateLecturetteDeliveryUI();
+
+        // 2:30 mark (30 seconds remaining)
+        if (lecDeliveryRemaining === 30) {{
+          playBellChime(1); // Single chime
+          document.getElementById('lecBellStatus').textContent = 'WARNING BELL RING: 30 seconds remaining!';
+          document.getElementById('lecBellStatus').style.color = 'var(--accent-alert)';
+        }}
+
+        // 3:00 mark (Time up)
+        if (lecDeliveryRemaining <= 0) {{
+          clearInterval(lecDeliveryInterval);
+          playBellChime(2); // Double chime
+          alert("Time is up! 3 Minutes elapsed for Lecturette.");
+          finishLecturette();
+        }}
+      }}, 1000);
+    }}
+
+    function updateLecturetteDeliveryUI() {{
+      const m = Math.floor(lecDeliveryRemaining / 60);
+      const s = lecDeliveryRemaining % 60;
+      document.getElementById('lecDeliveryClockNum').textContent = `${{m}}:${{String(s).padStart(2, '0')}}`;
+      const circle = document.getElementById('lecDeliveryClockCircle');
+      const offset = 226 - (lecDeliveryRemaining / 180) * 226;
+      circle.style.strokeDashoffset = offset;
+    }}
+
+    function playBellChime(count = 1) {{
+      for (let i = 0; i < count; i++) {{
+        setTimeout(() => {{
+          try {{
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc1 = ctx.createOscillator();
+            const osc2 = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            osc1.type = 'sine';
+            osc1.frequency.setValueAtTime(880, ctx.currentTime);
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(1760, ctx.currentTime);
+
+            gain.gain.setValueAtTime(0.35, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
+
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc1.start(); osc2.start();
+            osc1.stop(ctx.currentTime + 1.2);
+            osc2.stop(ctx.currentTime + 1.2);
+          }} catch(e) {{}}
+        }}, i * 400);
+      }}
+    }}
+
+    function abortLecturette() {{
+      if (confirm("Terminate Lecturette drill?")) {{
+        clearInterval(lecPrepInterval);
+        clearInterval(lecDeliveryInterval);
+        stopWebcamMirror();
+        if (lecRecognition) try {{ lecRecognition.stop(); }} catch(e) {{}}
+        resetLecturetteToSetup();
+      }}
+    }}
+
+    function finishLecturette() {{
+      clearInterval(lecDeliveryInterval);
+      stopWebcamMirror();
+      if (lecRecognition) try {{ lecRecognition.stop(); }} catch(e) {{}}
+
+      markLecturetteDone(lecSelectedTopic.topic);
+
+      document.getElementById('lecDeliveryScreen').style.display = 'none';
+      document.getElementById('lecReviewScreen').style.display = 'block';
+
+      document.getElementById('lecReviewTopic').textContent = lecSelectedTopic.topic;
+      document.getElementById('lecReviewSubtitle').textContent = `Delivered under 3-minute exam conditions.`;
+      document.getElementById('lecFinalTranscriptBox').textContent = lecTranscribedSpeech.trim() || '(Speech transcribed or delivered verbally. Use prompt below to generate model lecturette).';
+    }}
+
+    function copyLecturetteTranscript() {{
+      navigator.clipboard.writeText(lecTranscribedSpeech.trim() || 'No speech recorded').then(() => showToast("LECTURETTE TRANSCRIPT COPIED"));
+    }}
+
+    function copyLecturetteAiPrompt() {{
+      const prompt = buildLecturetteAiPrompt();
+      navigator.clipboard.writeText(prompt).then(() => showToast("GTO LECTURETTE PROMPT COPIED"));
+    }}
+
+    function downloadLecturetteAiDossier() {{
+      const prompt = buildLecturetteAiPrompt();
+      downloadTextFile(`Lecturette_Evaluation_${{lecSelectedTopic.topic.replace(/\\s+/g, '_')}}.txt`, prompt);
+    }}
+
+    function buildLecturetteAiPrompt() {{
+      let t = `Act as an expert Senior Services Selection Board Group Testing Officer (GTO) evaluating a candidate for the Indian Armed Forces in a Lecturette.\\n\\n`;
+      t += `TOPIC: "${{lecSelectedTopic.topic}}" [Tier: ${{lecSelectedTopic.tier}} - ${{lecSelectedTopic.tier_name || ''}}]\\n`;
+      t += `DELIVERY TIME: 3 Minutes (Standard DIPR format)\\n\\n`;
+      t += `CANDIDATE'S PREPARATION SCRATCHPAD NOTES:\\n${{document.getElementById('lecScratchpad').value || '(Mental outline without written notes)'}}\\n\\n`;
+      t += `CANDIDATE'S TRANSCRIBED SPEECH:\\n${{lecTranscribedSpeech.trim() || '(Delivered verbally in exam hall)'}}\\n\\n`;
+      t += `### GTO EVALUATION DIRECTIVES:\\n`;
+      t += `1. **Structural Coherence**: Did the speech follow a clear progression: Introduction (30s) ➔ Key Dimensions & Facts (90s) ➔ Challenges & Ground Realities (30s) ➔ Officer's Constructive Conclusion (30s)?\\n`;
+      t += `2. **Knowledge Depth & Facts**: Did the candidate present specific data, historical context, and geopolitical/national significance, or superficial commentary?\\n`;
+      t += `3. **Power of Expression**: Evaluate clarity, vocabulary, pace, and conviction.\\n`;
+      t += `4. **Model Officer Lecturette Speech**: Provide a complete, 3-minute, spoken-word military-grade model lecturette for this topic.\\n`;
+      t += `5. **GTO Verdict & Targeted Recommendations**.\\n`;
+      return t;
+    }}
+
+    function resetLecturetteToSetup() {{
+      document.getElementById('lecReviewScreen').style.display = 'none';
+      document.getElementById('lecSetupScreen').style.display = 'block';
+    }}
+
+    // ==============================================================
+    // 8. FULL MOCK BATTERY LAUNCHER
     // ==============================================================
     function launchFullMockBattery() {{
-      if (confirm("Commence Full Stage 2 Psychological Mock Test?\\n\\nSchedule:\\n1. 12 TAT Stories (approx 50 mins)\\n2. 60 WAT Words (15 mins)\\n3. 60 SRT Scenarios (30 mins)\\n4. 5 SDT Paragraphs (15 mins)")) {{
+      if (confirm("Commence Full Stage 2 Psychological & GTO Mock Test?\\n\\nSchedule:\\n1. 12 TAT Stories (approx 50 mins)\\n2. 60 WAT Words (15 mins)\\n3. 60 SRT Scenarios (30 mins)\\n4. 5 SDT Paragraphs (15 mins)\\n5. 15-Min Syndicate Group Discussion\\n6. 3-Min Lecturette Delivery")) {{
         document.querySelector('[data-tab="tab-tat"]').click();
         startTatTest();
       }}
     }}
 
     // ==============================================================
-    // 7. AI EVALUATION PROMPT GENERATORS & DOWNLOADERS
+    // 9. AI EVALUATION PROMPT GENERATORS & DOWNLOADERS
     // ==============================================================
-
     function generateWatPrompt(wordsList, responsesMap, label) {{
       let t = `Act as an expert Senior DIPR (Defence Institute of Psychological Research) Psychologist and Services Selection Board (SSB) Assessor evaluating a candidate for the Indian Armed Forces (Army, Navy, Air Force).\\n\\n`;
       t += `Task: Evaluate the candidate's spontaneous responses in the Word Association Test (${{label || 'WAT 60 Words'}}).\\n\\n`;
@@ -2834,8 +4032,8 @@ html += f'''            </optgroup>
       t += `4. SELF ASSESSMENT (STRENGTHS & WEAKNESSES):\\n${{p4 || '—'}}\\n\\n`;
       t += `5. FUTURE ASPIRATIONS & TRAITS WISH TO DEVELOP:\\n${{p5 || '—'}}\\n\\n`;
       t += `### PSYCHOLOGICAL EVALUATION CRITERIA:\\n`;
-      t += `1. **Triangulation Check**: Consistency across Parents, Teachers, Friends, and Self assessment. (Are there contradictions?)\\n`;
-      t += `2. **Authenticity vs Fake Pre-Coaching**: Are the weaknesses genuine and modifiable, or artificial clichés like 'I work too hard'?\\n`;
+      t += `1. **Triangulation Check**: Consistency across Parents, Teachers, Friends, and Self assessment.\\n`;
+      t += `2. **Authenticity vs Fake Pre-Coaching**: Are the weaknesses genuine and modifiable?\\n`;
       t += `3. **Interviewing Officer (IO) Correlation**: Likely trap questions the IO will ask based on these admissions.\\n`;
       t += `4. **Refined Officer-Grade SDT Version**.\\n`;
       return t;
@@ -2852,7 +4050,6 @@ html += f'''            </optgroup>
       document.body.removeChild(a);
     }}
 
-    // --- WAT Evaluation Actions ---
     function copyWatAiPrompt() {{
       const list = watWords.slice(0, Math.max(watIndex, 1));
       const prompt = generateWatPrompt(list, watResponses, watCurrentSetId ? `WAT Set ${{watCurrentSetId}}` : 'WAT Custom Set');
@@ -2865,7 +4062,6 @@ html += f'''            </optgroup>
       downloadTextFile(`WAT_Evaluation_Dossier_Set_${{watCurrentSetId || 'session'}}.txt`, prompt);
     }}
 
-    // --- TAT Evaluation Actions & ZIP Bundler ---
     function copyTatAiPrompt() {{
       const slides = tatSlides.slice(0, Math.max(tatIndex, 1));
       const prompt = generateTatPrompt(slides, tatStories, tatCurrentSetId ? `TAT Set ${{tatCurrentSetId}}` : 'TAT Custom Set');
@@ -2888,17 +4084,14 @@ html += f'''            </optgroup>
       }}
 
       try {{
-        if (typeof JSZip === 'undefined') {{
-          throw new Error("JSZip library initializing. Please retry in 2 seconds.");
-        }}
+        if (typeof JSZip === 'undefined') throw new Error("JSZip library initializing. Please retry in 2 seconds.");
 
         const zip = new JSZip();
         const folder = zip.folder(`SSB_TAT_Set_${{setId}}_Package`);
 
         let slidesToPack = [];
-        if (!customSetId && tatSlides.length > 0) {{
-          slidesToPack = tatSlides.slice(0, Math.max(tatIndex, 1));
-        }} else {{
+        if (!customSetId && tatSlides.length > 0) slidesToPack = tatSlides.slice(0, Math.max(tatIndex, 1));
+        else {{
           const target = TAT_SETS.find(s => s.id === setId) || TAT_SETS[0];
           slidesToPack = target.slides;
         }}
@@ -2942,7 +4135,6 @@ html += f'''            </optgroup>
       }}
     }}
 
-    // --- SRT Evaluation Actions ---
     function copySrtAiPrompt() {{
       const prompt = generateSrtPrompt(srtList, srtResponses, srtCurrentSetId ? `SRT Set ${{srtCurrentSetId}}` : 'SRT Custom Set');
       navigator.clipboard.writeText(prompt).then(() => showToast("SRT EVALUATION PROMPT COPIED"));
@@ -2953,7 +4145,6 @@ html += f'''            </optgroup>
       downloadTextFile(`SRT_Evaluation_Dossier_Set_${{srtCurrentSetId || 'session'}}.txt`, prompt);
     }}
 
-    // --- SDT Evaluation Actions ---
     function copySdtAiPrompt() {{
       const p1 = document.getElementById('sdt1').value;
       const p2 = document.getElementById('sdt2').value;
@@ -2974,7 +4165,7 @@ html += f'''            </optgroup>
       downloadTextFile(`SDT_Evaluation_Dossier.txt`, prompt);
     }}
 
-    // --- AI HUB ON-DEMAND GENERATOR ---
+    // ON-DEMAND AI HUB
     function updateHubOptions() {{
       const type = document.getElementById('hubSelectType').value;
       const sel = document.getElementById('hubSelectSet');
@@ -3010,6 +4201,22 @@ html += f'''            </optgroup>
         opt.textContent = 'Standard DIPR 5-Paragraph Self Description';
         sel.appendChild(opt);
         document.getElementById('btnHubDownload').textContent = 'Download SDT Framework & Prompt (.txt)';
+      }} else if (type === 'gd') {{
+        GD_TOPICS.forEach(sc => {{
+          const opt = document.createElement('option');
+          opt.value = sc.id;
+          opt.textContent = `${{sc.title}} [${{sc.category}}]`;
+          sel.appendChild(opt);
+        }});
+        document.getElementById('btnHubDownload').textContent = 'Download GD Scenario & GTO Prompt (.txt)';
+      }} else if (type === 'lecturette') {{
+        LECTURETTE_DATA.cards.forEach(c => {{
+          const opt = document.createElement('option');
+          opt.value = c.card_id;
+          opt.textContent = `${{c.title}}: ${{c.topics[0].topic}}...`;
+          sel.appendChild(opt);
+        }});
+        document.getElementById('btnHubDownload').textContent = 'Download Card Topics & GTO Prompt (.txt)';
       }}
     }}
 
@@ -3034,6 +4241,14 @@ html += f'''            </optgroup>
       }} else if (type === 'sdt') {{
         const prompt = generateSdtPrompt('', '', '', '', '');
         downloadTextFile(`SDT_Prompt_Template.txt`, prompt);
+      }} else if (type === 'gd') {{
+        const sc = GD_TOPICS.find(x => x.id === val) || GD_TOPICS[0];
+        let p = `Act as an expert Senior GTO evaluating a Group Discussion on: "${{sc.title}}"\\nLEADS:\\n1. ${{sc.leads[0]}}\\n2. ${{sc.leads[1]}}\\n3. ${{sc.leads[2]}}\\n\\n[Paste your discussion transcript or candidate arguments here]`;
+        downloadTextFile(`GD_Topic_${{val}}_Dossier.txt`, p);
+      }} else if (type === 'lecturette') {{
+        const card = LECTURETTE_DATA.cards.find(x => x.card_id === val) || LECTURETTE_DATA.cards[0];
+        let p = `Act as a Senior GTO evaluating a Lecturette presentation.\\nTOPICS:\\n1. ${{card.topics[0].topic}}\\n2. ${{card.topics[1].topic}}\\n3. ${{card.topics[2].topic}}\\n4. ${{card.topics[3].topic}}\\n\\n[Paste your speech transcript or delivery points here]`;
+        downloadTextFile(`Lecturette_Card_${{val}}_Dossier.txt`, p);
       }}
     }}
 
@@ -3062,12 +4277,18 @@ html += f'''            </optgroup>
       }} else if (type === 'sdt') {{
         const prompt = generateSdtPrompt('', '', '', '', '');
         navigator.clipboard.writeText(prompt).then(() => showToast("SDT PROMPT TEMPLATE COPIED"));
+      }} else if (type === 'gd') {{
+        const sc = GD_TOPICS.find(x => x.id === val) || GD_TOPICS[0];
+        let p = `Act as an expert Senior GTO evaluating a Group Discussion on: "${{sc.title}}"\\nLEADS:\\n1. ${{sc.leads[0]}}\\n2. ${{sc.leads[1]}}\\n3. ${{sc.leads[2]}}\\n\\n[Paste your discussion transcript or candidate arguments here]`;
+        navigator.clipboard.writeText(p).then(() => showToast(`GD TOPIC ${{val}} PROMPT COPIED`));
+      }} else if (type === 'lecturette') {{
+        const card = LECTURETTE_DATA.cards.find(x => x.card_id === val) || LECTURETTE_DATA.cards[0];
+        let p = `Act as a Senior GTO evaluating a Lecturette presentation.\\nTOPICS:\\n1. ${{card.topics[0].topic}}\\n2. ${{card.topics[1].topic}}\\n3. ${{card.topics[2].topic}}\\n4. ${{card.topics[3].topic}}\\n\\n[Paste your speech transcript or delivery points here]`;
+        navigator.clipboard.writeText(p).then(() => showToast(`LECTURETTE CARD ${{val}} PROMPT COPIED`));
       }}
     }}
 
-    // ==============================================================
     // UTILITIES
-    // ==============================================================
     function shuffle(arr) {{
       for (let i = arr.length - 1; i > 0; i--) {{
         const j = Math.floor(Math.random() * (i + 1));
@@ -3094,23 +4315,20 @@ html += f'''            </optgroup>
       }} catch (e) {{}}
     }}
 
-    // Theme toggle
-    let isLight = false;
     document.getElementById('btnToggleTheme').addEventListener('click', () => {{
-      isLight = !isLight;
-      document.body.classList.toggle('projector-hall', isLight);
+      const isLight = document.body.classList.toggle('projector-hall');
       document.getElementById('themeLabel').textContent = isLight ? 'Dark Hall' : 'Projector Hall';
     }});
 
-    // Fullscreen toggle
     document.getElementById('btnToggleFullscreen').addEventListener('click', () => {{
       if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {{}});
       else if (document.exitFullscreen) document.exitFullscreen();
     }});
 
-    // Init on load
+    // INIT ON LOAD
     generateOmrRows();
     loadProgress();
+    shuffleLecturetteCard();
   </script>
 </body>
 </html>
@@ -3119,4 +4337,4 @@ html += f'''            </optgroup>
 with open(os.path.join(out_dir, 'index.html'), 'w', encoding='utf-8') as f:
     f.write(html)
 
-print("Icons removed cleanly. Interface updated!")
+print("index.html compiled successfully with GD and Lecturette modules!")
