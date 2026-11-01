@@ -75,30 +75,64 @@
       font-size: 15px;
       line-height: 1.5;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      margin: 0;
+      padding: 0;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
       transition: background-color 0.25s ease, color 0.25s ease;
     }
 
-    /* TOP COMMAND CONSOLE */
-    .top-console {
-      background: var(--bg-surface);
-      border-bottom: 1px solid var(--border-subtle);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+    /* ==============================================================
+       APP LAYOUT & VERTICAL SIDEBAR NAVIGATION
+       ============================================================== */
+    .app-layout {
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+      align-items: stretch;
+      position: relative;
     }
 
-    .console-header {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0.75rem 1.5rem;
+    /* VERTICAL SIDEBAR OF TITLES */
+    .sidebar-nav {
+      width: 275px;
+      min-width: 275px;
+      max-width: 275px;
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border-subtle);
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      z-index: 120;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-subtle) transparent;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), margin-left 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .sidebar-nav::-webkit-scrollbar {
+      width: 4px;
+    }
+    .sidebar-nav::-webkit-scrollbar-thumb {
+      background: var(--border-subtle);
+      border-radius: 2px;
+    }
+
+    body.sidebar-collapsed .sidebar-nav {
+      margin-left: -275px;
+    }
+
+    /* SIDEBAR HEADER BRANDING */
+    .sidebar-header {
+      padding: 1.15rem 1.15rem 1rem 1.15rem;
+      border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
+      background: var(--bg-surface);
     }
 
     .brand-mark {
@@ -114,9 +148,9 @@
       color: #000;
       font-family: var(--font-tactical);
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       letter-spacing: 1px;
-      padding: 0.25rem 0.55rem;
+      padding: 0.25rem 0.5rem;
       border-radius: var(--radius-sm);
     }
 
@@ -127,17 +161,211 @@
 
     .title-group h1 {
       font-family: var(--font-tactical);
-      font-size: 1.35rem;
+      font-size: 1.22rem;
       font-weight: 700;
-      letter-spacing: 0.75px;
+      letter-spacing: 0.5px;
       line-height: 1.1;
       text-transform: uppercase;
     }
 
     .title-group span {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: var(--text-tertiary);
       letter-spacing: 0.5px;
+    }
+
+    /* VERTICAL NAVIGATION LIST OF TITLES */
+    .nav-vertical-menu {
+      flex: 1;
+      padding: 0.65rem 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .nav-section-title {
+      font-family: var(--font-tactical);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      padding: 0.75rem 0.65rem 0.25rem 0.65rem;
+      user-select: none;
+    }
+    .nav-section-title:first-child {
+      padding-top: 0.25rem;
+    }
+
+    .op-tab {
+      width: 100%;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-family: var(--font-tactical);
+      font-size: 0.92rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 0.58rem 0.75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      text-align: left;
+      white-space: nowrap;
+      transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+      position: relative;
+    }
+
+    .op-tab .tab-indicator {
+      width: 3px;
+      height: 16px;
+      border-radius: 2px;
+      background: transparent;
+      transition: background 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .op-tab .tab-label {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .op-tab:hover {
+      background: var(--bg-surface-elevated);
+      color: var(--text-primary);
+      border-color: var(--border-subtle);
+    }
+
+    .op-tab.active {
+      background: var(--accent-brass-subtle);
+      color: var(--accent-brass);
+      border-color: rgba(217, 119, 6, 0.3);
+      font-weight: 700;
+    }
+
+    .op-tab.active .tab-indicator {
+      background: var(--accent-brass);
+    }
+
+    .op-tab.intel-tab {
+      color: var(--accent-intel);
+    }
+
+    .op-tab.intel-tab:hover {
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+
+    .op-tab.intel-tab.active {
+      background: var(--accent-intel-subtle);
+      border-color: rgba(56, 189, 248, 0.35);
+    }
+
+    .op-tab.intel-tab.active .tab-indicator {
+      background: var(--accent-intel);
+    }
+
+    /* SIDEBAR FOOTER */
+    .sidebar-footer {
+      padding: 0.85rem 1.15rem;
+      border-top: 1px solid var(--border-subtle);
+      background: var(--bg-surface);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-status {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
+      color: var(--text-tertiary);
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar-status .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-ready);
+      box-shadow: 0 0 6px var(--accent-ready);
+    }
+
+    /* MAIN VIEWPORT */
+    .main-viewport {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background: var(--bg-base);
+    }
+
+    /* VIEWPORT TOP CONSOLE HEADER */
+    .viewport-header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0.65rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .viewport-left {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .sidebar-toggle-btn {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      line-height: 1;
+      transition: all 0.15s ease;
+    }
+    .sidebar-toggle-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--accent-brass);
+    }
+
+    .current-module-tracker {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: var(--font-tactical);
+      letter-spacing: 0.5px;
+    }
+
+    .current-module-prefix {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .current-module-name {
+      font-size: 1.05rem;
+      color: var(--text-primary);
+      font-weight: 700;
+      text-transform: uppercase;
     }
 
     .console-actions {
@@ -153,7 +381,7 @@
       font-family: var(--font-ui);
       font-size: 0.82rem;
       font-weight: 600;
-      padding: 0.45rem 0.85rem;
+      padding: 0.42rem 0.8rem;
       border-radius: var(--radius-md);
       cursor: pointer;
       display: inline-flex;
@@ -167,57 +395,44 @@
       border-color: var(--text-tertiary);
     }
 
-    /* OPERATIONAL NAVIGATION TABS */
-    .operational-nav {
-      background: var(--bg-base);
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .nav-track {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 1.5rem;
-      display: flex;
-      gap: 0.25rem;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .nav-track::-webkit-scrollbar {
+    /* MOBILE / RESPONSIVE DRAWER */
+    .sidebar-backdrop {
       display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 110;
+      opacity: 0;
+      transition: opacity 0.25s ease;
     }
 
-    .op-tab {
-      background: transparent;
-      border: none;
-      border-bottom: 2px solid transparent;
-      color: var(--text-secondary);
-      font-family: var(--font-tactical);
-      font-size: 0.95rem;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      padding: 0.75rem 0.9rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      white-space: nowrap;
-      transition: color 0.15s ease, border-color 0.15s ease;
-    }
+    @media (max-width: 992px) {
+      .sidebar-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        transform: translateX(-100%);
+        margin-left: 0 !important;
+        box-shadow: 4px 0 24px rgba(0,0,0,0.5);
+      }
 
-    .op-tab:hover {
-      color: var(--text-primary);
-    }
+      .sidebar-nav.open {
+        transform: translateX(0);
+      }
 
-    .op-tab.active {
-      color: var(--accent-brass);
-      border-bottom-color: var(--accent-brass);
-    }
+      .sidebar-backdrop.active {
+        display: block;
+        opacity: 1;
+      }
 
-    .op-tab.intel-tab {
-      color: var(--accent-intel);
-    }
-    .op-tab.intel-tab.active {
-      border-bottom-color: var(--accent-intel);
+      .viewport-header {
+        padding: 0.65rem 1rem;
+      }
+
+      main {
+        padding: 1rem 0.75rem;
+      }
     }
 
     /* MAIN VIEWPORT & WORKSPACE */
@@ -1050,45 +1265,108 @@
   <!-- TOAST NOTIFICATION -->
   <div id="tacticalToast">DISPATCH COPIED TO CLIPBOARD</div>
 
-  <!-- TOP COMMAND CONSOLE -->
-  <header class="top-console">
-    <div class="console-header">
-      <div class="brand-mark">
-        <span class="insignia">DIPR</span>
-        <div class="title-group">
-          <h1>SSB Master Suite</h1>
-          <span>Official Psychology, GTO & Officer Intelligence Rating Simulator</span>
+  <div class="app-layout">
+    <!-- VERTICAL SIDEBAR NAVIGATION OF TITLES -->
+    <aside class="sidebar-nav" id="sidebarNav">
+      <div class="sidebar-header">
+        <div class="brand-mark">
+          <span class="insignia">DIPR</span>
+          <div class="title-group">
+            <h1>SSB Master Suite</h1>
+            <span>Psychology &amp; GTO Console</span>
+          </div>
         </div>
       </div>
-      <div class="console-actions">
-        <button class="console-btn" id="btnToggleTheme" title="Toggle Daylight Projector / Dark Hall">
-          <span id="themeLabel">Projector Hall</span>
-        </button>
-        <button class="console-btn" id="btnToggleFullscreen" title="Fullscreen Mode">
-          Fullscreen
-        </button>
-      </div>
-    </div>
 
-    <!-- OPERATIONAL NAVIGATION TABS -->
-    <nav class="operational-nav">
-      <div class="nav-track">
-        <button class="op-tab active" data-tab="tab-progress">Mission Mastery</button>
-        <button class="op-tab" data-tab="tab-wat">WAT (60 Words)</button>
-        <button class="op-tab" data-tab="tab-tat">TAT (12 Slides)</button>
-        <button class="op-tab" data-tab="tab-srt">SRT (60 Scenarios)</button>
-        <button class="op-tab" data-tab="tab-sdt">SDT (Self Description)</button>
-        <button class="op-tab" data-tab="tab-oir">OIR (OMR Console)</button>
-        <button class="op-tab" data-tab="tab-gd">Group Discussion (GD)</button>
-        <button class="op-tab" data-tab="tab-lecturette">Lecturette (250+ Topics)</button>
-        <button class="op-tab" data-tab="tab-fullmock">Full Mock Battery</button>
-        <button class="op-tab intel-tab" data-tab="tab-ai-assessor">AI Evaluation Dispatch</button>
-      </div>
-    </nav>
-  </header>
+      <!-- VERTICAL NAVIGATION TRACK -->
+      <nav class="nav-vertical-menu" aria-label="Testing Modules">
+        <div class="nav-section-title">COMMAND &amp; PERFORMANCE</div>
+        <button class="op-tab active" data-tab="tab-progress">
+          <span class="tab-indicator"></span>
+          <span class="tab-label">Mission Mastery</span>
+        </button>
 
-  <!-- MAIN WORKSPACE -->
-  <main>
+        <div class="nav-section-title">STAGE I (SCREENING)</div>
+        <button class="op-tab" data-tab="tab-oir">
+          <span class="tab-indicator"></span>
+          <span class="tab-label">OIR (OMR Console)</span>
+        </button>
+
+        <div class="nav-section-title">STAGE II (PSYCHOLOGICAL BATTERY)</div>
+        <button class="op-tab" data-tab="tab-wat">
+          <span class="tab-indicator"></span>
+          <span class="tab-label">WAT (60 Words)</span>
+        </button>
+        <button class="op-tab" data-tab="tab-tat">
+          <span class="tab-indicator"></span>
+          <span class="tab-label">TAT (12 Slides)</span>
+        </button>
+        <button class="op-tab" data-tab="tab-srt">
+          <span class="tab-indicator"></span>
+          <span class="tab-label">SRT (60 Scenarios)</span>
+        </button>
+        <button class="op-tab" data-tab="tab-sdt">
+          <span class="tab-indicator"></span>
+          <span class="tab-label">SDT (Self Description)</span>
+        </button>
+
+        <div class="nav-section-title">STAGE II (GTO VERBAL ARENA)</div>
+        <button class="op-tab" data-tab="tab-gd">
+          <span class="tab-indicator"></span>
+          <span class="tab-label">Group Discussion (GD)</span>
+        </button>
+        <button class="op-tab" data-tab="tab-lecturette">
+          <span class="tab-indicator"></span>
+          <span class="tab-label">Lecturette (250+ Topics)</span>
+        </button>
+
+        <div class="nav-section-title">SIMULATION &amp; EVALUATION</div>
+        <button class="op-tab" data-tab="tab-fullmock">
+          <span class="tab-indicator"></span>
+          <span class="tab-label">Full Mock Battery</span>
+        </button>
+        <button class="op-tab intel-tab" data-tab="tab-ai-assessor">
+          <span class="tab-indicator"></span>
+          <span class="tab-label">AI Evaluation Dispatch</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-status">
+          <span class="status-dot"></span>
+          <span>STANDALONE CLIENT READY</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- BACKDROP FOR MOBILE DRAWER -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- MAIN VIEWPORT -->
+    <div class="main-viewport">
+      <!-- VIEWPORT TOP BAR -->
+      <header class="viewport-header">
+        <div class="viewport-left">
+          <button class="sidebar-toggle-btn" id="btnToggleSidebar" title="Toggle Navigation Sidebar">
+            ☰
+          </button>
+          <div class="current-module-tracker">
+            <span class="current-module-prefix">MODULE /</span>
+            <span class="current-module-name" id="currentModuleLabel">Mission Mastery</span>
+          </div>
+        </div>
+        <div class="console-actions">
+          <button class="console-btn" id="btnToggleTheme" title="Toggle Daylight Projector / Dark Hall">
+            <span id="themeLabel">Projector Hall</span>
+          </button>
+          <button class="console-btn" id="btnToggleFullscreen" title="Fullscreen Mode">
+            Fullscreen
+          </button>
+        </div>
+      </header>
+
+      <!-- MAIN WORKSPACE -->
+      <main>
 
     <!-- ==============================================================
          0. MISSION MASTERY (DO NOT REPEAT ENGINE)
@@ -2320,7 +2598,9 @@
       </div>
     </section>
 
-  </main>
+      </main>
+    </div><!-- /.main-viewport -->
+  </div><!-- /.app-layout -->
 
   <script>
     // DATA REPOSITORIES
@@ -2338,9 +2618,19 @@
       setTimeout(() => t.classList.remove('visible'), 2200);
     }
 
-    // NAVIGATION
+    // NAVIGATION & VERTICAL SIDEBAR
     const tabs = document.querySelectorAll('.op-tab');
     const modules = document.querySelectorAll('.workspace-module');
+    const sidebarNav = document.getElementById('sidebarNav');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const btnToggleSidebar = document.getElementById('btnToggleSidebar');
+    const currentModuleLabel = document.getElementById('currentModuleLabel');
+
+    function updateActiveModuleLabel(tab) {
+      if (!currentModuleLabel || !tab) return;
+      const labelSpan = tab.querySelector('.tab-label');
+      currentModuleLabel.textContent = labelSpan ? labelSpan.textContent.trim() : tab.textContent.trim();
+    }
 
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
@@ -2349,10 +2639,39 @@
 
         tab.classList.add('active');
         const targetId = tab.getAttribute('data-tab');
-        document.getElementById(targetId).classList.add('active');
+        const targetModule = document.getElementById(targetId);
+        if (targetModule) {
+          targetModule.classList.add('active');
+        }
+        updateActiveModuleLabel(tab);
+
+        // Close mobile drawer if open
+        if (window.innerWidth <= 992 && sidebarNav) {
+          sidebarNav.classList.remove('open');
+          if (sidebarBackdrop) sidebarBackdrop.classList.remove('active');
+        }
+
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     });
+
+    if (btnToggleSidebar) {
+      btnToggleSidebar.addEventListener('click', () => {
+        if (window.innerWidth <= 992) {
+          const isOpen = sidebarNav.classList.toggle('open');
+          if (sidebarBackdrop) sidebarBackdrop.classList.toggle('active', isOpen);
+        } else {
+          document.body.classList.toggle('sidebar-collapsed');
+        }
+      });
+    }
+
+    if (sidebarBackdrop) {
+      sidebarBackdrop.addEventListener('click', () => {
+        if (sidebarNav) sidebarNav.classList.remove('open');
+        sidebarBackdrop.classList.remove('active');
+      });
+    }
 
     // PROGRESS TRACKER
     const STORAGE_KEY = 'ssb_master_progress';
@@ -4290,6 +4609,7 @@
     });
 
     // INIT ON LOAD
+    updateActiveModuleLabel(document.querySelector('.op-tab.active'));
     generateOmrRows();
     loadProgress();
     shuffleLecturetteCard();
