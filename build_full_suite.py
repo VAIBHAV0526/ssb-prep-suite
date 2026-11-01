@@ -1,0 +1,2420 @@
+import json, os
+
+out_dir = r'C:\Users\Singh\.gemini\antigravity\scratch\ssb-wat-simulator'
+
+# Load WAT
+with open(os.path.join(out_dir, 'wat_sets.json'), 'r', encoding='utf-8') as f:
+    wat_sets_data = json.load(f)
+
+wat_sets = []
+all_wat_words = []
+for idx, s in enumerate(wat_sets_data):
+    words = [item['word'].upper() for item in s]
+    wat_sets.append({
+        'id': idx + 1,
+        'title': f'Set {idx + 1}',
+        'count': len(words),
+        'preview': f"{words[0]} ... {words[-1]}",
+        'words': words
+    })
+    all_wat_words.extend(words)
+
+# Load SRT
+with open(os.path.join(out_dir, 'srt_data.json'), 'r', encoding='utf-8') as f:
+    srt_sets = json.load(f)
+
+# Build TAT Sets from 137 images
+total_tat_images = 137
+tat_sets = []
+pics_per_set = 11
+num_full_sets = total_tat_images // pics_per_set
+
+for s_idx in range(num_full_sets):
+    start = s_idx * pics_per_set + 1
+    end = start + pics_per_set - 1
+    slides = []
+    for img_idx in range(start, end + 1):
+        slides.append({
+            'num': len(slides) + 1,
+            'type': 'image',
+            'src': f'tat_images/tat_{img_idx:03d}.jpg',
+            'label': f'Picture {len(slides) + 1}'
+        })
+    slides.append({
+        'num': 12,
+        'type': 'blank',
+        'src': '',
+        'label': 'Slide 12 — BLANK SLIDE (Own Story)'
+    })
+    tat_sets.append({
+        'id': s_idx + 1,
+        'title': f'TAT Set {s_idx + 1}',
+        'desc': f'11 Pictures (tat_{start:03d} to tat_{end:03d}) + 1 Blank Slide',
+        'slides': slides
+    })
+
+wat_sets_json = json.dumps(wat_sets)
+all_wat_words_json = json.dumps(all_wat_words)
+srt_sets_json = json.dumps(srt_sets)
+tat_sets_json = json.dumps(tat_sets)
+
+html = f'''<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SSB Master Suite — Complete DIPR Psychology & OIR Testing Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {{
+      --bg-primary: #0a0f1d;
+      --bg-card: #111a2e;
+      --bg-card-border: #1e293b;
+      --accent-gold: #f59e0b;
+      --accent-gold-glow: rgba(245, 158, 11, 0.25);
+      --accent-blue: #38bdf8;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --font-display: 'Cinzel', serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }}
+
+    body.dipr-projector {{
+      --bg-primary: #f1f5f9;
+      --bg-card: #ffffff;
+      --bg-card-border: #cbd5e1;
+      --accent-gold: #b45309;
+      --accent-gold-glow: rgba(180, 83, 9, 0.15);
+      --accent-blue: #0284c7;
+      --accent-green: #059669;
+      --accent-red: #dc2626;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+    }}
+
+    * {{
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }}
+
+    body {{
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.25s ease, color 0.25s ease;
+      overflow-x: hidden;
+    }}
+
+    /* Global Header */
+    header {{
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid var(--bg-card-border);
+      background: rgba(17, 26, 46, 0.75);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }}
+    body.dipr-projector header {{
+      background: rgba(255, 255, 255, 0.9);
+    }}
+
+    .header-top {{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }}
+
+    .brand {{
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }}
+
+    .brand-badge {{
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #000;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      letter-spacing: 1px;
+    }}
+
+    .brand h1 {{
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      letter-spacing: 1px;
+    }}
+
+    .header-actions {{
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }}
+
+    .btn-secondary {{
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      color: var(--text-main);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }}
+    .btn-secondary:hover {{
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+    }}
+
+    /* Navigation Tabs */
+    nav.sub-nav {{
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.5rem 2rem;
+      overflow-x: auto;
+      background: rgba(0, 0, 0, 0.15);
+    }}
+
+    .nav-tab {{
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 0.5rem 1.15rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }}
+    .nav-tab:hover {{
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+    }}
+    .nav-tab.active {{
+      background: var(--bg-card);
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+    }}
+
+    /* Main Container */
+    main {{
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+    }}
+
+    .module-container {{
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+    }}
+    .module-container.active {{
+      display: flex;
+    }}
+
+    .card-box {{
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 12px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 780px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }}
+
+    .section-title {{
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+      text-align: center;
+    }}
+
+    .section-subtitle {{
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }}
+
+    .info-banner {{
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }}
+    .info-banner strong {{
+      color: var(--accent-blue);
+    }}
+
+    .form-group {{
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }}
+
+    .form-group label {{
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }}
+
+    select, input[type="number"], input[type="text"] {{
+      background: var(--bg-primary);
+      border: 1px solid var(--bg-card-border);
+      color: var(--text-main);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }}
+    select:focus, input[type="number"]:focus, input[type="text"]:focus {{
+      border-color: var(--accent-gold);
+    }}
+
+    .grid-2 {{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
+    }}
+
+    .mode-selector {{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }}
+
+    .mode-option {{
+      border: 1px solid var(--bg-card-border);
+      border-radius: 8px;
+      padding: 1rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: all 0.2s ease;
+      background: var(--bg-primary);
+    }}
+    .mode-option.active {{
+      border-color: var(--accent-gold);
+      background: var(--accent-gold-glow);
+    }}
+    .mode-option strong {{
+      font-size: 0.95rem;
+    }}
+    .mode-option span {{
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }}
+
+    .btn-start {{
+      width: 100%;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0b1320;
+      font-weight: 800;
+      font-size: 1.15rem;
+      padding: 1rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+      transition: transform 0.15s, box-shadow 0.15s;
+      letter-spacing: 0.5px;
+    }}
+    .btn-start:hover {{
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+    }}
+
+    /* Circular Timer */
+    .timer-ring-container {{
+      position: relative;
+      width: 80px;
+      height: 80px;
+    }}
+    .timer-ring-svg {{
+      transform: rotate(-90deg);
+      width: 80px;
+      height: 80px;
+    }}
+    .timer-ring-bg {{
+      fill: none;
+      stroke: var(--bg-card-border);
+      stroke-width: 6;
+    }}
+    .timer-ring-progress {{
+      fill: none;
+      stroke: var(--accent-gold);
+      stroke-width: 6;
+      stroke-linecap: round;
+      stroke-dasharray: 226.2;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 0.1s linear, stroke 0.3s ease;
+    }}
+    .timer-number {{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: var(--font-mono);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }}
+
+    /* TAT */
+    .tat-display-card {{
+      background: var(--bg-card);
+      border: 2px solid var(--bg-card-border);
+      border-radius: 16px;
+      width: 100%;
+      min-height: 520px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.4);
+    }}
+
+    .tat-image-container {{
+      width: 100%;
+      max-height: 520px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }}
+
+    .tat-image-container img {{
+      max-width: 100%;
+      max-height: 500px;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    }}
+
+    .tat-blank-slide {{
+      width: 100%;
+      height: 440px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+      color: #fff;
+      border-radius: 8px;
+      text-align: center;
+      padding: 2rem;
+    }}
+    body.dipr-projector .tat-blank-slide {{
+      background: #fff;
+      color: #000;
+      border: 2px dashed #94a3b8;
+    }}
+
+    .tat-phase-badge {{
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }}
+    .phase-viewing {{
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--accent-gold);
+      border: 1px solid var(--accent-gold);
+    }}
+    .phase-writing {{
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--accent-green);
+      border: 1px solid var(--accent-green);
+    }}
+
+    /* SRT */
+    .srt-booklet {{
+      width: 100%;
+      max-height: 65vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      padding-right: 0.5rem;
+    }}
+
+    .srt-item {{
+      background: var(--bg-primary);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: border-color 0.2s;
+    }}
+    .srt-item:focus-within {{
+      border-color: var(--accent-gold);
+    }}
+
+    .srt-prompt {{
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.5;
+    }}
+
+    .srt-input {{
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      color: var(--text-main);
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+    }}
+
+    /* SDT */
+    .sdt-editor-box {{
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+    }}
+
+    .sdt-card {{
+      background: var(--bg-primary);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 8px;
+      padding: 1.5rem;
+    }}
+
+    .sdt-label {{
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      margin-bottom: 0.25rem;
+    }}
+
+    .sdt-help {{
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }}
+
+    .sdt-textarea {{
+      width: 100%;
+      height: 120px;
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      color: var(--text-main);
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-family: var(--font-body);
+      outline: none;
+      resize: vertical;
+    }}
+
+    /* OIR */
+    .oir-workspace {{
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 1.5rem;
+      width: 100%;
+      height: calc(100vh - 160px);
+    }}
+
+    .oir-pdf-viewer {{
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }}
+
+    .oir-omr-pane {{
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }}
+
+    .omr-grid-container {{
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }}
+
+    .omr-row {{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0.75rem;
+      background: var(--bg-primary);
+      border-radius: 6px;
+      border: 1px solid var(--bg-card-border);
+    }}
+
+    .omr-q-num {{
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--text-muted);
+      width: 35px;
+    }}
+
+    .omr-bubbles {{
+      display: flex;
+      gap: 0.5rem;
+    }}
+
+    .omr-bubble {{
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--bg-card-border);
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }}
+    .omr-bubble:hover {{
+      border-color: var(--accent-gold);
+    }}
+    .omr-bubble.selected {{
+      background: var(--accent-gold);
+      border-color: var(--accent-gold);
+      color: #000;
+      transform: scale(1.05);
+    }}
+
+    /* PROGRESS TRACKER DASHBOARD */
+    .progress-stats-grid {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      width: 100%;
+      margin-bottom: 2rem;
+    }}
+
+    .stat-card {{
+      background: var(--bg-primary);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }}
+
+    .stat-title {{
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }}
+
+    .stat-value {{
+      font-size: 1.8rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: var(--text-main);
+    }}
+
+    .stat-bar-bg {{
+      width: 100%;
+      height: 6px;
+      background: var(--bg-card-border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 0.4rem;
+    }}
+
+    .stat-bar-fill {{
+      height: 100%;
+      background: var(--accent-gold);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }}
+
+    .set-pills-wrap {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }}
+
+    .set-pill {{
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid var(--bg-card-border);
+      background: var(--bg-primary);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s ease;
+    }}
+    .set-pill:hover {{
+      border-color: var(--accent-gold);
+      color: var(--text-main);
+    }}
+    .set-pill.completed {{
+      border-color: var(--accent-green);
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent-green);
+    }}
+  </style>
+</head>
+<body>
+
+  <!-- GLOBAL HEADER -->
+  <header>
+    <div class="header-top">
+      <div class="brand">
+        <span class="brand-badge">DIPR</span>
+        <h1>SSB MASTER SUITE</h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn-secondary" id="btnToggleTheme">
+          <span id="themeIcon">☀️</span> <span id="themeLabel">Projector Mode</span>
+        </button>
+        <button class="btn-secondary" id="btnToggleFullscreen">
+          ⛶ <span>Fullscreen</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- SUB NAVIGATION / TEST SELECTOR -->
+    <nav class="sub-nav">
+      <button class="nav-tab active" data-tab="tab-progress" style="color: var(--accent-gold); border-color: rgba(245, 158, 11, 0.4);">
+        📈 My Progress & Mastery Tracker
+      </button>
+      <button class="nav-tab" data-tab="tab-wat">⚡ WAT (60 Words)</button>
+      <button class="nav-tab" data-tab="tab-tat">🖼️ TAT (12 Pictures)</button>
+      <button class="nav-tab" data-tab="tab-srt">📝 SRT (60 Situations)</button>
+      <button class="nav-tab" data-tab="tab-sdt">👤 SDT (Self Description)</button>
+      <button class="nav-tab" data-tab="tab-oir">📊 OIR (PDF + OMR Sheet)</button>
+      <button class="nav-tab" data-tab="tab-fullmock">🎯 Full Mock Battery</button>
+    </nav>
+  </header>
+
+  <!-- MAIN VIEWPORT -->
+  <main>
+
+    <!-- ==============================================================
+         0. PROGRESS & PERFORMANCE TRACKER (DO NOT REPEAT ENGINE)
+         ============================================================== -->
+    <section class="module-container active" id="tab-progress">
+      <div class="card-box" style="max-width: 1040px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--bg-card-border); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+          <div>
+            <h2 class="section-title" style="text-align: left; margin: 0;">Performance & Preparation Tracker</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">
+              Track completed sets, avoid unintentional repeats, and finish your target before your SSB reporting date.
+            </p>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn-secondary" onclick="exportProgressJSON()">📥 Backup Progress</button>
+            <input type="file" id="importProgressInput" accept=".json" style="display: none;">
+            <button class="btn-secondary" onclick="document.getElementById('importProgressInput').click()">📤 Restore Progress</button>
+          </div>
+        </div>
+
+        <!-- STATS OVERVIEW -->
+        <div class="progress-stats-grid">
+          <div class="stat-card">
+            <span class="stat-title">WAT Mastery (21 Sets)</span>
+            <span class="stat-value" id="progWatVal">0 / 21</span>
+            <div class="stat-bar-bg"><div class="stat-bar-fill" id="progWatBar" style="width: 0%;"></div></div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-title">TAT Mastery (12 Sets)</span>
+            <span class="stat-value" id="progTatVal">0 / 12</span>
+            <div class="stat-bar-bg"><div class="stat-bar-fill" id="progTatBar" style="width: 0%; background: var(--accent-blue);"></div></div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-title">SRT Mastery (2 Sets)</span>
+            <span class="stat-value" id="progSrtVal">0 / 2</span>
+            <div class="stat-bar-bg"><div class="stat-bar-fill" id="progSrtBar" style="width: 0%; background: var(--accent-green);"></div></div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-title">Total Sessions Logged</span>
+            <span class="stat-value" id="progTotalSessions">0</span>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Practiced without repeats</span>
+          </div>
+        </div>
+
+        <!-- SMART NEXT UNATTEMPTED RECOMMENDATION -->
+        <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 1.25rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <strong style="color: var(--accent-gold); font-size: 1.05rem;">🎯 Next Recommended Unattempted Drill:</strong>
+            <div style="color: var(--text-main); font-size: 0.95rem; margin-top: 0.25rem;" id="nextRecText">
+              Loading recommendations...
+            </div>
+          </div>
+          <button class="btn-start" style="width: auto; padding: 0.65rem 1.75rem; font-size: 0.9rem;" id="btnLaunchNextRec">
+            Launch Next Set ❯
+          </button>
+        </div>
+
+        <!-- SET COMPLETION BREAKDOWN -->
+        <div style="display: flex; flex-direction: column; gap: 1.75rem;">
+          
+          <div>
+            <strong style="color: var(--accent-gold); font-size: 1rem;">⚡ Word Association Test Sets (WAT 1 to 21)</strong>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem;">Click any set to launch or view status:</p>
+            <div class="set-pills-wrap" id="pillsWat"></div>
+          </div>
+
+          <div>
+            <strong style="color: var(--accent-blue); font-size: 1rem;">🖼️ Thematic Apperception Test Sets (TAT 1 to 12)</strong>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem;">11 Pictures + 1 Blank Slide each:</p>
+            <div class="set-pills-wrap" id="pillsTat"></div>
+          </div>
+
+          <div>
+            <strong style="color: var(--accent-green); font-size: 1rem;">📝 Situation Reaction Test Sets (SRT 1 and 2)</strong>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem;">60 Situations each in 30 minutes:</p>
+            <div class="set-pills-wrap" id="pillsSrt"></div>
+          </div>
+
+        </div>
+
+        <!-- RECENT ACTIVITY LOG -->
+        <div style="margin-top: 2.5rem; border-top: 1px solid var(--bg-card-border); padding-top: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <strong style="font-size: 1.05rem;">📜 Practice History & Log</strong>
+            <button class="btn-secondary" style="font-size: 0.8rem; padding: 0.3rem 0.6rem; color: var(--accent-red);" onclick="clearPracticeHistory()">Clear History</button>
+          </div>
+          <div style="max-height: 280px; overflow-y: auto; border: 1px solid var(--bg-card-border); border-radius: 8px;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+              <thead>
+                <tr style="background: var(--bg-primary); color: var(--accent-gold); text-transform: uppercase;">
+                  <th style="padding: 0.6rem 1rem;">Timestamp</th>
+                  <th style="padding: 0.6rem 1rem;">Module</th>
+                  <th style="padding: 0.6rem 1rem;">Set / Item</th>
+                  <th style="padding: 0.6rem 1rem;">Result</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==============================================================
+         1. WAT MODULE
+         ============================================================== -->
+    <section class="module-container" id="tab-wat">
+      
+      <!-- WAT SETUP -->
+      <div class="card-box" id="watSetupScreen">
+        <h2 class="section-title">Word Association Test (WAT)</h2>
+        <p class="section-subtitle">
+          60 Words flashed for 15 seconds each. Instant spontaneous positive thought without preaching or clichés.
+        </p>
+
+        <div class="info-banner">
+          <div>📄 Loaded: <strong>21 Sets ({len(all_wat_words)} Words)</strong></div>
+          <div>Interval: <strong>15 Seconds / Word</strong></div>
+        </div>
+
+        <div class="form-group">
+          <label>Select Practice Set</label>
+          <select id="watSelectSet">
+            <option value="next_unattempted" selected>🎯 Next Unattempted Set (Recommended - No Repeat)</option>
+            <option value="random_60">🎲 Random 60 Words (Simulate Full Board Test)</option>
+            <option value="random_30">⚡ Quick Practice (30 Random Words)</option>
+            <optgroup label="── OFFICIAL DIPR SETS (60 Words Each) ──" id="watOptGroupSets">
+'''
+
+for s in wat_sets:
+    html += f'              <option value="set_{s["id"]}">Set {s["id"]} ({s["count"]} Words: {s["preview"]})</option>\n'
+
+html += f'''            </optgroup>
+            <optgroup label="── OTHER ──">
+              <option value="all">🔥 Marathon (All {len(all_wat_words)} Words)</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Timing Pace</label>
+            <select id="watSelectDuration">
+              <option value="15" selected>15 Seconds (Official DIPR Standard)</option>
+              <option value="12">12 Seconds (Pressure Drill)</option>
+              <option value="10">10 Seconds (Ultra Speed)</option>
+              <option value="18">18 Seconds (Beginner Pace)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Order</label>
+            <select id="watSelectOrder">
+              <option value="sequential" selected>Original Order</option>
+              <option value="shuffle">Shuffled (Randomized)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Practice Mode</label>
+          <div class="mode-selector">
+            <div class="mode-option active" id="watModePaper" onclick="setWatMode('paper')">
+              <strong>📝 Pen & Paper (Recommended)</strong>
+              <span>Exact SSB exam condition. Write in your notebook as words flash.</span>
+            </div>
+            <div class="mode-option" id="watModeTyping" onclick="setWatMode('typing')">
+              <strong>⌨️ Digital Typing</strong>
+              <span>Type your spontaneous responses directly on screen.</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-start" onclick="startWatTest()">START WAT SESSION</button>
+      </div>
+
+      <!-- WAT ACTIVE TEST -->
+      <div class="card-box" id="watActiveScreen" style="display: none; max-width: 900px; padding: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 2rem;">
+          <div style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-gold); font-size: 1.1rem;" id="watProgressTag">
+            WORD 1 / 60
+          </div>
+          <div class="timer-ring-container">
+            <svg class="timer-ring-svg" viewBox="0 0 80 80">
+              <circle class="timer-ring-bg" cx="40" cy="40" r="36" />
+              <circle class="timer-ring-progress" id="watTimerCircle" cx="40" cy="40" r="36" />
+            </svg>
+            <div class="timer-number" id="watTimerNum">15</div>
+          </div>
+        </div>
+
+        <div style="background: var(--bg-primary); border: 2px solid var(--bg-card-border); border-radius: 16px; min-height: 240px; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; position: relative; overflow: hidden; padding: 2rem;">
+          <div style="font-size: clamp(2.8rem, 7vw, 5rem); font-weight: 800; letter-spacing: 3px; text-transform: uppercase;" id="watFlashedWord">
+            LEADER
+          </div>
+          <div style="position: absolute; bottom: 0; left: 0; height: 6px; width: 100%; background: rgba(255,255,255,0.05);">
+            <div style="height: 100%; width: 100%; background: linear-gradient(90deg, var(--accent-gold), #ef4444); transition: width 0.1s linear;" id="watLinearBar"></div>
+          </div>
+        </div>
+
+        <div id="watTypingArea" style="width: 100%; margin-top: 1.5rem; display: none;">
+          <input type="text" id="watInput" style="width: 100%; padding: 1rem; border-radius: 8px; font-size: 1.1rem; background: var(--bg-primary); border: 1px solid var(--bg-card-border); color: var(--text-main);" placeholder="Write your spontaneous association here..." autocomplete="off">
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem; justify-content: center;">
+          <button class="btn-secondary" onclick="toggleWatPause()"><span id="watPauseIcon">⏸</span> <span id="watPauseLabel">Pause</span></button>
+          <button class="btn-secondary" onclick="nextWatWord()">Next Word ❯</button>
+          <button class="btn-secondary" style="color: var(--accent-red);" onclick="abortWatTest()">✕ End Test</button>
+        </div>
+      </div>
+
+      <!-- WAT REVIEW -->
+      <div class="card-box" id="watReviewScreen" style="display: none; max-width: 900px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <div>
+            <h2>WAT Test Completed!</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Review words and associations.</p>
+          </div>
+          <button class="btn-secondary" onclick="copyWatResponses()">📋 Copy Responses</button>
+        </div>
+        <div style="max-height: 480px; overflow-y: auto; border: 1px solid var(--bg-card-border); border-radius: 8px; margin-bottom: 1.5rem;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+              <tr style="background: var(--bg-primary); color: var(--accent-gold); font-size: 0.85rem; text-transform: uppercase;">
+                <th style="padding: 0.75rem 1rem;">#</th>
+                <th style="padding: 0.75rem 1rem;">Word</th>
+                <th style="padding: 0.75rem 1rem;">Response</th>
+              </tr>
+            </thead>
+            <tbody id="watReviewTbody"></tbody>
+          </table>
+        </div>
+        <button class="btn-secondary" onclick="resetWatToSetup()">← Return to Setup</button>
+      </div>
+
+    </section>
+
+    <!-- ==============================================================
+         2. TAT MODULE
+         ============================================================== -->
+    <section class="module-container" id="tab-tat">
+      
+      <!-- TAT SETUP -->
+      <div class="card-box" id="tatSetupScreen">
+        <h2 class="section-title">Thematic Apperception Test (TAT)</h2>
+        <p class="section-subtitle">
+          12 Slides (11 authentic picture slides + 1 Blank Slide). 30 seconds observation followed by 4 minutes story writing per slide.
+        </p>
+
+        <div class="info-banner">
+          <div>📸 Source: <strong>All Tat Combined .pdf (137 Pictures)</strong></div>
+          <div>Sets: <strong>12 Official Sets (12 Slides Each)</strong></div>
+        </div>
+
+        <div class="form-group">
+          <label>Select TAT Set</label>
+          <select id="tatSelectSet">
+            <option value="next_unattempted" selected>🎯 Next Unattempted TAT Set (No Repeat)</option>
+            <option value="random_11">🎲 Random 11 Pictures + Slide 12 Blank</option>
+            <optgroup label="── OFFICIAL 12-SLIDE SETS ──" id="tatOptGroupSets">
+'''
+
+for s in tat_sets:
+    html += f'              <option value="tat_set_{s["id"]}">{s["title"]} ({s["desc"]})</option>\n'
+
+html += f'''            </optgroup>
+          </select>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Viewing Phase (Picture on Screen)</label>
+            <select id="tatViewTime">
+              <option value="30" selected>30 Seconds (Official DIPR Standard)</option>
+              <option value="20">20 Seconds (Fast Observation)</option>
+              <option value="45">45 Seconds (Relaxed / Training)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Writing Phase (Screen Blank / Narrative)</label>
+            <select id="tatWriteTime">
+              <option value="240" selected>4 Minutes (Official DIPR Standard)</option>
+              <option value="180">3 Minutes (High Speed)</option>
+              <option value="300">5 Minutes (Beginner)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Practice Mode</label>
+          <div class="mode-selector">
+            <div class="mode-option active" id="tatModePaper" onclick="setTatMode('paper')">
+              <strong>📝 Pen & Paper (Recommended)</strong>
+              <span>Observe picture on screen, then write your story in your SSB booklet.</span>
+            </div>
+            <div class="mode-option" id="tatModeTyping" onclick="setTatMode('typing')">
+              <strong>⌨️ Digital Typing</strong>
+              <span>Type your story directly with Hero, Action & Outcome boxes.</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-start" onclick="startTatTest()">START TAT SESSION</button>
+      </div>
+
+      <!-- TAT ACTIVE TEST -->
+      <div class="card-box" id="tatActiveScreen" style="display: none; max-width: 960px; padding: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 1.5rem;">
+          <div>
+            <div style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-gold); font-size: 1.15rem;" id="tatSlideTag">
+              SLIDE 1 / 12
+            </div>
+            <div style="margin-top: 0.25rem;">
+              <span class="tat-phase-badge phase-viewing" id="tatPhaseBadge">👁️ OBSERVATION PHASE (30s)</span>
+            </div>
+          </div>
+
+          <div class="timer-ring-container">
+            <svg class="timer-ring-svg" viewBox="0 0 80 80">
+              <circle class="timer-ring-bg" cx="40" cy="40" r="36" />
+              <circle class="timer-ring-progress" id="tatTimerCircle" cx="40" cy="40" r="36" />
+            </svg>
+            <div class="timer-number" id="tatTimerNum">30</div>
+          </div>
+        </div>
+
+        <!-- TAT DISPLAY CARD -->
+        <div class="tat-display-card" id="tatDisplayCard">
+          <div class="tat-image-container" id="tatImgWrap">
+            <img id="tatCurrentImg" src="" alt="TAT Picture">
+          </div>
+          <div class="tat-blank-slide" id="tatBlankSlide" style="display: none;">
+            <h2 style="font-size: 2.2rem; margin-bottom: 1rem; color: var(--accent-gold);">BLANK SLIDE (12 / 12)</h2>
+            <p style="font-size: 1.1rem; max-width: 600px; line-height: 1.6; color: #cbd5e1;">
+              This is the 12th Slide. Write a story of your own choice, drawing from personal achievements, social service, adventurous experience, or constructive goals.
+            </p>
+          </div>
+          <div id="tatWritingPrompt" style="display: none; text-align: center; padding: 2rem;">
+            <h3 style="font-size: 1.8rem; color: var(--accent-green); margin-bottom: 0.5rem;">✍️ WRITING PHASE</h3>
+            <p style="color: var(--text-muted); font-size: 1.05rem;">
+              Observe the past (what led to it), present (hero's planned action), and constructive future outcome.
+            </p>
+          </div>
+        </div>
+
+        <div id="tatTypingContainer" style="display: none; width: 100%; margin-top: 1.5rem;">
+          <textarea id="tatStoryInput" style="width: 100%; height: 160px; background: var(--bg-primary); border: 1px solid var(--bg-card-border); color: var(--text-main); padding: 1rem; border-radius: 8px; font-family: var(--font-body); font-size: 0.95rem; resize: vertical;" placeholder="Type your story here (Hero, Situation, Action taken, Resolution)..."></textarea>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: center;">
+          <button class="btn-secondary" onclick="toggleTatPause()"><span id="tatPauseIcon">⏸</span> <span id="tatPauseLabel">Pause</span></button>
+          <button class="btn-secondary" style="border-color: var(--accent-green); color: var(--accent-green);" onclick="advanceTatPhaseEarly()">
+            Finished Writing ➔ Next Slide
+          </button>
+          <button class="btn-secondary" style="color: var(--accent-red);" onclick="abortTatTest()">✕ End Test</button>
+        </div>
+      </div>
+
+      <!-- TAT REVIEW -->
+      <div class="card-box" id="tatReviewScreen" style="display: none; max-width: 900px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <div>
+            <h2>TAT Session Completed!</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">12 Slides completed successfully.</p>
+          </div>
+          <button class="btn-secondary" onclick="copyTatResponses()">📋 Copy Stories</button>
+        </div>
+        <div id="tatReviewList" style="max-height: 520px; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;"></div>
+        <button class="btn-secondary" onclick="resetTatToSetup()">← Return to Setup</button>
+      </div>
+
+    </section>
+
+    <!-- ==============================================================
+         3. SRT MODULE
+         ============================================================== -->
+    <section class="module-container" id="tab-srt">
+      
+      <!-- SRT SETUP -->
+      <div class="card-box" id="srtSetupScreen">
+        <h2 class="section-title">Situation Reaction Test (SRT)</h2>
+        <p class="section-subtitle">
+          60 Real-world challenging situations in 30 minutes. Demonstrates practical intelligence, speed of decision, and social responsibility.
+        </p>
+
+        <div class="info-banner">
+          <div>📋 Bank: <strong>2 Official DIPR Sets (120 Situations)</strong></div>
+          <div>Allotted Time: <strong>30 Minutes for 60 Situations</strong></div>
+        </div>
+
+        <div class="form-group">
+          <label>Select SRT Set</label>
+          <select id="srtSelectSet">
+            <option value="next_unattempted" selected>🎯 Next Unattempted SRT Set (No Repeat)</option>
+            <option value="1">DIPR Official SRT Set 1 (60 Situations)</option>
+            <option value="2">DIPR Official SRT Set 2 (60 Situations)</option>
+            <option value="random">🎲 Random 60 Situations</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Practice Style</label>
+          <div class="mode-selector">
+            <div class="mode-option active" id="srtModeBooklet" onclick="setSrtMode('booklet')">
+              <strong>📖 Full Booklet Mode (30:00 Timer)</strong>
+              <span>All 60 situations scrollable with live clock, jump back & forth like real paper booklet.</span>
+            </div>
+            <div class="mode-option" id="srtModeFlash" onclick="setSrtMode('flash')">
+              <strong>⚡ 30s Flash Mode</strong>
+              <span>Each situation flashes on screen for 30 seconds automatically.</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-start" onclick="startSrtTest()">COMMENCE SRT SESSION (30 MINS)</button>
+      </div>
+
+      <!-- SRT ACTIVE SCREEN (BOOKLET MODE) -->
+      <div class="card-box" id="srtActiveScreen" style="display: none; max-width: 960px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--bg-card-border);">
+          <div>
+            <h3 style="font-size: 1.3rem;">Situation Reaction Booklet</h3>
+            <span style="font-size: 0.85rem; color: var(--text-muted);" id="srtCompletedCount">Answered: 0 / 60</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="font-family: var(--font-mono); font-size: 1.8rem; font-weight: 700; color: var(--accent-gold);" id="srtMasterTimer">
+              30:00
+            </div>
+            <button class="btn-start" style="width: auto; padding: 0.6rem 1.5rem; font-size: 0.9rem;" onclick="submitSrtTest()">
+              Submit Test
+            </button>
+          </div>
+        </div>
+
+        <div class="srt-booklet" id="srtBookletList"></div>
+      </div>
+
+      <!-- SRT REVIEW -->
+      <div class="card-box" id="srtReviewScreen" style="display: none; max-width: 900px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <div>
+            <h2>SRT Test Summary</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;" id="srtReviewStats">Attempted: 60 / 60</p>
+          </div>
+          <button class="btn-secondary" onclick="copySrtResponses()">📋 Copy All Reactions</button>
+        </div>
+        <div id="srtReviewContent" style="max-height: 480px; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;"></div>
+        <button class="btn-secondary" onclick="resetSrtToSetup()">← Return to Setup</button>
+      </div>
+
+    </section>
+
+    <!-- ==============================================================
+         4. SDT MODULE
+         ============================================================== -->
+    <section class="module-container" id="tab-sdt">
+      <div class="card-box" style="max-width: 960px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--bg-card-border); padding-bottom: 1rem;">
+          <div>
+            <h2 class="section-title" style="text-align: left; margin: 0;">Self Description Test (SDT)</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">
+              5 Official DIPR Paragraphs. 15 Minutes allotted. Be honest, balanced, and growth-oriented.
+            </p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="font-family: var(--font-mono); font-size: 1.8rem; font-weight: 700; color: var(--accent-gold);" id="sdtTimer">
+              15:00
+            </div>
+            <button class="btn-secondary" id="btnSdtTimerToggle" onclick="toggleSdtTimer()">Start Timer</button>
+          </div>
+        </div>
+
+        <div class="sdt-editor-box">
+          <div class="sdt-card">
+            <div class="sdt-label">1. Parents' Opinion</div>
+            <div class="sdt-help">What do your father and mother think of you? (Habits, obedience, responsibility, emotional bond)</div>
+            <textarea class="sdt-textarea" id="sdt1" placeholder="My parents consider me to be..."></textarea>
+          </div>
+
+          <div class="sdt-card">
+            <div class="sdt-label">2. Teachers' / Instructors' Opinion</div>
+            <div class="sdt-help">What do your teachers/professors think of you? (Grasp, punctuality, participation, sincerity)</div>
+            <textarea class="sdt-textarea" id="sdt2" placeholder="My teachers describe me as..."></textarea>
+          </div>
+
+          <div class="sdt-card">
+            <div class="sdt-label">3. Friends' / Colleagues' Opinion</div>
+            <div class="sdt-help">What do your friends or peers say about you? (Trustworthiness, helping nature, fun to be with, crisis support)</div>
+            <textarea class="sdt-textarea" id="sdt3" placeholder="My close friends appreciate that I..."></textarea>
+          </div>
+
+          <div class="sdt-card">
+            <div class="sdt-label">4. Your Own Opinion (Self Assessment)</div>
+            <div class="sdt-help">What are your genuine strengths and authentic modifiable weaknesses?</div>
+            <textarea class="sdt-textarea" id="sdt4" placeholder="I consider myself to be... Areas where I can improve include..."></textarea>
+          </div>
+
+          <div class="sdt-card">
+            <div class="sdt-label">5. Future Aspirations (What you want to become)</div>
+            <div class="sdt-help">What kind of officer, professional, and citizen do you strive to develop into?</div>
+            <textarea class="sdt-textarea" id="sdt5" placeholder="In the future, I aspire to become an officer who..."></textarea>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-top: 1.5rem; gap: 1rem;">
+          <button class="btn-secondary" onclick="saveSdtLocal()">💾 Save Draft</button>
+          <button class="btn-start" style="width: auto; padding: 0.75rem 2rem;" onclick="copySdtText()">📋 Copy All 5 Paragraphs</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==============================================================
+         5. OIR MODULE (PDF UPLOAD + DIGITAL OMR SHEET)
+         ============================================================== -->
+    <section class="module-container" id="tab-oir">
+      <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div>
+          <h2 style="font-size: 1.5rem; font-weight: 700;">Officer Intelligence Rating (OIR) Test</h2>
+          <p style="color: var(--text-muted); font-size: 0.85rem;">Upload your Verbal/Non-Verbal Question Paper PDF & mark responses on the live OMR.</p>
+        </div>
+        <div style="display: flex; gap: 0.75rem; align-items: center;">
+          <input type="file" id="oirPdfInput" accept=".pdf" style="display: none;">
+          <button class="btn-secondary" onclick="document.getElementById('oirPdfInput').click()">
+            📂 Upload OIR PDF
+          </button>
+          <div style="background: var(--bg-card); border: 1px solid var(--bg-card-border); padding: 0.4rem 0.8rem; border-radius: 6px; font-family: var(--font-mono); font-size: 1.3rem; font-weight: 700; color: var(--accent-gold);" id="oirTimerNum">
+            20:00
+          </div>
+          <button class="btn-secondary" id="btnOirTimerToggle" onclick="toggleOirTimer()">Start Timer</button>
+          <button class="btn-start" style="width: auto; padding: 0.5rem 1.25rem; font-size: 0.85rem;" onclick="submitOirOMR()">Submit OMR</button>
+        </div>
+      </div>
+
+      <div class="oir-workspace">
+        <div class="oir-pdf-viewer">
+          <div id="oirPdfPlaceholder" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">📑</div>
+            <h3 style="margin-bottom: 0.5rem;">No OIR Question Paper Loaded</h3>
+            <p style="color: var(--text-muted); max-width: 440px; font-size: 0.9rem; margin-bottom: 1.5rem;">
+              Upload any OIR test PDF (e.g. 50 Verbal/Non-Verbal questions) to view questions here and solve them directly using the OMR sheet on the right.
+            </p>
+            <button class="btn-start" style="width: auto; padding: 0.75rem 2rem;" onclick="document.getElementById('oirPdfInput').click()">
+              Upload OIR PDF File
+            </button>
+          </div>
+          <iframe id="oirPdfIframe" style="width: 100%; height: 100%; border: none; display: none;"></iframe>
+        </div>
+
+        <div class="oir-omr-pane">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--bg-card-border); padding-bottom: 0.75rem;">
+            <div>
+              <strong style="font-size: 1.05rem;">Digital OMR Sheet</strong>
+              <div style="font-size: 0.8rem; color: var(--text-muted);" id="oirAttemptStats">Marked: 0 / 50 Questions</div>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <select id="oirQuestionCount" onchange="generateOmrRows()" style="padding: 0.35rem 0.6rem; font-size: 0.85rem;">
+                <option value="40">40 Questions</option>
+                <option value="50" selected>50 Questions</option>
+                <option value="60">60 Questions</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="omr-grid-container" id="omrRowsList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==============================================================
+         6. FULL MOCK BATTERY MODULE
+         ============================================================== -->
+    <section class="module-container" id="tab-fullmock">
+      <div class="card-box" style="max-width: 820px; text-align: center;">
+        <h2 class="section-title">Stage 2 Psychological Battery Mock</h2>
+        <p class="section-subtitle">
+          Experience the authentic, unbroken 3-hour psychological testing schedule of Services Selection Board (SSB).
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: left; margin-bottom: 2rem;">
+          <div style="background: var(--bg-primary); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--bg-card-border);">
+            <strong style="color: var(--accent-gold);">1. TAT (Thematic Apperception)</strong>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem;">12 Slides (11 pictures + 1 blank slide). 4m30s per slide.</p>
+          </div>
+          <div style="background: var(--bg-primary); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--bg-card-border);">
+            <strong style="color: var(--accent-blue);">2. WAT (Word Association)</strong>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem;">60 Words flashed back-to-back for 15 seconds each.</p>
+          </div>
+          <div style="background: var(--bg-primary); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--bg-card-border);">
+            <strong style="color: var(--accent-green);">3. SRT (Situation Reaction)</strong>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem;">60 Practical situations solved in 30 minutes.</p>
+          </div>
+          <div style="background: var(--bg-primary); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--bg-card-border);">
+            <strong style="color: #c084fc;">4. SDT (Self Description)</strong>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem;">5 Self evaluation paragraphs in 15 minutes.</p>
+          </div>
+        </div>
+
+        <button class="btn-start" onclick="launchFullMockBattery()">COMMENCE FULL MOCK TEST</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // --- EMBEDDED DATABASES ---
+    const OFFICIAL_WAT_SETS = {wat_sets_json};
+    const ALL_WAT_WORDS = {all_wat_words_json};
+    const OFFICIAL_SRT_SETS = {srt_sets_json};
+    const OFFICIAL_TAT_SETS = {tat_sets_json};
+
+    // --- TAB SWITCHER ---
+    document.querySelectorAll('.nav-tab').forEach(tab => {{
+      tab.addEventListener('click', () => {{
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.module-container').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        const targetId = tab.getAttribute('data-tab');
+        document.getElementById(targetId).classList.add('active');
+        if (targetId === 'tab-progress') renderProgressDashboard();
+      }});
+    }});
+
+    // ==============================================================
+    // PROGRESS TRACKER & NO-REPEAT LOGIC (LOCALSTORAGE ENGINE)
+    // ==============================================================
+    let progressData = {{
+      watCompleted: [],
+      tatCompleted: [],
+      srtCompleted: [],
+      history: []
+    }};
+
+    function loadProgress() {{
+      const stored = localStorage.getItem('ssb_master_progress');
+      if (stored) {{
+        try {{
+          progressData = Object.assign(progressData, JSON.parse(stored));
+        }} catch(e) {{}}
+      }}
+      renderProgressDashboard();
+      updateDropdownBadges();
+    }}
+
+    function saveProgress() {{
+      localStorage.setItem('ssb_master_progress', JSON.stringify(progressData));
+      renderProgressDashboard();
+      updateDropdownBadges();
+    }}
+
+    function logCompletedSession(moduleName, setLabel, resultStr) {{
+      progressData.history.unshift({{
+        timestamp: new Date().toLocaleString(),
+        module: moduleName,
+        label: setLabel,
+        result: resultStr
+      }});
+      if (progressData.history.length > 100) progressData.history.pop();
+      saveProgress();
+    }}
+
+    function markWatSetDone(setId) {{
+      if (!progressData.watCompleted.includes(setId)) {{
+        progressData.watCompleted.push(setId);
+      }}
+      logCompletedSession('WAT', `Set ${{setId}}`, '60 Words Completed');
+      saveProgress();
+    }}
+
+    function markTatSetDone(setId) {{
+      if (!progressData.tatCompleted.includes(setId)) {{
+        progressData.tatCompleted.push(setId);
+      }}
+      logCompletedSession('TAT', `Set ${{setId}}`, '12 Stories Completed');
+      saveProgress();
+    }}
+
+    function markSrtSetDone(setId) {{
+      if (!progressData.srtCompleted.includes(setId)) {{
+        progressData.srtCompleted.push(setId);
+      }}
+      logCompletedSession('SRT', `Set ${{setId}}`, '60 Situations Completed');
+      saveProgress();
+    }}
+
+    function getNextUnattemptedWat() {{
+      for (let i = 1; i <= 21; i++) {{
+        if (!progressData.watCompleted.includes(i)) return i;
+      }}
+      return null;
+    }}
+
+    function getNextUnattemptedTat() {{
+      for (let i = 1; i <= 12; i++) {{
+        if (!progressData.tatCompleted.includes(i)) return i;
+      }}
+      return null;
+    }}
+
+    function getNextUnattemptedSrt() {{
+      for (let i = 1; i <= 2; i++) {{
+        if (!progressData.srtCompleted.includes(i)) return i;
+      }}
+      return null;
+    }}
+
+    function renderProgressDashboard() {{
+      const watDone = progressData.watCompleted.length;
+      const tatDone = progressData.tatCompleted.length;
+      const srtDone = progressData.srtCompleted.length;
+
+      document.getElementById('progWatVal').textContent = `${{watDone}} / 21`;
+      document.getElementById('progWatBar').style.width = `${{(watDone / 21) * 100}}%`;
+
+      document.getElementById('progTatVal').textContent = `${{tatDone}} / 12`;
+      document.getElementById('progTatBar').style.width = `${{(tatDone / 12) * 100}}%`;
+
+      document.getElementById('progSrtVal').textContent = `${{srtDone}} / 2`;
+      document.getElementById('progSrtBar').style.width = `${{(srtDone / 2) * 100}}%`;
+
+      document.getElementById('progTotalSessions').textContent = progressData.history.length;
+
+      const nextWat = getNextUnattemptedWat();
+      const nextTat = getNextUnattemptedTat();
+      const nextSrt = getNextUnattemptedSrt();
+
+      const recText = document.getElementById('nextRecText');
+      const recBtn = document.getElementById('btnLaunchNextRec');
+
+      if (nextWat !== null) {{
+        recText.innerHTML = `You haven't practiced <strong>WAT Set ${{nextWat}}</strong> yet. Keep momentum and avoid repeats!`;
+        recBtn.onclick = () => {{
+          document.querySelector('[data-tab=\"tab-wat\"]').click();
+          document.getElementById('watSelectSet').value = `set_${{nextWat}}`;
+          startWatTest();
+        }};
+      }} else if (nextTat !== null) {{
+        recText.innerHTML = `All WAT sets mastered! Next is <strong>TAT Set ${{nextTat}}</strong> (12 Slides).`;
+        recBtn.onclick = () => {{
+          document.querySelector('[data-tab=\"tab-tat\"]').click();
+          document.getElementById('tatSelectSet').value = `tat_set_${{nextTat}}`;
+          startTatTest();
+        }};
+      }} else if (nextSrt !== null) {{
+        recText.innerHTML = `Great progress! Next is <strong>SRT Set ${{nextSrt}}</strong> (60 Situations).`;
+        recBtn.onclick = () => {{
+          document.querySelector('[data-tab=\"tab-srt\"]').click();
+          document.getElementById('srtSelectSet').value = String(nextSrt);
+          startSrtTest();
+        }};
+      }} else {{
+        recText.innerHTML = `🎉 <strong>Outstanding!</strong> You have completed every single official WAT, TAT, and SRT set without repeating! Ready for full mocks.`;
+        recBtn.textContent = 'Launch Full Mock ❯';
+        recBtn.onclick = () => launchFullMockBattery();
+      }}
+
+      // Render Pills for WAT
+      const pWat = document.getElementById('pillsWat');
+      pWat.innerHTML = '';
+      for (let i = 1; i <= 21; i++) {{
+        const done = progressData.watCompleted.includes(i);
+        const pill = document.createElement('div');
+        pill.className = `set-pill ${{done ? 'completed' : ''}}`;
+        pill.innerHTML = `${{done ? '✅' : '⚡'}} Set ${{i}}`;
+        pill.onclick = () => {{
+          document.querySelector('[data-tab=\"tab-wat\"]').click();
+          document.getElementById('watSelectSet').value = `set_${{i}}`;
+        }};
+        pWat.appendChild(pill);
+      }}
+
+      // Render Pills for TAT
+      const pTat = document.getElementById('pillsTat');
+      pTat.innerHTML = '';
+      for (let i = 1; i <= 12; i++) {{
+        const done = progressData.tatCompleted.includes(i);
+        const pill = document.createElement('div');
+        pill.className = `set-pill ${{done ? 'completed' : ''}}`;
+        pill.innerHTML = `${{done ? '✅' : '🖼️'}} TAT ${{i}}`;
+        pill.onclick = () => {{
+          document.querySelector('[data-tab=\"tab-tat\"]').click();
+          document.getElementById('tatSelectSet').value = `tat_set_${{i}}`;
+        }};
+        pTat.appendChild(pill);
+      }}
+
+      // Render Pills for SRT
+      const pSrt = document.getElementById('pillsSrt');
+      pSrt.innerHTML = '';
+      for (let i = 1; i <= 2; i++) {{
+        const done = progressData.srtCompleted.includes(i);
+        const pill = document.createElement('div');
+        pill.className = `set-pill ${{done ? 'completed' : ''}}`;
+        pill.innerHTML = `${{done ? '✅' : '📝'}} SRT ${{i}}`;
+        pill.onclick = () => {{
+          document.querySelector('[data-tab=\"tab-srt\"]').click();
+          document.getElementById('srtSelectSet').value = String(i);
+        }};
+        pSrt.appendChild(pill);
+      }}
+
+      // Render History Table
+      const ht = document.getElementById('historyTableBody');
+      ht.innerHTML = '';
+      if (progressData.history.length === 0) {{
+        ht.innerHTML = `<tr><td colspan=\"4\" style=\"padding: 1rem; text-align: center; color: var(--text-muted);\">No practice sessions logged yet. Start a test to record your journey!</td></tr>`;
+      }} else {{
+        progressData.history.forEach(h => {{
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td style="padding: 0.6rem 1rem; border-bottom: 1px solid var(--bg-card-border); font-family: var(--font-mono); color: var(--text-muted);">${{h.timestamp}}</td>
+            <td style="padding: 0.6rem 1rem; border-bottom: 1px solid var(--bg-card-border); font-weight: 700; color: var(--accent-gold);">${{h.module}}</td>
+            <td style="padding: 0.6rem 1rem; border-bottom: 1px solid var(--bg-card-border);">${{h.label}}</td>
+            <td style="padding: 0.6rem 1rem; border-bottom: 1px solid var(--bg-card-border); color: var(--accent-green);">${{h.result}}</td>
+          `;
+          ht.appendChild(tr);
+        }});
+      }}
+    }}
+
+    function updateDropdownBadges() {{
+      const watGroup = document.getElementById('watOptGroupSets');
+      if (watGroup) {{
+        Array.from(watGroup.children).forEach(opt => {{
+          const m = opt.value.match(/set_(\d+)/);
+          if (m) {{
+            const id = parseInt(m[1], 10);
+            const isDone = progressData.watCompleted.includes(id);
+            if (isDone && !opt.textContent.includes('✅')) {{
+              opt.textContent = `✅ [COMPLETED] ` + opt.textContent;
+            }}
+          }}
+        }});
+      }}
+
+      const tatGroup = document.getElementById('tatOptGroupSets');
+      if (tatGroup) {{
+        Array.from(tatGroup.children).forEach(opt => {{
+          const m = opt.value.match(/tat_set_(\d+)/);
+          if (m) {{
+            const id = parseInt(m[1], 10);
+            const isDone = progressData.tatCompleted.includes(id);
+            if (isDone && !opt.textContent.includes('✅')) {{
+              opt.textContent = `✅ [COMPLETED] ` + opt.textContent;
+            }}
+          }}
+        }});
+      }}
+    }}
+
+    function exportProgressJSON() {{
+      const str = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(progressData, null, 2));
+      const dl = document.createElement('a');
+      dl.setAttribute("href", str);
+      dl.setAttribute("download", `ssb_progress_backup_${{new Date().toISOString().slice(0, 10)}}.json`);
+      document.body.appendChild(dl);
+      dl.click();
+      dl.remove();
+    }}
+
+    document.getElementById('importProgressInput').addEventListener('change', (e) => {{
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {{
+        try {{
+          const imported = JSON.parse(event.target.result);
+          if (imported.watCompleted && imported.tatCompleted) {{
+            progressData = imported;
+            saveProgress();
+            alert("Progress backup successfully restored!");
+          }}
+        }} catch(err) {{
+          alert("Invalid backup file!");
+        }}
+      }};
+      reader.readAsText(file);
+    }});
+
+    function clearPracticeHistory() {{
+      if (confirm("Reset your practice progress and logs? This will clear all completed checkmarks.")) {{
+        progressData = {{ watCompleted: [], tatCompleted: [], srtCompleted: [], history: [] }};
+        saveProgress();
+      }}
+    }}
+
+    // --- AUDIO SYSTEM ---
+    let audioCtx = null;
+    function playBeep(freq = 880, dur = 0.12) {{
+      try {{
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + dur);
+      }} catch (e) {{}}
+    }}
+
+    // ==============================================================
+    // WAT ENGINE
+    // ==============================================================
+    let watWords = [];
+    let watIndex = 0;
+    let watDuration = 15;
+    let watTimer = 15;
+    let watInterval = null;
+    let watPaused = false;
+    let watMode = 'paper';
+    let watResponses = {{}};
+    let watCurrentSetId = null;
+
+    function setWatMode(m) {{
+      watMode = m;
+      document.getElementById('watModePaper').classList.toggle('active', m === 'paper');
+      document.getElementById('watModeTyping').classList.toggle('active', m === 'typing');
+    }}
+
+    function startWatTest() {{
+      let choice = document.getElementById('watSelectSet').value;
+      if (choice === 'next_unattempted') {{
+        const unattempted = getNextUnattemptedWat();
+        choice = unattempted ? `set_${{unattempted}}` : 'random_60';
+      }}
+
+      watDuration = parseInt(document.getElementById('watSelectDuration').value, 10);
+      let pool = [];
+      watCurrentSetId = null;
+
+      if (choice.startsWith('set_')) {{
+        const setId = parseInt(choice.replace('set_', ''), 10);
+        watCurrentSetId = setId;
+        const f = OFFICIAL_WAT_SETS.find(s => s.id === setId);
+        pool = f ? [...f.words] : [...ALL_WAT_WORDS.slice(0, 60)];
+      }} else if (choice === 'random_60') {{
+        pool = [...ALL_WAT_WORDS];
+        shuffle(pool);
+        pool = pool.slice(0, 60);
+      }} else if (choice === 'random_30') {{
+        pool = [...ALL_WAT_WORDS];
+        shuffle(pool);
+        pool = pool.slice(0, 30);
+      }} else {{
+        pool = [...ALL_WAT_WORDS];
+      }}
+
+      if (document.getElementById('watSelectOrder').value === 'shuffle' && !choice.startsWith('random_')) {{
+        shuffle(pool);
+      }}
+
+      watWords = pool;
+      watIndex = 0;
+      watResponses = {{}};
+      watPaused = false;
+
+      document.getElementById('watSetupScreen').style.display = 'none';
+      document.getElementById('watReviewScreen').style.display = 'none';
+      document.getElementById('watActiveScreen').style.display = 'block';
+      document.getElementById('watTypingArea').style.display = (watMode === 'typing') ? 'block' : 'none';
+
+      displayWatWord();
+      runWatTimer();
+    }}
+
+    function displayWatWord() {{
+      const w = watWords[watIndex];
+      document.getElementById('watFlashedWord').textContent = w;
+      document.getElementById('watProgressTag').textContent = `WORD ${{watIndex + 1}} / ${{watWords.length}}`;
+      if (watMode === 'typing') {{
+        const inp = document.getElementById('watInput');
+        inp.value = watResponses[w] || '';
+        inp.focus();
+      }}
+      playBeep(920, 0.15);
+    }}
+
+    function runWatTimer() {{
+      clearInterval(watInterval);
+      watTimer = watDuration;
+      updateWatTimerUI(watTimer);
+
+      const step = 100;
+      let accum = 0;
+      watInterval = setInterval(() => {{
+        if (watPaused) return;
+        accum += step;
+        if (accum >= 1000) {{
+          accum = 0;
+          watTimer--;
+          if (watTimer <= 0) {{
+            recordWatResponse();
+            nextWatWord();
+            return;
+          }}
+        }}
+        const curSec = watTimer - (accum / 1000);
+        updateWatTimerUI(Math.max(0, curSec));
+      }}, step);
+    }}
+
+    function updateWatTimerUI(sec) {{
+      document.getElementById('watTimerNum').textContent = Math.ceil(sec);
+      const frac = Math.max(0, sec / watDuration);
+      const circle = document.getElementById('watTimerCircle');
+      circle.style.strokeDashoffset = 226.2 * (1 - frac);
+      document.getElementById('watLinearBar').style.width = `${{frac * 100}}%`;
+    }}
+
+    function recordWatResponse() {{
+      if (watMode === 'typing') {{
+        const w = watWords[watIndex];
+        watResponses[w] = document.getElementById('watInput').value.trim() || '(No response)';
+      }}
+    }}
+
+    function nextWatWord() {{
+      recordWatResponse();
+      watIndex++;
+      if (watIndex >= watWords.length) {{
+        finishWatTest();
+      }} else {{
+        displayWatWord();
+        runWatTimer();
+      }}
+    }}
+
+    function toggleWatPause() {{
+      watPaused = !watPaused;
+      document.getElementById('watPauseIcon').textContent = watPaused ? '▶' : '⏸';
+      document.getElementById('watPauseLabel').textContent = watPaused ? 'Resume' : 'Pause';
+    }}
+
+    function abortWatTest() {{
+      if (confirm("End WAT session? Completed responses will be shown.")) finishWatTest();
+    }}
+
+    function finishWatTest() {{
+      clearInterval(watInterval);
+      if (watCurrentSetId) {{
+        markWatSetDone(watCurrentSetId);
+      }} else {{
+        logCompletedSession('WAT', 'Random 60 Drill', '60 Words Practiced');
+      }}
+
+      document.getElementById('watActiveScreen').style.display = 'none';
+      document.getElementById('watReviewScreen').style.display = 'block';
+
+      const tbody = document.getElementById('watReviewTbody');
+      tbody.innerHTML = '';
+      const list = watWords.slice(0, Math.max(watIndex, 1));
+      list.forEach((w, i) => {{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="padding: 0.6rem 1rem; border-bottom: 1px solid var(--bg-card-border); font-family: var(--font-mono); color: var(--text-muted);">${{i + 1}}</td>
+          <td style="padding: 0.6rem 1rem; border-bottom: 1px solid var(--bg-card-border); color: var(--accent-gold); font-weight: 700;">${{w}}</td>
+          <td style="padding: 0.6rem 1rem; border-bottom: 1px solid var(--bg-card-border);">${{watResponses[w] || (watMode === 'typing' ? '—' : 'Written in notebook')}}</td>
+        `;
+        tbody.appendChild(tr);
+      }});
+    }}
+
+    function copyWatResponses() {{
+      let t = "=== WAT RESPONSES ===\\n";
+      watWords.slice(0, watIndex).forEach((w, i) => {{
+        t += `${{i + 1}}. [${{w}}] => ${{watResponses[w] || 'Written on paper'}}\\n`;
+      }});
+      navigator.clipboard.writeText(t).then(() => alert("Copied to clipboard!"));
+    }}
+
+    function resetWatToSetup() {{
+      document.getElementById('watReviewScreen').style.display = 'none';
+      document.getElementById('watSetupScreen').style.display = 'block';
+    }}
+
+    // ==============================================================
+    // TAT ENGINE
+    // ==============================================================
+    let tatSlides = [];
+    let tatIndex = 0;
+    let tatPhase = 'viewing';
+    let tatViewDuration = 30;
+    let tatWriteDuration = 240;
+    let tatRemaining = 30;
+    let tatInterval = null;
+    let tatPaused = false;
+    let tatMode = 'paper';
+    let tatStories = {{}};
+    let tatCurrentSetId = null;
+
+    function setTatMode(m) {{
+      tatMode = m;
+      document.getElementById('tatModePaper').classList.toggle('active', m === 'paper');
+      document.getElementById('tatModeTyping').classList.toggle('active', m === 'typing');
+    }}
+
+    function startTatTest() {{
+      let choice = document.getElementById('tatSelectSet').value;
+      if (choice === 'next_unattempted') {{
+        const unattempted = getNextUnattemptedTat();
+        choice = unattempted ? `tat_set_${{unattempted}}` : 'random_11';
+      }}
+
+      tatViewDuration = parseInt(document.getElementById('tatViewTime').value, 10);
+      tatWriteDuration = parseInt(document.getElementById('tatWriteTime').value, 10);
+      tatCurrentSetId = null;
+
+      if (choice.startsWith('tat_set_')) {{
+        const setId = parseInt(choice.replace('tat_set_', ''), 10);
+        tatCurrentSetId = setId;
+        const f = OFFICIAL_TAT_SETS.find(s => s.id === setId);
+        tatSlides = f ? [...f.slides] : [...OFFICIAL_TAT_SETS[0].slides];
+      }} else {{
+        let imgPool = [];
+        for (let i = 1; i <= 137; i++) imgPool.push(i);
+        shuffle(imgPool);
+        let chosen = imgPool.slice(0, 11);
+        tatSlides = chosen.map((imgNum, idx) => ({{
+          num: idx + 1,
+          type: 'image',
+          src: `tat_images/tat_${{String(imgNum).padStart(3, '0')}}.jpg`,
+          label: `Picture ${{idx + 1}}`
+        }}));
+        tatSlides.push({{
+          num: 12,
+          type: 'blank',
+          src: '',
+          label: 'Slide 12 — BLANK SLIDE (Own Story)'
+        }});
+      }}
+
+      tatIndex = 0;
+      tatStories = {{}};
+      tatPaused = false;
+
+      document.getElementById('tatSetupScreen').style.display = 'none';
+      document.getElementById('tatReviewScreen').style.display = 'none';
+      document.getElementById('tatActiveScreen').style.display = 'block';
+      document.getElementById('tatTypingContainer').style.display = (tatMode === 'typing') ? 'block' : 'none';
+
+      displayTatSlide();
+    }}
+
+    function displayTatSlide() {{
+      const s = tatSlides[tatIndex];
+      document.getElementById('tatSlideTag').textContent = `SLIDE ${{s.num}} / 12`;
+
+      tatPhase = 'viewing';
+      tatRemaining = tatViewDuration;
+      updateTatPhaseBadge();
+
+      const imgEl = document.getElementById('tatCurrentImg');
+      const imgWrap = document.getElementById('tatImgWrap');
+      const blankEl = document.getElementById('tatBlankSlide');
+      const promptEl = document.getElementById('tatWritingPrompt');
+
+      promptEl.style.display = 'none';
+
+      if (s.type === 'blank') {{
+        imgWrap.style.display = 'none';
+        blankEl.style.display = 'flex';
+      }} else {{
+        imgWrap.style.display = 'flex';
+        blankEl.style.display = 'none';
+        imgEl.src = s.src;
+      }}
+
+      if (tatMode === 'typing') {{
+        document.getElementById('tatStoryInput').value = tatStories[s.num] || '';
+      }}
+
+      playBeep(880, 0.2);
+      runTatTimer();
+    }}
+
+    function runTatTimer() {{
+      clearInterval(tatInterval);
+      const totalDur = (tatPhase === 'viewing') ? tatViewDuration : tatWriteDuration;
+      updateTatTimerUI(tatRemaining, totalDur);
+
+      const step = 100;
+      let accum = 0;
+      tatInterval = setInterval(() => {{
+        if (tatPaused) return;
+        accum += step;
+        if (accum >= 1000) {{
+          accum = 0;
+          tatRemaining--;
+          if (tatRemaining <= 0) {{
+            if (tatPhase === 'viewing') {{
+              transitionToWritingPhase();
+            }} else {{
+              recordTatStory();
+              nextTatSlide();
+            }}
+            return;
+          }}
+        }}
+        const curSec = tatRemaining - (accum / 1000);
+        updateTatTimerUI(Math.max(0, curSec), totalDur);
+      }}, step);
+    }}
+
+    function transitionToWritingPhase() {{
+      tatPhase = 'writing';
+      tatRemaining = tatWriteDuration;
+      updateTatPhaseBadge();
+
+      document.getElementById('tatImgWrap').style.display = 'none';
+      document.getElementById('tatBlankSlide').style.display = 'none';
+      document.getElementById('tatWritingPrompt').style.display = 'block';
+
+      if (tatMode === 'typing') {{
+        document.getElementById('tatStoryInput').focus();
+      }}
+
+      playBeep(660, 0.3);
+      runTatTimer();
+    }}
+
+    function advanceTatPhaseEarly() {{
+      if (tatPhase === 'viewing') {{
+        transitionToWritingPhase();
+      }} else {{
+        recordTatStory();
+        nextTatSlide();
+      }}
+    }}
+
+    function recordTatStory() {{
+      if (tatMode === 'typing') {{
+        const s = tatSlides[tatIndex];
+        tatStories[s.num] = document.getElementById('tatStoryInput').value.trim() || '(No story typed)';
+      }}
+    }}
+
+    function nextTatSlide() {{
+      tatIndex++;
+      if (tatIndex >= tatSlides.length) {{
+        finishTatTest();
+      }} else {{
+        displayTatSlide();
+      }}
+    }}
+
+    function updateTatPhaseBadge() {{
+      const b = document.getElementById('tatPhaseBadge');
+      if (tatPhase === 'viewing') {{
+        b.className = 'tat-phase-badge phase-viewing';
+        b.textContent = '👁️ OBSERVATION PHASE (30s)';
+      }} else {{
+        b.className = 'tat-phase-badge phase-writing';
+        b.textContent = '✍️ WRITING PHASE (4 MINS)';
+      }}
+    }}
+
+    function updateTatTimerUI(sec, total) {{
+      const m = Math.floor(sec / 60);
+      const s = Math.ceil(sec % 60);
+      document.getElementById('tatTimerNum').textContent = (total > 60) ? `${{m}}:${{String(s).padStart(2, '0')}}` : Math.ceil(sec);
+
+      const frac = Math.max(0, sec / total);
+      document.getElementById('tatTimerCircle').style.strokeDashoffset = 226.2 * (1 - frac);
+    }}
+
+    function toggleTatPause() {{
+      tatPaused = !tatPaused;
+      document.getElementById('tatPauseIcon').textContent = tatPaused ? '▶' : '⏸';
+      document.getElementById('tatPauseLabel').textContent = tatPaused ? 'Resume' : 'Pause';
+    }}
+
+    function abortTatTest() {{
+      if (confirm("End TAT session?")) finishTatTest();
+    }}
+
+    function finishTatTest() {{
+      clearInterval(tatInterval);
+      if (tatCurrentSetId) {{
+        markTatSetDone(tatCurrentSetId);
+      }} else {{
+        logCompletedSession('TAT', 'Random 11+Blank Drill', '12 Stories Practiced');
+      }}
+
+      document.getElementById('tatActiveScreen').style.display = 'none';
+      document.getElementById('tatReviewScreen').style.display = 'block';
+
+      const wrap = document.getElementById('tatReviewList');
+      wrap.innerHTML = '';
+      tatSlides.slice(0, Math.max(tatIndex, 1)).forEach(s => {{
+        const card = document.createElement('div');
+        card.style = 'background: var(--bg-primary); border: 1px solid var(--bg-card-border); border-radius: 8px; padding: 1rem; display: flex; gap: 1rem;';
+        const imgMarkup = s.type === 'blank' 
+          ? '<div style=\"width: 100px; height: 75px; background: #000; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; border-radius: 4px;\">BLANK</div>'
+          : `<img src=\"${{s.src}}\" style=\"width: 100px; height: 75px; object-fit: cover; border-radius: 4px;\">`;
+        
+        card.innerHTML = `
+          ${{imgMarkup}}
+          <div style=\"flex: 1;\">
+            <strong style=\"color: var(--accent-gold);\">Slide ${{s.num}}: ${{s.label}}</strong>
+            <p style=\"margin-top: 0.5rem; font-size: 0.9rem; line-height: 1.5;\">${{escapeHtml(tatStories[s.num] || 'Written in booklet')}}</p>
+          </div>
+        `;
+        wrap.appendChild(card);
+      }});
+    }}
+
+    function copyTatResponses() {{
+      let t = "=== TAT STORIES ===\\n";
+      tatSlides.slice(0, tatIndex).forEach(s => {{
+        t += `\\n[Slide ${{s.num}}: ${{s.label}}]\\n${{tatStories[s.num] || 'Written in booklet'}}\\n`;
+      }});
+      navigator.clipboard.writeText(t).then(() => alert("Copied stories to clipboard!"));
+    }}
+
+    function resetTatToSetup() {{
+      document.getElementById('tatReviewScreen').style.display = 'none';
+      document.getElementById('tatSetupScreen').style.display = 'block';
+    }}
+
+    // ==============================================================
+    // SRT ENGINE
+    // ==============================================================
+    let srtList = [];
+    let srtResponses = {{}};
+    let srtRemainingSec = 1800;
+    let srtInterval = null;
+    let srtMode = 'booklet';
+    let srtCurrentSetId = null;
+
+    function setSrtMode(m) {{
+      srtMode = m;
+      document.getElementById('srtModeBooklet').classList.toggle('active', m === 'booklet');
+      document.getElementById('srtModeFlash').classList.toggle('active', m === 'flash');
+    }}
+
+    function startSrtTest() {{
+      let setChoice = document.getElementById('srtSelectSet').value;
+      if (setChoice === 'next_unattempted') {{
+        const unattempted = getNextUnattemptedSrt();
+        setChoice = unattempted ? String(unattempted) : '1';
+      }}
+
+      srtCurrentSetId = null;
+      if (setChoice === '1') {{
+        srtList = [...OFFICIAL_SRT_SETS[0].situations];
+        srtCurrentSetId = 1;
+      }} else if (setChoice === '2') {{
+        srtList = [...OFFICIAL_SRT_SETS[1].situations];
+        srtCurrentSetId = 2;
+      }} else {{
+        const combo = [...OFFICIAL_SRT_SETS[0].situations, ...OFFICIAL_SRT_SETS[1].situations];
+        shuffle(combo);
+        srtList = combo.slice(0, 60);
+      }}
+
+      srtResponses = {{}};
+      srtRemainingSec = 1800;
+
+      document.getElementById('srtSetupScreen').style.display = 'none';
+      document.getElementById('srtReviewScreen').style.display = 'none';
+      document.getElementById('srtActiveScreen').style.display = 'block';
+
+      renderSrtBooklet();
+      runSrtTimer();
+    }}
+
+    function renderSrtBooklet() {{
+      const wrap = document.getElementById('srtBookletList');
+      wrap.innerHTML = '';
+      srtList.forEach((sit, idx) => {{
+        const item = document.createElement('div');
+        item.className = 'srt-item';
+        item.innerHTML = `
+          <div class="srt-prompt">
+            <span style="font-family: var(--font-mono); color: var(--accent-gold); margin-right: 0.5rem;">#${{idx + 1}}</span>
+            ${{sit}}
+          </div>
+          <input type="text" class="srt-input" placeholder="He..." oninput="recordSrtInput(${{idx}}, this.value)" value="${{srtResponses[idx] || ''}}">
+        `;
+        wrap.appendChild(item);
+      }});
+      updateSrtProgress();
+    }}
+
+    function recordSrtInput(idx, val) {{
+      srtResponses[idx] = val;
+      updateSrtProgress();
+    }}
+
+    function updateSrtProgress() {{
+      const filled = Object.values(srtResponses).filter(v => v.trim().length > 0).length;
+      document.getElementById('srtCompletedCount').textContent = `Answered: ${{filled}} / ${{srtList.length}}`;
+    }}
+
+    function runSrtTimer() {{
+      clearInterval(srtInterval);
+      srtInterval = setInterval(() => {{
+        srtRemainingSec--;
+        const m = Math.floor(srtRemainingSec / 60);
+        const s = srtRemainingSec % 60;
+        document.getElementById('srtMasterTimer').textContent = `${{String(m).padStart(2, '0')}}:${{String(s).padStart(2, '0')}}`;
+        if (srtRemainingSec <= 0) {{
+          clearInterval(srtInterval);
+          alert("Time's up for Situation Reaction Test!");
+          submitSrtTest();
+        }}
+      }}, 1000);
+    }}
+
+    function submitSrtTest() {{
+      clearInterval(srtInterval);
+      if (srtCurrentSetId) {{
+        markSrtSetDone(srtCurrentSetId);
+      }} else {{
+        logCompletedSession('SRT', 'Random 60 Drill', '60 Situations Practiced');
+      }}
+
+      document.getElementById('srtActiveScreen').style.display = 'none';
+      document.getElementById('srtReviewScreen').style.display = 'block';
+
+      const filled = Object.values(srtResponses).filter(v => v.trim().length > 0).length;
+      document.getElementById('srtReviewStats').textContent = `Attempted: ${{filled}} / ${{srtList.length}} in 30 Minutes`;
+
+      const wrap = document.getElementById('srtReviewContent');
+      wrap.innerHTML = '';
+      srtList.forEach((sit, i) => {{
+        const div = document.createElement('div');
+        div.style = 'background: var(--bg-primary); border: 1px solid var(--bg-card-border); border-radius: 8px; padding: 1rem;';
+        div.innerHTML = `
+          <strong>#${{i + 1}}: ${{sit}}</strong>
+          <p style="margin-top: 0.4rem; color: var(--accent-gold);">${{escapeHtml(srtResponses[i] || '(Unanswered)')}}</p>
+        `;
+        wrap.appendChild(div);
+      }});
+    }}
+
+    function copySrtResponses() {{
+      let t = "=== SRT RESPONSES ===\\n";
+      srtList.forEach((sit, i) => {{
+        t += `${{i + 1}}. ${{sit}} => ${{srtResponses[i] || '(Unanswered)'}}\\n`;
+      }});
+      navigator.clipboard.writeText(t).then(() => alert("Copied SRT responses!"));
+    }}
+
+    function resetSrtToSetup() {{
+      document.getElementById('srtReviewScreen').style.display = 'none';
+      document.getElementById('srtSetupScreen').style.display = 'block';
+    }}
+
+    // ==============================================================
+    // SDT ENGINE
+    // ==============================================================
+    let sdtSec = 900;
+    let sdtInterval = null;
+    let sdtRunning = false;
+
+    function toggleSdtTimer() {{
+      sdtRunning = !sdtRunning;
+      const btn = document.getElementById('btnSdtTimerToggle');
+      if (sdtRunning) {{
+        btn.textContent = 'Pause Timer';
+        sdtInterval = setInterval(() => {{
+          sdtSec--;
+          const m = Math.floor(sdtSec / 60);
+          const s = sdtSec % 60;
+          document.getElementById('sdtTimer').textContent = `${{String(m).padStart(2, '0')}}:${{String(s).padStart(2, '0')}}`;
+          if (sdtSec <= 0) {{
+            clearInterval(sdtInterval);
+            alert("15 Minutes time over for Self Description Test!");
+            logCompletedSession('SDT', 'Full 5 Paragraphs', '15m Session Completed');
+          }}
+        }}, 1000);
+      }} else {{
+        btn.textContent = 'Resume Timer';
+        clearInterval(sdtInterval);
+      }}
+    }}
+
+    function saveSdtLocal() {{
+      const d = {{
+        p1: document.getElementById('sdt1').value,
+        p2: document.getElementById('sdt2').value,
+        p3: document.getElementById('sdt3').value,
+        p4: document.getElementById('sdt4').value,
+        p5: document.getElementById('sdt5').value
+      }};
+      localStorage.setItem('ssb_sdt_draft', JSON.stringify(d));
+      logCompletedSession('SDT', 'Draft Updated', 'Saved in browser');
+      alert("Draft saved in browser!");
+    }}
+
+    function copySdtText() {{
+      let t = "=== SELF DESCRIPTION TEST (SDT) ===\\n\\n";
+      t += "1. PARENTS' OPINION:\\n" + (document.getElementById('sdt1').value || '—') + "\\n\\n";
+      t += "2. TEACHERS' OPINION:\\n" + (document.getElementById('sdt2').value || '—') + "\\n\\n";
+      t += "3. FRIENDS' OPINION:\\n" + (document.getElementById('sdt3').value || '—') + "\\n\\n";
+      t += "4. SELF ASSESSMENT:\\n" + (document.getElementById('sdt4').value || '—') + "\\n\\n";
+      t += "5. FUTURE ASPIRATIONS:\\n" + (document.getElementById('sdt5').value || '—') + "\\n";
+      navigator.clipboard.writeText(t).then(() => alert("Copied all 5 paragraphs to clipboard!"));
+    }}
+
+    // ==============================================================
+    // OIR ENGINE
+    // ==============================================================
+    let oirResponses = {{}};
+    let oirSec = 1200;
+    let oirInterval = null;
+    let oirRunning = false;
+
+    document.getElementById('oirPdfInput').addEventListener('change', (e) => {{
+      const file = e.target.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      document.getElementById('oirPdfPlaceholder').style.display = 'none';
+      const iframe = document.getElementById('oirPdfIframe');
+      iframe.src = url;
+      iframe.style.display = 'block';
+      logCompletedSession('OIR', file.name, 'PDF Loaded for practice');
+    }});
+
+    function generateOmrRows() {{
+      const count = parseInt(document.getElementById('oirQuestionCount').value, 10);
+      const wrap = document.getElementById('omrRowsList');
+      wrap.innerHTML = '';
+      oirResponses = {{}};
+
+      for (let i = 1; i <= count; i++) {{
+        const row = document.createElement('div');
+        row.className = 'omr-row';
+        row.innerHTML = `
+          <div class="omr-q-num">Q${{i}}</div>
+          <div class="omr-bubbles">
+            <div class="omr-bubble" onclick="markOmrBubble(${{i}}, 'A', this)">A</div>
+            <div class="omr-bubble" onclick="markOmrBubble(${{i}}, 'B', this)">B</div>
+            <div class="omr-bubble" onclick="markOmrBubble(${{i}}, 'C', this)">C</div>
+            <div class="omr-bubble" onclick="markOmrBubble(${{i}}, 'D', this)">D</div>
+          </div>
+        `;
+        wrap.appendChild(row);
+      }}
+      updateOmrStats();
+    }}
+
+    function markOmrBubble(qNum, opt, el) {{
+      const parent = el.parentElement;
+      const isAlready = el.classList.contains('selected');
+      parent.querySelectorAll('.omr-bubble').forEach(b => b.classList.remove('selected'));
+      if (isAlready) {{
+        delete oirResponses[qNum];
+      }} else {{
+        el.classList.add('selected');
+        oirResponses[qNum] = opt;
+      }}
+      updateOmrStats();
+    }}
+
+    function updateOmrStats() {{
+      const total = parseInt(document.getElementById('oirQuestionCount').value, 10);
+      const marked = Object.keys(oirResponses).length;
+      document.getElementById('oirAttemptStats').textContent = `Marked: ${{marked}} / ${{total}} Questions`;
+    }}
+
+    function toggleOirTimer() {{
+      oirRunning = !oirRunning;
+      const btn = document.getElementById('btnOirTimerToggle');
+      if (oirRunning) {{
+        btn.textContent = 'Pause';
+        oirInterval = setInterval(() => {{
+          oirSec--;
+          const m = Math.floor(oirSec / 60);
+          const s = oirSec % 60;
+          document.getElementById('oirTimerNum').textContent = `${{String(m).padStart(2, '0')}}:${{String(s).padStart(2, '0')}}`;
+          if (oirSec <= 0) {{
+            clearInterval(oirInterval);
+            alert("OIR Time is up!");
+            submitOirOMR();
+          }}
+        }}, 1000);
+      }} else {{
+        btn.textContent = 'Resume';
+        clearInterval(oirInterval);
+      }}
+    }}
+
+    function submitOirOMR() {{
+      const total = parseInt(document.getElementById('oirQuestionCount').value, 10);
+      const marked = Object.keys(oirResponses).length;
+      logCompletedSession('OIR', `${{marked}}/${{total}} Marked`, 'Test Completed');
+      let summary = `OIR Test Completed!\\nMarked: ${{marked}} / ${{total}}\\nUnanswered: ${{total - marked}}\\n\\nCopy your marked answers?`;
+      if (confirm(summary)) {{
+        let t = "=== OIR ANSWER SHEET ===\\n";
+        for (let i = 1; i <= total; i++) {{
+          t += `Q${{i}}: ${{oirResponses[i] || '—'}}\\n`;
+        }}
+        navigator.clipboard.writeText(t).then(() => alert("OMR Answer sheet copied to clipboard!"));
+      }}
+    }}
+
+    // ==============================================================
+    // FULL MOCK BATTERY LAUNCHER
+    // ==============================================================
+    function launchFullMockBattery() {{
+      if (confirm("Commence Full Stage 2 Psychological Mock Test?\\n\\nSchedule:\\n1. 12 TAT Stories (approx 50 mins)\\n2. 60 WAT Words (15 mins)\\n3. 60 SRT Situations (30 mins)\\n4. 5 SDT Paragraphs (15 mins)")) {{
+        document.querySelector('[data-tab=\"tab-tat\"]').click();
+        startTatTest();
+      }}
+    }}
+
+    // Utility
+    function shuffle(arr) {{
+      for (let i = arr.length - 1; i > 0; i--) {{
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }}
+    }}
+
+    function escapeHtml(str) {{
+      return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }}
+
+    // Theme toggle
+    let isLight = false;
+    document.getElementById('btnToggleTheme').addEventListener('click', () => {{
+      isLight = !isLight;
+      document.body.classList.toggle('dipr-projector', isLight);
+      document.getElementById('themeIcon').textContent = isLight ? '🌙' : '☀️';
+      document.getElementById('themeLabel').textContent = isLight ? 'Dark Hall' : 'Projector Mode';
+    }});
+
+    // Fullscreen toggle
+    document.getElementById('btnToggleFullscreen').addEventListener('click', () => {{
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {{}});
+      else if (document.exitFullscreen) document.exitFullscreen();
+    }});
+
+    // Init on load
+    generateOmrRows();
+    loadProgress();
+  </script>
+</body>
+</html>
+'''
+
+with open(os.path.join(out_dir, 'index.html'), 'w', encoding='utf-8') as f:
+    f.write(html)
+
+print("Upgraded with Progress Tracker and No-Repeat Engine!")
