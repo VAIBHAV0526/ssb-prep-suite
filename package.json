@@ -1,0 +1,11 @@
+{
+  "name": "ssb-master-suite",
+  "version": "1.0.0",
+  "description": "Complete DIPR SSB Psychological & Screening Master Testing Suite",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "keywords": ["ssb", "wat", "tat", "srt", "sdt", "oir", "dipr"],
+  "author": "",
+  "license": "MIT"
+}
