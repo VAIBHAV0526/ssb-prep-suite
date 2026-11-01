@@ -18,10 +18,7 @@
   <style>
     /* ==========================================================================
        DESIGN SYSTEM: MILITARY SPEC / DIPR DISCIPLINED INTERFACE
-       Principles:
-       1. Zero decorative SaaS fluff. Hairline geometry, matte obsidian & brass.
-       2. Screen focus: in active tests, everything except the stimulus fades.
-       3. Purposeful typography: Rajdhani for tactical headers/timers, Inter for prose.
+       Zero decorative emoji clutter. Clean geometric typography and matte slate.
        ========================================================================== */
     :root {
       --bg-base: #070a10;
@@ -50,7 +47,6 @@
       --radius-lg: 10px;
     }
 
-    /* DIPR Projector Mode (Emulating real SSB testing hall daylight / white wall) */
     body.projector-hall {
       --bg-base: #f1f5f9;
       --bg-surface: #ffffff;
@@ -160,7 +156,7 @@
       color: var(--text-secondary);
       font-family: var(--font-ui);
       font-size: 0.82rem;
-      font-weight: 500;
+      font-weight: 600;
       padding: 0.45rem 0.85rem;
       border-radius: var(--radius-md);
       cursor: pointer;
@@ -208,7 +204,6 @@
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
       white-space: nowrap;
       transition: color 0.15s ease, border-color 0.15s ease;
     }
@@ -359,7 +354,7 @@
       color: #05080f;
       border: none;
       font-family: var(--font-tactical);
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 700;
       letter-spacing: 0.75px;
       text-transform: uppercase;
@@ -690,9 +685,7 @@
       font-weight: 700;
       letter-spacing: 0.5px;
       color: var(--accent-intel);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      text-transform: uppercase;
     }
 
     .dispatch-desc {
@@ -723,7 +716,6 @@
     .model-chip {
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
       padding: 0.4rem 0.75rem;
       border-radius: var(--radius-sm);
       font-size: 0.8rem;
@@ -865,28 +857,28 @@
       </div>
       <div class="console-actions">
         <button class="console-btn" id="btnToggleTheme" title="Toggle Daylight Projector / Dark Hall">
-          <span id="themeIcon">☀️</span> <span id="themeLabel">Projector Hall</span>
+          <span id="themeLabel">Projector Hall</span>
         </button>
         <button class="console-btn" id="btnToggleFullscreen" title="Fullscreen Mode">
-          ⛶ <span>Fullscreen</span>
+          Fullscreen
         </button>
       </div>
     </div>
 
-    <!-- OPERATIONAL NAVIGATION TABS -->
+    <!-- OPERATIONAL NAVIGATION TABS (CLEAN, NO DECORATIVE EMOJIS) -->
     <nav class="operational-nav">
       <div class="nav-track">
         <button class="op-tab active" data-tab="tab-progress">
-          📊 Mission Mastery
+          Mission Mastery
         </button>
-        <button class="op-tab" data-tab="tab-wat">⚡ WAT (60 Words)</button>
-        <button class="op-tab" data-tab="tab-tat">🖼️ TAT (12 Slides)</button>
-        <button class="op-tab" data-tab="tab-srt">📝 SRT (60 Scenarios)</button>
-        <button class="op-tab" data-tab="tab-sdt">👤 SDT (5 Prompts)</button>
-        <button class="op-tab" data-tab="tab-oir">📑 OIR (OMR Console)</button>
-        <button class="op-tab" data-tab="tab-fullmock">🎯 Full Mock Battery</button>
+        <button class="op-tab" data-tab="tab-wat">WAT (60 Words)</button>
+        <button class="op-tab" data-tab="tab-tat">TAT (12 Slides)</button>
+        <button class="op-tab" data-tab="tab-srt">SRT (60 Scenarios)</button>
+        <button class="op-tab" data-tab="tab-sdt">SDT (Self Description)</button>
+        <button class="op-tab" data-tab="tab-oir">OIR (OMR Console)</button>
+        <button class="op-tab" data-tab="tab-fullmock">Full Mock Battery</button>
         <button class="op-tab intel-tab" data-tab="tab-ai-assessor">
-          🤖 AI Assessor Dispatch
+          AI Evaluation Dispatch
         </button>
       </div>
     </nav>
@@ -908,9 +900,9 @@
             </p>
           </div>
           <div style="display: flex; gap: 0.5rem;">
-            <button class="btn-aux" onclick="exportProgressJSON()">📥 Backup Progress</button>
+            <button class="btn-aux" onclick="exportProgressJSON()">Backup Progress</button>
             <input type="file" id="importProgressInput" accept=".json" style="display: none;">
-            <button class="btn-aux" onclick="document.getElementById('importProgressInput').click()">📤 Restore Progress</button>
+            <button class="btn-aux" onclick="document.getElementById('importProgressInput').click()">Restore Progress</button>
           </div>
         </div>
 
@@ -942,14 +934,14 @@
         <div style="background: var(--accent-brass-subtle); border: 1px solid var(--accent-brass); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
           <div>
             <strong style="font-family: var(--font-tactical); font-size: 1.1rem; color: var(--accent-brass); letter-spacing: 0.5px; text-transform: uppercase;">
-              🎯 Recommended Next Objective:
+              Recommended Next Objective:
             </strong>
             <div style="color: var(--text-primary); font-size: 0.95rem; margin-top: 0.25rem;" id="nextRecText">
               Scanning unattempted sets...
             </div>
           </div>
           <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.65rem 1.75rem; font-size: 0.95rem;" id="btnLaunchNextRec">
-            Launch Set ❯
+            Launch Set
           </button>
         </div>
 
@@ -957,21 +949,21 @@
         <div style="display: flex; flex-direction: column; gap: 1.75rem;">
           <div>
             <strong style="font-family: var(--font-tactical); font-size: 1.05rem; letter-spacing: 0.5px; color: var(--accent-brass); text-transform: uppercase;">
-              ⚡ Word Association Test Sets (WAT 1 to 21)
+              Word Association Test Sets (WAT 1 to 21)
             </strong>
             <div class="pill-grid" id="pillsWat"></div>
           </div>
 
           <div>
             <strong style="font-family: var(--font-tactical); font-size: 1.05rem; letter-spacing: 0.5px; color: var(--accent-intel); text-transform: uppercase;">
-              🖼️ Thematic Apperception Test Sets (TAT 1 to 12)
+              Thematic Apperception Test Sets (TAT 1 to 12)
             </strong>
             <div class="pill-grid" id="pillsTat"></div>
           </div>
 
           <div>
             <strong style="font-family: var(--font-tactical); font-size: 1.05rem; letter-spacing: 0.5px; color: var(--accent-ready); text-transform: uppercase;">
-              📝 Situation Reaction Test Sets (SRT 1 and 2)
+              Situation Reaction Test Sets (SRT 1 and 2)
             </strong>
             <div class="pill-grid" id="pillsSrt"></div>
           </div>
@@ -1020,9 +1012,9 @@
         <div class="param-group">
           <label class="param-label">Select Practice Set</label>
           <select id="watSelectSet">
-            <option value="next_unattempted" selected>🎯 Next Unattempted Set (No Repeat Guarantee)</option>
-            <option value="random_60">🎲 Random 60 Words (Full Board Simulation)</option>
-            <option value="random_30">⚡ Rapid 30 Words Drill</option>
+            <option value="next_unattempted" selected>Next Unattempted Set (No Repeat Guarantee)</option>
+            <option value="random_60">Random 60 Words (Full Board Simulation)</option>
+            <option value="random_30">Rapid 30 Words Drill</option>
             <optgroup label="── OFFICIAL DIPR 60-WORD SETS ──" id="watOptGroupSets">
               <option value="set_1">Set 1 (60 Words: EASY ... DUTY)</option>
               <option value="set_2">Set 2 (60 Words: IDEA ... COMPETITION)</option>
@@ -1047,7 +1039,7 @@
               <option value="set_21">Set 21 (60 Words: VELOCITY ... HESITATE)</option>
             </optgroup>
             <optgroup label="── MARATHON ──">
-              <option value="all">🔥 Complete Repository (1259 Words)</option>
+              <option value="all">Complete Repository (1259 Words)</option>
             </optgroup>
           </select>
         </div>
@@ -1075,17 +1067,17 @@
           <label class="param-label">Practice Style</label>
           <div class="format-selector">
             <div class="format-card selected" id="watModePaper" onclick="setWatMode('paper')">
-              <strong>📝 Pen & Paper (Recommended)</strong>
+              <strong>Pen & Paper (Recommended)</strong>
               <span>Replicates real SSB board condition. Write responses in a physical notebook as words flash.</span>
             </div>
             <div class="format-card" id="watModeTyping" onclick="setWatMode('typing')">
-              <strong>⌨️ Digital Typing</strong>
+              <strong>Digital Typing</strong>
               <span>Type your response directly into the on-screen input field during the 15-second window.</span>
             </div>
           </div>
         </div>
 
-        <button class="btn-engage" onclick="startWatTest()">COMMENCE WAT DRILL ❯</button>
+        <button class="btn-engage" onclick="startWatTest()">Commence WAT Drill</button>
       </div>
 
       <!-- WAT ACTIVE TEST THEATER -->
@@ -1115,9 +1107,9 @@
         </div>
 
         <div style="display: flex; gap: 0.75rem; margin-top: 2rem; justify-content: center; flex-wrap: wrap;">
-          <button class="btn-aux" onclick="toggleWatPause()"><span id="watPauseIcon">⏸</span> <span id="watPauseLabel">Pause</span></button>
-          <button class="btn-aux" onclick="nextWatWord()">Next Word ❯</button>
-          <button class="btn-aux" style="color: var(--accent-alert);" onclick="abortWatTest()">✕ Abort Test</button>
+          <button class="btn-aux" onclick="toggleWatPause()"><span id="watPauseLabel">Pause</span></button>
+          <button class="btn-aux" onclick="nextWatWord()">Next Word</button>
+          <button class="btn-aux" style="color: var(--accent-alert);" onclick="abortWatTest()">Abort Test</button>
         </div>
       </div>
 
@@ -1128,7 +1120,7 @@
             <h2 class="module-heading">WAT Drill Completed</h2>
             <p class="module-desc" style="margin-bottom: 0;">Review your stimulus responses and evaluate with AI for free.</p>
           </div>
-          <button class="btn-aux" onclick="copyWatResponses()">📋 Copy Raw Words</button>
+          <button class="btn-aux" onclick="copyWatResponses()">Copy Raw Words</button>
         </div>
 
         <!-- AI DISPATCH CARD -->
@@ -1136,23 +1128,23 @@
           <div class="dispatch-header">
             <div>
               <div class="dispatch-title">
-                <span>🤖</span> Free AI Psychologist Evaluation (ChatGPT / Claude / Gemini)
+                AI Psychologist Evaluation (ChatGPT / Claude / Gemini)
               </div>
               <p class="dispatch-desc">
                 Evaluate your responses using an AI prompted as a <strong>Senior DIPR Psychologist</strong>. It checks against the 15 OLQs, flags preaching (e.g. <em>'should/must'</em>), and provides concise, officer-grade model answers.
               </p>
             </div>
             <div class="dispatch-actions">
-              <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.55rem 1.25rem; font-size: 0.9rem; background: var(--accent-intel);" onclick="copyWatAiPrompt()">📋 Copy AI Assessor Prompt</button>
-              <button class="btn-aux" onclick="downloadWatAiDossier()">📥 Download Dossier (.txt)</button>
+              <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.55rem 1.25rem; font-size: 0.9rem; background: var(--accent-intel);" onclick="copyWatAiPrompt()">Copy AI Assessor Prompt</button>
+              <button class="btn-aux" onclick="downloadWatAiDossier()">Download Dossier</button>
             </div>
           </div>
           <div class="model-links-row">
             <span style="font-size: 0.8rem; color: var(--text-tertiary);">Step 2: Paste prompt into your chosen chat model:</span>
             <div style="display: flex; gap: 0.5rem;">
-              <a href="https://chatgpt.com" target="_blank" class="model-chip chip-chatgpt">🚀 ChatGPT (Free) ↗</a>
-              <a href="https://claude.ai" target="_blank" class="model-chip chip-claude">🟣 Claude (Free) ↗</a>
-              <a href="https://gemini.google.com" target="_blank" class="model-chip chip-gemini">✨ Gemini (Free) ↗</a>
+              <a href="https://chatgpt.com" target="_blank" class="model-chip chip-chatgpt">ChatGPT ↗</a>
+              <a href="https://claude.ai" target="_blank" class="model-chip chip-claude">Claude ↗</a>
+              <a href="https://gemini.google.com" target="_blank" class="model-chip chip-gemini">Gemini ↗</a>
             </div>
           </div>
         </div>
@@ -1169,7 +1161,7 @@
             <tbody id="watReviewTbody"></tbody>
           </table>
         </div>
-        <button class="btn-aux" onclick="resetWatToSetup()">← Return to Setup</button>
+        <button class="btn-aux" onclick="resetWatToSetup()">Return to Setup</button>
       </div>
 
     </section>
@@ -1194,8 +1186,8 @@
         <div class="param-group">
           <label class="param-label">Select TAT Set</label>
           <select id="tatSelectSet">
-            <option value="next_unattempted" selected>🎯 Next Unattempted Set (No Repeat Guarantee)</option>
-            <option value="random_11">🎲 Random 11 Pictures + Slide 12 Blank</option>
+            <option value="next_unattempted" selected>Next Unattempted Set (No Repeat Guarantee)</option>
+            <option value="random_11">Random 11 Pictures + Slide 12 Blank</option>
             <optgroup label="── OFFICIAL 12-SLIDE SETS ──" id="tatOptGroupSets">
               <option value="tat_set_1">TAT Set 1 (11 Pictures (tat_001 to tat_011) + 1 Blank Slide)</option>
               <option value="tat_set_2">TAT Set 2 (11 Pictures (tat_012 to tat_022) + 1 Blank Slide)</option>
@@ -1236,17 +1228,17 @@
           <label class="param-label">Practice Style</label>
           <div class="format-selector">
             <div class="format-card selected" id="tatModePaper" onclick="setTatMode('paper')">
-              <strong>📝 Pen & Paper (Recommended)</strong>
+              <strong>Pen & Paper (Recommended)</strong>
               <span>Observe the visual stimuli on screen and write your 12 narratives in your physical booklet.</span>
             </div>
             <div class="format-card" id="tatModeTyping" onclick="setTatMode('typing')">
-              <strong>⌨️ Digital Typing</strong>
+              <strong>Digital Typing</strong>
               <span>Type your story directly into the on-screen narrative editor during the 4-minute writing phase.</span>
             </div>
           </div>
         </div>
 
-        <button class="btn-engage" onclick="startTatTest()">COMMENCE TAT DRILL ❯</button>
+        <button class="btn-engage" onclick="startTatTest()">Commence TAT Drill</button>
       </div>
 
       <!-- TAT ACTIVE STAGE -->
@@ -1257,7 +1249,7 @@
               SLIDE 1 / 12
             </div>
             <div style="margin-top: 0.25rem;">
-              <span class="phase-pill observe" id="tatPhaseBadge">👁️ OBSERVATION PHASE (30s)</span>
+              <span class="phase-pill observe" id="tatPhaseBadge">Observation Phase (30s)</span>
             </div>
           </div>
 
@@ -1281,7 +1273,7 @@
             </p>
           </div>
           <div id="tatWritingPrompt" style="display: none; text-align: center; padding: 2rem;">
-            <h3 style="font-family: var(--font-tactical); font-size: 2.2rem; color: var(--accent-ready); margin-bottom: 0.4rem;">✍️ NARRATIVE PHASE</h3>
+            <h3 style="font-family: var(--font-tactical); font-size: 2.2rem; color: var(--accent-ready); margin-bottom: 0.4rem;">NARRATIVE PHASE</h3>
             <p style="color: var(--text-secondary); font-size: 0.95rem;">
               Synthesize past context (what led to it), active present measures, and a realistic positive resolution.
             </p>
@@ -1293,11 +1285,11 @@
         </div>
 
         <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem; justify-content: center; flex-wrap: wrap;">
-          <button class="btn-aux" onclick="toggleTatPause()"><span id="tatPauseIcon">⏸</span> <span id="tatPauseLabel">Pause</span></button>
+          <button class="btn-aux" onclick="toggleTatPause()"><span id="tatPauseLabel">Pause</span></button>
           <button class="btn-aux" style="border-color: var(--accent-ready); color: var(--accent-ready);" onclick="advanceTatPhaseEarly()">
-            Finished Writing ➔ Next Slide
+            Finished Writing — Next Slide
           </button>
-          <button class="btn-aux" style="color: var(--accent-alert);" onclick="abortTatTest()">✕ Abort Test</button>
+          <button class="btn-aux" style="color: var(--accent-alert);" onclick="abortTatTest()">Abort Test</button>
         </div>
       </div>
 
@@ -1308,7 +1300,7 @@
             <h2 class="module-heading">TAT Session Completed</h2>
             <p class="module-desc" style="margin-bottom: 0;">12 Slides recorded. Ready for multimodal AI assessment.</p>
           </div>
-          <button class="btn-aux" onclick="copyTatResponses()">📋 Copy Raw Stories</button>
+          <button class="btn-aux" onclick="copyTatResponses()">Copy Raw Stories</button>
         </div>
 
         <!-- MULTIMODAL AI EVALUATION PACKAGE -->
@@ -1316,7 +1308,7 @@
           <div class="dispatch-header">
             <div>
               <div class="dispatch-title">
-                <span>🖼️🤖</span> Free Multimodal TAT Evaluation (Images + Stories)
+                Multimodal TAT Evaluation (Images + Stories)
               </div>
               <p class="dispatch-desc">
                 Download the package containing all <strong>slide picture images (.jpg) + your stories + the Senior DIPR Assessor Prompt</strong>. Upload them directly into ChatGPT-4o, Claude 3.5, or Gemini to evaluate how well your Hero and Action match the visual stimulus and the 15 OLQs!
@@ -1324,24 +1316,24 @@
             </div>
             <div class="dispatch-actions">
               <button class="btn-engage" id="btnDownloadTatZip" style="width: auto; margin-top: 0; padding: 0.55rem 1.25rem; font-size: 0.9rem;" onclick="downloadTatZipPackage()">
-                📦 Download Package (.ZIP: Images + Prompt)
+                Download Package (ZIP: Images + Prompt)
               </button>
-              <button class="btn-aux" onclick="copyTatAiPrompt()">📋 Copy Prompt</button>
-              <button class="btn-aux" onclick="downloadTatAiDossier()">📥 Download Text</button>
+              <button class="btn-aux" onclick="copyTatAiPrompt()">Copy Prompt</button>
+              <button class="btn-aux" onclick="downloadTatAiDossier()">Download Text</button>
             </div>
           </div>
           <div class="model-links-row">
             <span style="font-size: 0.8rem; color: var(--text-tertiary);">Step 2: Upload images & prompt to free AI chat:</span>
             <div style="display: flex; gap: 0.5rem;">
-              <a href="https://chatgpt.com" target="_blank" class="model-chip chip-chatgpt">🚀 ChatGPT (Free) ↗</a>
-              <a href="https://claude.ai" target="_blank" class="model-chip chip-claude">🟣 Claude (Free) ↗</a>
-              <a href="https://gemini.google.com" target="_blank" class="model-chip chip-gemini">✨ Gemini (Free) ↗</a>
+              <a href="https://chatgpt.com" target="_blank" class="model-chip chip-chatgpt">ChatGPT ↗</a>
+              <a href="https://claude.ai" target="_blank" class="model-chip chip-claude">Claude ↗</a>
+              <a href="https://gemini.google.com" target="_blank" class="model-chip chip-gemini">Gemini ↗</a>
             </div>
           </div>
         </div>
 
         <div id="tatReviewList" style="max-height: 520px; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;"></div>
-        <button class="btn-aux" onclick="resetTatToSetup()">← Return to Setup</button>
+        <button class="btn-aux" onclick="resetTatToSetup()">Return to Setup</button>
       </div>
 
     </section>
@@ -1366,10 +1358,10 @@
         <div class="param-group">
           <label class="param-label">Select SRT Set</label>
           <select id="srtSelectSet">
-            <option value="next_unattempted" selected>🎯 Next Unattempted Set (No Repeat Guarantee)</option>
+            <option value="next_unattempted" selected>Next Unattempted Set (No Repeat Guarantee)</option>
             <option value="1">DIPR Official SRT Set 1 (60 Scenarios)</option>
             <option value="2">DIPR Official SRT Set 2 (60 Scenarios)</option>
-            <option value="random">🎲 Random 60 Scenarios</option>
+            <option value="random">Random 60 Scenarios</option>
           </select>
         </div>
 
@@ -1377,17 +1369,17 @@
           <label class="param-label">Presentation Format</label>
           <div class="format-selector">
             <div class="format-card selected" id="srtModeBooklet" onclick="setSrtMode('booklet')">
-              <strong>📖 Full Booklet Mode (30:00 Timer)</strong>
+              <strong>Full Booklet Mode (30:00 Timer)</strong>
               <span>Scrollable 60-scenario ledger with live clock. Replicates paper booklet navigation.</span>
             </div>
             <div class="format-card" id="srtModeFlash" onclick="setSrtMode('flash')">
-              <strong>⚡ 30s Flash Mode</strong>
+              <strong>30s Flash Mode</strong>
               <span>Each situation flashes on screen individually for 30 seconds.</span>
             </div>
           </div>
         </div>
 
-        <button class="btn-engage" onclick="startSrtTest()">COMMENCE SRT DRILL (30 MINS) ❯</button>
+        <button class="btn-engage" onclick="startSrtTest()">Commence SRT Drill (30 Mins)</button>
       </div>
 
       <!-- SRT ACTIVE WORKSPACE -->
@@ -1417,7 +1409,7 @@
             <h2 class="module-heading">SRT Session Completed</h2>
             <p class="module-desc" style="margin-bottom: 0;" id="srtReviewStats">Attempted: 60 / 60</p>
           </div>
-          <button class="btn-aux" onclick="copySrtResponses()">📋 Copy Raw Reactions</button>
+          <button class="btn-aux" onclick="copySrtResponses()">Copy Reactions</button>
         </div>
 
         <!-- AI DISPATCH CARD -->
@@ -1425,29 +1417,29 @@
           <div class="dispatch-header">
             <div>
               <div class="dispatch-title">
-                <span>🤖</span> Free AI SRT Evaluation
+                AI SRT Evaluation
               </div>
               <p class="dispatch-desc">
                 Evaluate completeness of reaction, speed of decision, and sense of responsibility. Flags evasion (e.g. <em>'called police and watched'</em>) and provides concise military-grade solutions.
               </p>
             </div>
             <div class="dispatch-actions">
-              <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.55rem 1.25rem; font-size: 0.9rem; background: var(--accent-intel);" onclick="copySrtAiPrompt()">📋 Copy AI Assessor Prompt</button>
-              <button class="btn-aux" onclick="downloadSrtAiDossier()">📥 Download Dossier</button>
+              <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.55rem 1.25rem; font-size: 0.9rem; background: var(--accent-intel);" onclick="copySrtAiPrompt()">Copy AI Assessor Prompt</button>
+              <button class="btn-aux" onclick="downloadSrtAiDossier()">Download Dossier</button>
             </div>
           </div>
           <div class="model-links-row">
             <span style="font-size: 0.8rem; color: var(--text-tertiary);">Step 2: Paste into free AI chat:</span>
             <div style="display: flex; gap: 0.5rem;">
-              <a href="https://chatgpt.com" target="_blank" class="model-chip chip-chatgpt">🚀 ChatGPT (Free) ↗</a>
-              <a href="https://claude.ai" target="_blank" class="model-chip chip-claude">🟣 Claude (Free) ↗</a>
-              <a href="https://gemini.google.com" target="_blank" class="model-chip chip-gemini">✨ Gemini (Free) ↗</a>
+              <a href="https://chatgpt.com" target="_blank" class="model-chip chip-chatgpt">ChatGPT ↗</a>
+              <a href="https://claude.ai" target="_blank" class="model-chip chip-claude">Claude ↗</a>
+              <a href="https://gemini.google.com" target="_blank" class="model-chip chip-gemini">Gemini ↗</a>
             </div>
           </div>
         </div>
 
         <div id="srtReviewContent" style="max-height: 480px; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;"></div>
-        <button class="btn-aux" onclick="resetSrtToSetup()">← Return to Setup</button>
+        <button class="btn-aux" onclick="resetSrtToSetup()">Return to Setup</button>
       </div>
 
     </section>
@@ -1477,23 +1469,23 @@
           <div class="dispatch-header">
             <div>
               <div class="dispatch-title">
-                <span>🤖</span> Free SDT Triangulation & Authenticity Check
+                SDT Triangulation & Authenticity Check
               </div>
               <p class="dispatch-desc">
                 AI cross-references your Parents, Teachers, Friends, and Self assessments to detect contradictions, fake weaknesses (e.g. <em>'perfectionist'</em>), and prepare you for Interviewing Officer questions.
               </p>
             </div>
             <div class="dispatch-actions">
-              <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.55rem 1.25rem; font-size: 0.9rem; background: var(--accent-intel);" onclick="copySdtAiPrompt()">📋 Copy AI Assessor Prompt</button>
-              <button class="btn-aux" onclick="downloadSdtAiDossier()">📥 Download Dossier</button>
+              <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.55rem 1.25rem; font-size: 0.9rem; background: var(--accent-intel);" onclick="copySdtAiPrompt()">Copy AI Assessor Prompt</button>
+              <button class="btn-aux" onclick="downloadSdtAiDossier()">Download Dossier</button>
             </div>
           </div>
           <div class="model-links-row">
             <span style="font-size: 0.8rem; color: var(--text-tertiary);">Step 2: Paste into free AI chat:</span>
             <div style="display: flex; gap: 0.5rem;">
-              <a href="https://chatgpt.com" target="_blank" class="model-chip chip-chatgpt">🚀 ChatGPT (Free) ↗</a>
-              <a href="https://claude.ai" target="_blank" class="model-chip chip-claude">🟣 Claude (Free) ↗</a>
-              <a href="https://gemini.google.com" target="_blank" class="model-chip chip-gemini">✨ Gemini (Free) ↗</a>
+              <a href="https://chatgpt.com" target="_blank" class="model-chip chip-chatgpt">ChatGPT ↗</a>
+              <a href="https://claude.ai" target="_blank" class="model-chip chip-claude">Claude ↗</a>
+              <a href="https://gemini.google.com" target="_blank" class="model-chip chip-gemini">Gemini ↗</a>
             </div>
           </div>
         </div>
@@ -1526,8 +1518,8 @@
         </div>
 
         <div style="display: flex; justify-content: space-between; margin-top: 1.5rem; gap: 1rem; flex-wrap: wrap;">
-          <button class="btn-aux" onclick="saveSdtLocal()">💾 Save Draft</button>
-          <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.65rem 2rem; font-size: 0.95rem;" onclick="copySdtText()">📋 Copy All 5 Paragraphs</button>
+          <button class="btn-aux" onclick="saveSdtLocal()">Save Draft</button>
+          <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.65rem 2rem; font-size: 0.95rem;" onclick="copySdtText()">Copy 5 Paragraphs</button>
         </div>
       </div>
     </section>
@@ -1543,7 +1535,7 @@
         </div>
         <div style="display: flex; gap: 0.6rem; align-items: center;">
           <input type="file" id="oirPdfInput" accept=".pdf" style="display: none;">
-          <button class="btn-aux" onclick="document.getElementById('oirPdfInput').click()">📂 Upload OIR PDF</button>
+          <button class="btn-aux" onclick="document.getElementById('oirPdfInput').click()">Upload OIR PDF</button>
           <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); padding: 0.35rem 0.75rem; border-radius: var(--radius-sm); font-family: var(--font-tactical); font-size: 1.4rem; font-weight: 700; color: var(--accent-brass);" id="oirTimerNum">
             20:00
           </div>
@@ -1556,8 +1548,7 @@
         <!-- PDF VIEWPORT -->
         <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); overflow: hidden; display: flex; flex-direction: column; height: 100%;">
           <div id="oirPdfPlaceholder" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center;">
-            <div style="font-size: 3rem; margin-bottom: 0.75rem;">📑</div>
-            <h3 style="font-family: var(--font-tactical); font-size: 1.4rem; margin-bottom: 0.4rem;">No OIR Paper Loaded</h3>
+            <h3 style="font-family: var(--font-tactical); font-size: 1.5rem; margin-bottom: 0.4rem;">No OIR Paper Loaded</h3>
             <p style="color: var(--text-secondary); max-width: 420px; font-size: 0.9rem; margin-bottom: 1.5rem;">
               Upload any OIR test PDF (e.g. 50 Verbal/Non-Verbal questions) to inspect problems on the left while marking answers on the live OMR punch sheet.
             </p>
@@ -1617,7 +1608,7 @@
         </div>
 
         <button class="btn-engage" style="max-width: 400px; margin: 0 auto;" onclick="launchFullMockBattery()">
-          🚀 COMMENCE FULL BATTERY SIMULATION
+          Commence Full Battery Simulation
         </button>
       </div>
     </section>
@@ -1628,7 +1619,7 @@
     <section class="workspace-module" id="tab-ai-assessor">
       <div class="command-panel" style="max-width: 1040px;">
         <div style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 1.25rem; margin-bottom: 1.5rem;">
-          <h2 class="module-heading" style="color: var(--accent-intel);">🤖 AI Psychologist Evaluation Hub (100% Free)</h2>
+          <h2 class="module-heading" style="color: var(--accent-intel);">AI Psychologist Evaluation Hub</h2>
           <p class="module-desc" style="margin-bottom: 0;">
             Zero-cost, professional psychological grading using free foundation models (ChatGPT-4o, Claude 3.5 Sonnet, or Google Gemini). Download stimuli packages (including high-resolution TAT images) and copy expert Senior DIPR Psychologist prompts with 1 click.
           </p>
@@ -1638,7 +1629,7 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
           <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem;">
             <div style="font-family: var(--font-tactical); font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;">
-              📥 1. Extract Stimuli & Prompt
+              1. Extract Stimuli & Prompt
             </div>
             <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
               Select any TAT set to download a <strong>ready-to-upload ZIP</strong> containing the slide images and your stories, or copy the formatted prompt for WAT, SRT, or SDT.
@@ -1646,15 +1637,15 @@
           </div>
           <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem;">
             <div style="font-family: var(--font-tactical); font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;">
-              💬 2. Deploy to Free AI Chat
+              2. Deploy to Free AI Chat
             </div>
             <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
-              Open <a href="https://chatgpt.com" target="_blank" style="color: var(--accent-ready); font-weight: 600;">ChatGPT</a>, <a href="https://claude.ai" target="_blank" style="color: #fbbf24; font-weight: 600;">Claude</a>, or <a href="https://gemini.google.com" target="_blank" style="color: var(--accent-intel); font-weight: 600;">Gemini</a>. No API keys or paid accounts required!
+              Open <a href="https://chatgpt.com" target="_blank" style="color: var(--accent-ready); font-weight: 600;">ChatGPT</a>, <a href="https://claude.ai" target="_blank" style="color: #fbbf24; font-weight: 600;">Claude</a>, or <a href="https://gemini.google.com" target="_blank" style="color: var(--accent-intel); font-weight: 600;">Gemini</a>. No API keys or paid accounts required.
             </p>
           </div>
           <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem;">
             <div style="font-family: var(--font-tactical); font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;">
-              🎖️ 3. Receive 15 OLQ Scoring
+              3. Receive 15 OLQ Scoring
             </div>
             <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
               The AI roleplays as a <strong>Senior DIPR Assessor</strong>, grading your responses across the 15 OLQs, highlighting red flags, and rewriting them into officer-level responses.
@@ -1665,7 +1656,7 @@
         <!-- ON-DEMAND STIMULI GENERATOR -->
         <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 2rem;">
           <h3 style="font-family: var(--font-tactical); font-size: 1.25rem; font-weight: 700; color: var(--accent-brass); margin-bottom: 0.35rem; text-transform: uppercase;">
-            📦 On-Demand Test Package Downloader
+            On-Demand Test Package Downloader
           </h3>
           <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
             Practicing in a physical notebook? Select any set below to generate the exact DIPR prompt and slide images package for AI review.
@@ -1675,10 +1666,10 @@
             <div class="param-group">
               <label class="param-label">Select Test Type</label>
               <select id="hubSelectType" onchange="updateHubOptions()">
-                <option value="tat" selected>🖼️ Thematic Apperception Test (TAT) — With Slide Images ZIP</option>
-                <option value="wat">⚡ Word Association Test (WAT) — 60 Words List</option>
-                <option value="srt">📝 Situation Reaction Test (SRT) — 60 Scenarios</option>
-                <option value="sdt">👤 Self Description Test (SDT) — 5 Dimensions</option>
+                <option value="tat" selected>Thematic Apperception Test (TAT) — With Slide Images ZIP</option>
+                <option value="wat">Word Association Test (WAT) — 60 Words List</option>
+                <option value="srt">Situation Reaction Test (SRT) — 60 Scenarios</option>
+                <option value="sdt">Self Description Test (SDT) — 5 Dimensions</option>
               </select>
             </div>
             <div class="param-group">
@@ -1689,10 +1680,10 @@
 
           <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem;">
             <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.65rem 1.5rem; font-size: 0.95rem;" id="btnHubDownload" onclick="executeHubDownload()">
-              📦 Download Package / Dossier
+              Download Package / Dossier
             </button>
             <button class="btn-aux" onclick="executeHubCopyPrompt()">
-              📋 Copy Prompt to Clipboard
+              Copy Prompt to Clipboard
             </button>
           </div>
         </div>
@@ -1700,7 +1691,7 @@
         <!-- 15 OLQS REFERENCE MATRIX -->
         <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
           <h3 style="font-family: var(--font-tactical); font-size: 1.2rem; color: var(--text-primary); margin-bottom: 1rem; text-transform: uppercase;">
-            📋 Official 15 Officer Like Qualities (OLQ) Assessment Matrix
+            Official 15 Officer Like Qualities (OLQ) Assessment Matrix
           </h3>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
             <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.15rem;">
@@ -1915,7 +1906,7 @@
         const isDone = p.watCompleted.includes(s.id);
         const pill = document.createElement('div');
         pill.className = `inventory-pill ${isDone ? 'cleared' : ''}`;
-        pill.innerHTML = `${isDone ? '✓' : '⚡'} Set ${s.id}`;
+        pill.innerHTML = `${isDone ? '✓ ' : ''}Set ${s.id}`;
         pill.onclick = () => {
           document.querySelector('[data-tab="tab-wat"]').click();
           document.getElementById('watSelectSet').value = `set_${s.id}`;
@@ -1930,7 +1921,7 @@
         const isDone = p.tatCompleted.includes(s.id);
         const pill = document.createElement('div');
         pill.className = `inventory-pill ${isDone ? 'cleared' : ''}`;
-        pill.innerHTML = `${isDone ? '✓' : '🖼️'} TAT ${s.id}`;
+        pill.innerHTML = `${isDone ? '✓ ' : ''}TAT ${s.id}`;
         pill.onclick = () => {
           document.querySelector('[data-tab="tab-tat"]').click();
           document.getElementById('tatSelectSet').value = `tat_set_${s.id}`;
@@ -1945,7 +1936,7 @@
         const isDone = p.srtCompleted.includes(num);
         const pill = document.createElement('div');
         pill.className = `inventory-pill ${isDone ? 'cleared' : ''}`;
-        pill.innerHTML = `${isDone ? '✓' : '📝'} SRT Set ${num}`;
+        pill.innerHTML = `${isDone ? '✓ ' : ''}SRT Set ${num}`;
         pill.onclick = () => {
           document.querySelector('[data-tab="tab-srt"]').click();
           document.getElementById('srtSelectSet').value = `${num}`;
@@ -2003,8 +1994,8 @@
           document.getElementById('srtSelectSet').value = `${nextSrt}`;
         };
       } else {
-        recDiv.innerHTML = `🏆 <strong style="color: var(--accent-ready);">Complete Syllabus Mastered!</strong> All official sets cleared. Proceed with Stage 2 Full Mock Battery.`;
-        btnRec.textContent = 'Launch Full Mock ❯';
+        recDiv.innerHTML = `<strong style="color: var(--accent-ready);">Complete Syllabus Mastered.</strong> All official sets cleared. Proceed with Stage 2 Full Mock Battery.`;
+        btnRec.textContent = 'Launch Full Mock';
         btnRec.onclick = () => document.querySelector('[data-tab="tab-fullmock"]').click();
       }
     }
@@ -2159,7 +2150,6 @@
 
     function toggleWatPause() {
       watPaused = !watPaused;
-      document.getElementById('watPauseIcon').textContent = watPaused ? '▶' : '⏸';
       document.getElementById('watPauseLabel').textContent = watPaused ? 'Resume' : 'Pause';
     }
 
@@ -2295,7 +2285,7 @@
 
       if (phase === 'viewing') {
         badge.className = 'phase-pill observe';
-        badge.textContent = `👁️ OBSERVATION PHASE (${tatViewDuration}s)`;
+        badge.textContent = `Observation Phase (${tatViewDuration}s)`;
         tatRemaining = tatViewDuration;
 
         if (s.type === 'blank') {
@@ -2312,7 +2302,7 @@
         playAudioBeep(680, 0.12);
       } else {
         badge.className = 'phase-pill write';
-        badge.textContent = `✍️ NARRATIVE PHASE (${Math.floor(tatWriteDuration/60)} MINS)`;
+        badge.textContent = `Narrative Phase (${Math.floor(tatWriteDuration/60)} Mins)`;
         tatRemaining = tatWriteDuration;
 
         imgWrap.style.display = 'none';
@@ -2383,7 +2373,6 @@
 
     function toggleTatPause() {
       tatPaused = !tatPaused;
-      document.getElementById('tatPauseIcon').textContent = tatPaused ? '▶' : '⏸';
       document.getElementById('tatPauseLabel').textContent = tatPaused ? 'Resume' : 'Pause';
     }
 
@@ -2857,7 +2846,7 @@
       const btn = document.getElementById('btnDownloadTatZip');
       const originalText = btn ? btn.innerHTML : '';
       if (btn) {
-        btn.innerHTML = '⏳ Zipping Images + Prompt...';
+        btn.innerHTML = 'Zipping Images + Prompt...';
         btn.disabled = true;
       }
 
@@ -2904,7 +2893,7 @@
         a.click();
         document.body.removeChild(a);
 
-        alert("✅ TAT AI Package Downloaded!\n\nContains:\n1. Slide images (.jpg)\n2. DIPR Senior Psychologist Evaluation Prompt\n\nUpload the images and paste the prompt into ChatGPT, Claude, or Gemini for a free psychological assessment!");
+        alert("TAT AI Package Downloaded!\n\nContains:\n1. Slide images (.jpg)\n2. DIPR Senior Psychologist Evaluation Prompt\n\nUpload the images and paste the prompt into ChatGPT, Claude, or Gemini for a free psychological assessment.");
       } catch(e) {
         alert("Downloading text prompt instead: " + e.message);
         downloadTatAiDossier();
@@ -2961,7 +2950,7 @@
           opt.textContent = `${s.title} (11 Pictures + 1 Blank Slide)`;
           sel.appendChild(opt);
         });
-        document.getElementById('btnHubDownload').textContent = '📦 Download Slide Images & Prompt (.ZIP)';
+        document.getElementById('btnHubDownload').textContent = 'Download Slide Images & Prompt (ZIP)';
       } else if (type === 'wat') {
         WAT_SETS.forEach(s => {
           const opt = document.createElement('option');
@@ -2969,7 +2958,7 @@
           opt.textContent = `WAT Set ${s.id} (${s.count} Words: ${s.preview})`;
           sel.appendChild(opt);
         });
-        document.getElementById('btnHubDownload').textContent = '📥 Download Word List & Prompt (.txt)';
+        document.getElementById('btnHubDownload').textContent = 'Download Word List & Prompt (.txt)';
       } else if (type === 'srt') {
         [1, 2].forEach(n => {
           const opt = document.createElement('option');
@@ -2977,13 +2966,13 @@
           opt.textContent = `SRT Official Set ${n} (60 Scenarios)`;
           sel.appendChild(opt);
         });
-        document.getElementById('btnHubDownload').textContent = '📥 Download Scenarios & Prompt (.txt)';
+        document.getElementById('btnHubDownload').textContent = 'Download Scenarios & Prompt (.txt)';
       } else if (type === 'sdt') {
         const opt = document.createElement('option');
         opt.value = '1';
         opt.textContent = 'Standard DIPR 5-Paragraph Self Description';
         sel.appendChild(opt);
-        document.getElementById('btnHubDownload').textContent = '📥 Download SDT Framework & Prompt (.txt)';
+        document.getElementById('btnHubDownload').textContent = 'Download SDT Framework & Prompt (.txt)';
       }
     }
 
@@ -3073,7 +3062,6 @@
     document.getElementById('btnToggleTheme').addEventListener('click', () => {
       isLight = !isLight;
       document.body.classList.toggle('projector-hall', isLight);
-      document.getElementById('themeIcon').textContent = isLight ? '🌙' : '☀️';
       document.getElementById('themeLabel').textContent = isLight ? 'Dark Hall' : 'Projector Hall';
     });
 
