@@ -44,7 +44,7 @@ for s_idx in range(num_full_sets):
         'num': 12,
         'type': 'blank',
         'src': '',
-        'label': 'Slide 12 — BLANK SLIDE (Own Story)'
+        'label': 'Slide 12 — Blank Slide (Candidate Story)'
     })
     tat_sets.append({
         'id': s_idx + 1,
@@ -63,10 +63,10 @@ html = f'''<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SSB Master Suite — Complete DIPR Psychology & OIR Testing Platform</title>
+  <title>SSB Testing Suite — DIPR Psychological Testing & OIR Simulator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
   <script src="jszip.min.js"></script>
   <script>
     if (typeof JSZip === 'undefined') {{
@@ -76,33 +76,58 @@ html = f'''<!DOCTYPE html>
     }}
   </script>
   <style>
+    /* ==========================================================================
+       DESIGN SYSTEM: MILITARY SPEC / DIPR DISCIPLINED INTERFACE
+       Principles:
+       1. Zero decorative SaaS fluff. Hairline geometry, matte obsidian & brass.
+       2. Screen focus: in active tests, everything except the stimulus fades.
+       3. Purposeful typography: Rajdhani for tactical headers/timers, Inter for prose.
+       ========================================================================== */
     :root {{
-      --bg-primary: #0a0f1d;
-      --bg-card: #111a2e;
-      --bg-card-border: #1e293b;
-      --accent-gold: #f59e0b;
-      --accent-gold-glow: rgba(245, 158, 11, 0.25);
-      --accent-blue: #38bdf8;
-      --accent-green: #10b981;
-      --accent-red: #ef4444;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --font-display: 'Cinzel', serif;
-      --font-body: 'Inter', sans-serif;
+      --bg-base: #070a10;
+      --bg-surface: #0e1420;
+      --bg-surface-elevated: #151e2e;
+      --border-subtle: #1e293b;
+      --border-focus: #3b82f6;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-tertiary: #64748b;
+      --accent-brass: #d97706;
+      --accent-brass-subtle: rgba(217, 119, 6, 0.12);
+      --accent-brass-glow: rgba(217, 119, 6, 0.28);
+      --accent-ready: #10b981;
+      --accent-ready-subtle: rgba(16, 185, 129, 0.12);
+      --accent-alert: #ef4444;
+      --accent-intel: #38bdf8;
+      --accent-intel-subtle: rgba(56, 189, 248, 0.1);
+      
+      --font-ui: 'Inter', -apple-system, sans-serif;
+      --font-tactical: 'Rajdhani', sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
+
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 10px;
     }}
 
-    body.dipr-projector {{
-      --bg-primary: #f1f5f9;
-      --bg-card: #ffffff;
-      --bg-card-border: #cbd5e1;
-      --accent-gold: #b45309;
-      --accent-gold-glow: rgba(180, 83, 9, 0.15);
-      --accent-blue: #0284c7;
-      --accent-green: #059669;
-      --accent-red: #dc2626;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
+    /* DIPR Projector Mode (Emulating real SSB testing hall daylight / white wall) */
+    body.projector-hall {{
+      --bg-base: #f1f5f9;
+      --bg-surface: #ffffff;
+      --bg-surface-elevated: #f8fafc;
+      --border-subtle: #cbd5e1;
+      --border-focus: #0284c7;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-tertiary: #64748b;
+      --accent-brass: #b45309;
+      --accent-brass-subtle: rgba(180, 83, 9, 0.1);
+      --accent-brass-glow: rgba(180, 83, 9, 0.2);
+      --accent-ready: #059669;
+      --accent-ready-subtle: rgba(5, 150, 105, 0.12);
+      --accent-alert: #dc2626;
+      --accent-intel: #0284c7;
+      --accent-intel-subtle: rgba(2, 132, 199, 0.1);
     }}
 
     * {{
@@ -112,109 +137,159 @@ html = f'''<!DOCTYPE html>
     }}
 
     body {{
-      background-color: var(--bg-primary);
-      color: var(--text-main);
-      font-family: var(--font-body);
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      font-size: 15px;
+      line-height: 1.5;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
-      transition: background-color 0.3s ease, color 0.3s ease;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.25s ease, color 0.25s ease;
     }}
 
-    header {{
-      background: var(--bg-card);
-      border-bottom: 1px solid var(--bg-card-border);
-      padding: 0.75rem 1.5rem;
+    /* --- TOP COMMAND CONSOLE --- */
+    .top-console {{
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
       position: sticky;
       top: 0;
-      z-index: 50;
-      backdrop-filter: blur(8px);
+      z-index: 100;
     }}
 
-    .header-top {{
+    .console-header {{
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0.75rem 1.5rem;
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
-      max-width: 1400px;
-      margin: 0 auto;
+      gap: 1rem;
     }}
 
-    .brand {{
+    .brand-mark {{
       display: flex;
       align-items: center;
       gap: 0.75rem;
+      text-decoration: none;
+      color: inherit;
     }}
 
-    .brand-badge {{
-      background: linear-gradient(135deg, var(--accent-gold), #d97706);
+    .insignia {{
+      background: var(--accent-brass);
       color: #000;
-      font-weight: 800;
-      font-size: 0.75rem;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
+      font-family: var(--font-tactical);
+      font-weight: 700;
+      font-size: 0.85rem;
       letter-spacing: 1px;
+      padding: 0.25rem 0.55rem;
+      border-radius: var(--radius-sm);
     }}
 
-    .brand h1 {{
-      font-family: var(--font-display);
-      font-size: 1.25rem;
-      letter-spacing: 1.5px;
-      font-weight: 800;
-      background: linear-gradient(to right, #f8fafc, #94a3b8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .title-group {{
+      display: flex;
+      flex-direction: column;
     }}
 
-    body.dipr-projector .brand h1 {{
-      background: linear-gradient(to right, #0f172a, #334155);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .title-group h1 {{
+      font-family: var(--font-tactical);
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: 0.75px;
+      line-height: 1.1;
+      text-transform: uppercase;
     }}
 
-    .header-actions {{
+    .title-group span {{
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.5px;
+    }}
+
+    .console-actions {{
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.6rem;
     }}
 
-    .sub-nav {{
-      display: flex;
-      gap: 0.5rem;
-      overflow-x: auto;
-      padding: 0.6rem 0 0.2rem;
-      max-width: 1400px;
-      margin: 0 auto;
-      scrollbar-width: thin;
-    }}
-
-    .nav-tab {{
-      background: transparent;
-      border: 1px solid transparent;
-      color: var(--text-muted);
-      padding: 0.45rem 0.9rem;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-weight: 600;
+    .console-btn {{
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-family: var(--font-ui);
+      font-size: 0.82rem;
+      font-weight: 500;
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--radius-md);
       cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s ease;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 0.4rem;
+      transition: all 0.15s ease;
     }}
 
-    .nav-tab:hover {{
-      color: var(--text-main);
-      background: rgba(255, 255, 255, 0.05);
+    .console-btn:hover {{
+      color: var(--text-primary);
+      border-color: var(--text-tertiary);
     }}
 
-    .nav-tab.active {{
-      background: rgba(245, 158, 11, 0.12);
-      border-color: var(--accent-gold);
-      color: var(--accent-gold);
+    /* --- OPERATIONAL NAVIGATION BAR --- */
+    .operational-nav {{
+      background: var(--bg-base);
+      border-bottom: 1px solid var(--border-subtle);
     }}
 
+    .nav-track {{
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 0.25rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }}
+    .nav-track::-webkit-scrollbar {{
+      display: none;
+    }}
+
+    .op-tab {{
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      font-family: var(--font-tactical);
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 0.75rem 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+      transition: color 0.15s ease, border-color 0.15s ease;
+    }}
+
+    .op-tab:hover {{
+      color: var(--text-primary);
+    }}
+
+    .op-tab.active {{
+      color: var(--accent-brass);
+      border-bottom-color: var(--accent-brass);
+    }}
+
+    .op-tab.intel-tab {{
+      color: var(--accent-intel);
+    }}
+    .op-tab.intel-tab.active {{
+      border-bottom-color: var(--accent-intel);
+    }}
+
+    /* --- MAIN VIEWPORT & WORKSPACE --- */
     main {{
       flex: 1;
       max-width: 1400px;
@@ -225,561 +300,609 @@ html = f'''<!DOCTYPE html>
       flex-direction: column;
     }}
 
-    .module-container {{
+    .workspace-module {{
       display: none;
       width: 100%;
-      animation: fadeIn 0.25s ease-out;
+      animation: moduleEnter 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }}
 
-    .module-container.active {{
+    .workspace-module.active {{
       display: block;
     }}
 
-    @keyframes fadeIn {{
-      from {{ opacity: 0; transform: translateY(6px); }}
+    @keyframes moduleEnter {{
+      from {{ opacity: 0; transform: translateY(4px); }}
       to {{ opacity: 1; transform: translateY(0); }}
     }}
 
-    .card-box {{
-      background: var(--bg-card);
-      border: 1px solid var(--bg-card-border);
-      border-radius: 12px;
+    /* --- DISCIPLINED COMMAND PANELS --- */
+    .command-panel {{
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
       padding: 1.75rem;
       margin: 0 auto;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
     }}
 
-    .section-title {{
-      font-family: var(--font-display);
+    .module-heading {{
+      font-family: var(--font-tactical);
       font-size: 1.6rem;
-      margin-bottom: 0.5rem;
-      color: var(--accent-gold);
-      text-align: center;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--text-primary);
+      margin-bottom: 0.3rem;
     }}
 
-    .section-subtitle {{
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      text-align: center;
-      margin-bottom: 1.75rem;
+    .module-desc {{
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+      margin-bottom: 1.5rem;
       line-height: 1.5;
+      max-width: 720px;
     }}
 
-    .form-group {{
+    /* Tactical Meta Ribbon */
+    .tactical-ribbon {{
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+    }}
+
+    .ribbon-item {{
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-secondary);
+    }}
+
+    .ribbon-item strong {{
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+    }}
+
+    /* Form Fields */
+    .param-group {{
       margin-bottom: 1.25rem;
     }}
 
-    .form-group label {{
+    .param-label {{
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 600;
+      color: var(--text-tertiary);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
       margin-bottom: 0.4rem;
-      color: var(--text-muted);
     }}
 
     select, input[type="text"], input[type="number"], textarea {{
       width: 100%;
-      background: var(--bg-primary);
-      border: 1px solid var(--bg-card-border);
-      border-radius: 6px;
-      padding: 0.65rem 0.9rem;
-      color: var(--text-main);
-      font-family: var(--font-body);
-      font-size: 0.95rem;
+      background: var(--bg-base);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-md);
+      font-family: var(--font-ui);
+      font-size: 0.92rem;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.15s ease;
     }}
 
-    select:focus, input[type="text"]:focus, input[type="number"]:focus, textarea:focus {{
-      border-color: var(--accent-gold);
+    select:focus, input[type="text"]:focus, textarea:focus {{
+      border-color: var(--accent-brass);
     }}
 
-    .grid-2 {{
+    .grid-duo {{
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1rem;
     }}
 
     @media (max-width: 768px) {{
-      .grid-2 {{
+      .grid-duo {{
         grid-template-columns: 1fr;
       }}
     }}
 
-    .btn-start {{
-      background: linear-gradient(135deg, var(--accent-gold), #d97706);
-      color: #000;
+    /* Action Buttons */
+    .btn-engage {{
+      background: var(--accent-brass);
+      color: #05080f;
       border: none;
-      padding: 0.85rem 1.75rem;
-      border-radius: 6px;
-      font-size: 1rem;
+      font-family: var(--font-tactical);
+      font-size: 1.1rem;
       font-weight: 700;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.75px;
+      text-transform: uppercase;
+      padding: 0.85rem 1.5rem;
+      border-radius: var(--radius-md);
       cursor: pointer;
       width: 100%;
       margin-top: 1rem;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 14px var(--accent-gold-glow);
+      transition: filter 0.15s ease, transform 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }}
 
-    .btn-start:hover {{
+    .btn-engage:hover {{
+      filter: brightness(1.1);
       transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.35);
     }}
 
-    .btn-secondary {{
-      background: transparent;
-      border: 1px solid var(--bg-card-border);
-      color: var(--text-main);
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-size: 0.9rem;
+    .btn-aux {{
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
       font-weight: 600;
+      padding: 0.55rem 1rem;
+      border-radius: var(--radius-md);
       cursor: pointer;
-      transition: all 0.2s;
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
+      transition: all 0.15s ease;
     }}
 
-    .btn-secondary:hover {{
-      border-color: var(--accent-gold);
-      color: var(--accent-gold);
+    .btn-aux:hover {{
+      border-color: var(--text-tertiary);
     }}
 
-    .mode-selector {{
+    /* Selector Cards (Paper vs Digital) */
+    .format-selector {{
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0.75rem;
       margin-bottom: 1.25rem;
     }}
 
-    .mode-option {{
-      border: 1px solid var(--bg-card-border);
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
+    .format-card {{
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-base);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: border-color 0.15s, background-color 0.15s;
+    }}
+
+    .format-card.selected {{
+      border-color: var(--accent-brass);
+      background: var(--accent-brass-subtle);
+    }}
+
+    .format-card strong {{
+      display: block;
+      font-size: 0.95rem;
+      font-family: var(--font-tactical);
+      letter-spacing: 0.5px;
+      margin-bottom: 0.2rem;
+    }}
+
+    .format-card span {{
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      display: block;
+    }}
+
+    /* --- THE TESTING THEATER (FOCUSED ACTIVE CANVAS) --- */
+    .theater-canvas {{
+      background: #020408;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 1.5rem;
+      min-height: 340px;
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
-    }}
-
-    .mode-option.active {{
-      border-color: var(--accent-gold);
-      background: rgba(245, 158, 11, 0.08);
-    }}
-
-    .mode-option strong {{
-      font-size: 0.95rem;
-    }}
-
-    .mode-option span {{
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }}
-
-    .timer-ring-container {{
+      align-items: center;
+      justify-content: center;
       position: relative;
-      width: 80px;
-      height: 80px;
+      overflow: hidden;
+      box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.7);
     }}
 
-    .timer-ring-svg {{
+    body.projector-hall .theater-canvas {{
+      background: #060911;
+      border-color: #0f172a;
+    }}
+
+    .stimulus-word {{
+      font-family: var(--font-tactical);
+      font-size: clamp(3rem, 9vw, 5.8rem);
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: #ffffff;
+      text-transform: uppercase;
+      text-align: center;
+      user-select: none;
+      animation: stimulusPop 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }}
+
+    @keyframes stimulusPop {{
+      from {{ transform: scale(0.96); opacity: 0; }}
+      to {{ transform: scale(1); opacity: 1; }}
+    }}
+
+    .pace-meter-bar {{
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+    }}
+
+    .pace-meter-fill {{
+      height: 100%;
+      background: var(--accent-brass);
+      transition: width 0.1s linear;
+    }}
+
+    /* Circular Precision Clock */
+    .precision-clock {{
+      width: 72px;
+      height: 72px;
+      position: relative;
+    }}
+
+    .clock-svg {{
       width: 100%;
       height: 100%;
       transform: rotate(-90deg);
     }}
 
-    .timer-ring-bg {{
+    .clock-track {{
       fill: none;
-      stroke: var(--bg-card-border);
-      stroke-width: 6;
+      stroke: var(--border-subtle);
+      stroke-width: 5;
     }}
 
-    .timer-ring-progress {{
+    .clock-fill {{
       fill: none;
-      stroke: var(--accent-gold);
-      stroke-width: 6;
+      stroke: var(--accent-brass);
+      stroke-width: 5;
       stroke-linecap: round;
       stroke-dasharray: 226;
       stroke-dashoffset: 0;
       transition: stroke-dashoffset 0.1s linear;
     }}
 
-    .timer-number {{
+    .clock-digits {{
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-family: var(--font-mono);
-      font-size: 1.5rem;
+      font-family: var(--font-tactical);
+      font-size: 1.6rem;
       font-weight: 700;
-      color: var(--text-main);
+      color: var(--text-primary);
     }}
 
-    .info-banner {{
-      background: rgba(56, 189, 248, 0.08);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
-      margin-bottom: 1.5rem;
-      font-size: 0.85rem;
-      color: var(--accent-blue);
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }}
-
-    /* AI Evaluation Cards & Buttons */
-    .ai-eval-card {{
-      background: rgba(56, 189, 248, 0.05);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      border-radius: 12px;
-      padding: 1.25rem;
-      margin-bottom: 1.5rem;
-    }}
-
-    .ai-model-btn {{
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.45rem 0.85rem;
-      border-radius: 6px;
-      border: 1px solid;
-      font-size: 0.82rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: transform 0.15s, opacity 0.15s;
-    }}
-
-    .ai-model-btn:hover {{
-      transform: translateY(-1px);
-      opacity: 0.9;
-    }}
-
-    /* TAT Elements */
-    .tat-display-card {{
-      background: var(--bg-primary);
-      border: 2px solid var(--bg-card-border);
-      border-radius: 16px;
+    /* --- TAT OBSERVATION STAGE --- */
+    .tat-observation-frame {{
+      background: #020408;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
       min-height: 480px;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      width: 100%;
+      overflow: hidden;
       position: relative;
-      overflow: hidden;
-      padding: 1.5rem;
     }}
 
-    .tat-image-container {{
+    .tat-observation-frame img {{
       max-width: 100%;
-      max-height: 440px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      border-radius: 8px;
-    }}
-
-    .tat-image-container img {{
-      max-width: 100%;
-      max-height: 440px;
+      max-height: 460px;
       object-fit: contain;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.6);
     }}
 
-    .tat-phase-badge {{
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
+    .phase-pill {{
+      font-family: var(--font-tactical);
+      font-size: 0.85rem;
       font-weight: 700;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
       text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius-sm);
+      display: inline-block;
+    }}
+    .phase-pill.observe {{
+      background: var(--accent-intel-subtle);
+      border: 1px solid var(--accent-intel);
+      color: var(--accent-intel);
+    }}
+    .phase-pill.write {{
+      background: var(--accent-ready-subtle);
+      border: 1px solid var(--accent-ready);
+      color: var(--accent-ready);
     }}
 
-    .phase-viewing {{
-      background: rgba(56, 189, 248, 0.15);
-      color: var(--accent-blue);
-      border: 1px solid var(--accent-blue);
-    }}
-
-    .phase-writing {{
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--accent-green);
-      border: 1px solid var(--accent-green);
-    }}
-
-    /* SRT */
-    .srt-booklet {{
+    /* --- SRT LOG BOOKLET --- */
+    .srt-scroll-deck {{
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
+      gap: 1rem;
       max-height: calc(100vh - 280px);
       overflow-y: auto;
       padding-right: 0.5rem;
     }}
 
-    .srt-item {{
-      background: var(--bg-primary);
-      border: 1px solid var(--bg-card-border);
-      border-radius: 8px;
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      transition: border-color 0.2s;
+    .srt-entry {{
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1.25rem;
+      transition: border-color 0.15s;
     }}
-    .srt-item:focus-within {{
-      border-color: var(--accent-gold);
+    .srt-entry:focus-within {{
+      border-color: var(--accent-brass);
     }}
 
-    .srt-prompt {{
-      font-size: 1.05rem;
-      font-weight: 600;
-      line-height: 1.5;
-    }}
-
-    .srt-input {{
-      width: 100%;
-      background: var(--bg-card);
-      border: 1px solid var(--bg-card-border);
-      color: var(--text-main);
-      padding: 0.75rem 1rem;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      outline: none;
-    }}
-
-    /* SDT */
-    .sdt-editor-box {{
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      width: 100%;
-    }}
-
-    .sdt-card {{
-      background: var(--bg-primary);
-      border: 1px solid var(--bg-card-border);
-      border-radius: 8px;
-      padding: 1.5rem;
-    }}
-
-    .sdt-label {{
+    .srt-num {{
+      font-family: var(--font-tactical);
       font-size: 1.1rem;
       font-weight: 700;
-      color: var(--accent-gold);
-      margin-bottom: 0.25rem;
+      color: var(--accent-brass);
+      margin-right: 0.5rem;
     }}
 
-    .sdt-help {{
-      font-size: 0.85rem;
-      color: var(--text-muted);
+    .srt-situation-text {{
+      font-size: 0.98rem;
+      font-weight: 500;
+      line-height: 1.5;
       margin-bottom: 0.75rem;
     }}
 
-    .sdt-textarea {{
-      width: 100%;
-      height: 120px;
-      background: var(--bg-card);
-      border: 1px solid var(--bg-card-border);
-      color: var(--text-main);
-      padding: 0.75rem 1rem;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      font-family: var(--font-body);
-      outline: none;
-      resize: vertical;
-    }}
-
-    /* OIR */
-    .oir-workspace {{
-      display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap: 1.5rem;
-      width: 100%;
-      height: calc(100vh - 160px);
-    }}
-
-    .oir-pdf-viewer {{
-      background: var(--bg-card);
-      border: 1px solid var(--bg-card-border);
-      border-radius: 12px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }}
-
-    .oir-omr-pane {{
-      background: var(--bg-card);
-      border: 1px solid var(--bg-card-border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      overflow: hidden;
-    }}
-
-    .omr-grid-container {{
+    /* --- DIGITAL OMR PUNCH SHEET --- */
+    .omr-grid-scroll {{
       flex: 1;
       overflow-y: auto;
-      padding-right: 0.5rem;
-      margin-top: 1rem;
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.45rem;
+      padding-right: 0.4rem;
     }}
 
-    .omr-row {{
+    .omr-line {{
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0.45rem 0.75rem;
-      border-radius: 6px;
-      background: var(--bg-primary);
-      border: 1px solid var(--bg-card-border);
+      padding: 0.4rem 0.75rem;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
     }}
 
-    .omr-q-num {{
+    .omr-num {{
       font-family: var(--font-mono);
+      font-size: 0.82rem;
       font-weight: 700;
-      font-size: 0.85rem;
-      width: 32px;
-      color: var(--text-muted);
+      color: var(--text-tertiary);
+      width: 28px;
     }}
 
-    .omr-options {{
+    .bubble-cluster {{
       display: flex;
       gap: 0.5rem;
     }}
 
-    .omr-bubble {{
-      width: 30px;
-      height: 30px;
+    .omr-bubble-cell {{
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
-      border: 1px solid var(--bg-card-border);
-      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-base);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: var(--font-mono);
+      font-family: var(--font-tactical);
       font-weight: 700;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       cursor: pointer;
-      transition: all 0.15s ease;
       user-select: none;
+      transition: all 0.15s ease;
     }}
 
-    .omr-bubble:hover {{
-      border-color: var(--accent-gold);
+    .omr-bubble-cell:hover {{
+      border-color: var(--accent-brass);
     }}
 
-    .omr-bubble.selected {{
-      background: var(--accent-gold);
+    .omr-bubble-cell.filled {{
+      background: var(--accent-brass);
       color: #000;
-      border-color: var(--accent-gold);
-      box-shadow: 0 0 10px var(--accent-gold-glow);
+      border-color: var(--accent-brass);
     }}
 
-    /* Performance Progress Tracker Styles */
-    .stat-cards-grid {{
+    /* --- INTELLIGENCE / AI DISPATCH CARD --- */
+    .eval-dispatch-card {{
+      background: var(--accent-intel-subtle);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: var(--radius-lg);
+      padding: 1.35rem;
+      margin-bottom: 1.5rem;
+    }}
+
+    .dispatch-header {{
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }}
+
+    .dispatch-title {{
+      font-family: var(--font-tactical);
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--accent-intel);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }}
+
+    .dispatch-desc {{
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      margin-top: 0.35rem;
+      max-width: 640px;
+      line-height: 1.45;
+    }}
+
+    .dispatch-actions {{
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }}
+
+    .model-links-row {{
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(56, 189, 248, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }}
+
+    .model-chip {{
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.15s, transform 0.15s;
+    }}
+    .model-chip:hover {{
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }}
+    .chip-chatgpt {{ background: rgba(16, 185, 129, 0.15); border: 1px solid var(--accent-ready); color: var(--accent-ready); }}
+    .chip-claude {{ background: rgba(217, 119, 6, 0.15); border: 1px solid #d97706; color: #fbbf24; }}
+    .chip-gemini {{ background: rgba(56, 189, 248, 0.15); border: 1px solid var(--accent-intel); color: var(--accent-intel); }}
+
+    /* --- PROGRESS & MASTERY METRICS --- */
+    .metric-grid {{
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
       gap: 1rem;
       margin-bottom: 2rem;
     }}
-    .stat-card {{
-      background: var(--bg-primary);
-      border: 1px solid var(--bg-card-border);
-      border-radius: 8px;
-      padding: 1.25rem;
+
+    .metric-slate {{
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1.25rem;
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.35rem;
     }}
-    .stat-title {{
-      font-size: 0.8rem;
+
+    .metric-label {{
+      font-size: 0.78rem;
+      color: var(--text-tertiary);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-muted);
       font-weight: 600;
+      letter-spacing: 0.5px;
     }}
-    .stat-value {{
-      font-family: var(--font-mono);
-      font-size: 1.6rem;
+
+    .metric-digit {{
+      font-family: var(--font-tactical);
+      font-size: 2rem;
       font-weight: 700;
-      color: var(--accent-gold);
+      color: var(--text-primary);
+      line-height: 1;
     }}
-    .stat-bar-bg {{
+
+    .metric-bar-bg {{
       width: 100%;
-      height: 6px;
-      background: var(--bg-card);
-      border-radius: 3px;
+      height: 4px;
+      background: var(--bg-base);
+      border-radius: 2px;
       overflow: hidden;
+      margin-top: 0.25rem;
     }}
-    .stat-bar-fill {{
+
+    .metric-bar-fill {{
       height: 100%;
-      background: var(--accent-gold);
-      border-radius: 3px;
+      background: var(--accent-brass);
+      border-radius: 2px;
       transition: width 0.3s ease;
     }}
-    .set-pills-wrap {{
+
+    .pill-grid {{
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
+      gap: 0.45rem;
+      margin-top: 0.6rem;
     }}
-    .set-pill {{
-      padding: 0.4rem 0.8rem;
-      border-radius: 6px;
-      border: 1px solid var(--bg-card-border);
-      background: var(--bg-card);
+
+    .inventory-pill {{
+      padding: 0.35rem 0.7rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface-elevated);
       font-size: 0.8rem;
       font-family: var(--font-mono);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.35rem;
       transition: all 0.15s ease;
     }}
-    .set-pill:hover {{
-      border-color: var(--accent-gold);
-      color: var(--text-main);
-    }}
-    .set-pill.completed {{
-      border-color: var(--accent-green);
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--accent-green);
+
+    .inventory-pill:hover {{
+      border-color: var(--accent-brass);
+      color: var(--accent-brass);
     }}
 
-    /* Toast Notification */
-    #toastNotice {{
+    .inventory-pill.cleared {{
+      border-color: var(--accent-ready);
+      background: var(--accent-ready-subtle);
+      color: var(--accent-ready);
+    }}
+
+    /* Toast */
+    #tacticalToast {{
       position: fixed;
       bottom: 24px;
       right: 24px;
-      background: var(--accent-gold);
+      background: var(--accent-brass);
       color: #000;
-      padding: 0.75rem 1.25rem;
-      border-radius: 8px;
+      padding: 0.65rem 1.15rem;
+      border-radius: var(--radius-md);
+      font-family: var(--font-tactical);
+      font-size: 1rem;
       font-weight: 700;
-      font-size: 0.9rem;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
       z-index: 9999;
       opacity: 0;
-      transform: translateY(10px);
+      transform: translateY(8px);
       transition: opacity 0.2s, transform 0.2s;
       pointer-events: none;
     }}
-    #toastNotice.visible {{
+    #tacticalToast.visible {{
       opacity: 1;
       transform: translateY(0);
     }}
@@ -788,307 +911,309 @@ html = f'''<!DOCTYPE html>
 <body>
 
   <!-- TOAST NOTIFICATION -->
-  <div id="toastNotice">Copied to Clipboard!</div>
+  <div id="tacticalToast">DISPATCH COPIED TO CLIPBOARD</div>
 
-  <!-- GLOBAL HEADER -->
-  <header>
-    <div class="header-top">
-      <div class="brand">
-        <span class="brand-badge">DIPR</span>
-        <h1>SSB MASTER SUITE</h1>
+  <!-- TOP COMMAND CONSOLE -->
+  <header class="top-console">
+    <div class="console-header">
+      <div class="brand-mark">
+        <span class="insignia">DIPR</span>
+        <div class="title-group">
+          <h1>SSB Master Suite</h1>
+          <span>Official Psychology & Officer Intelligence Rating Simulator</span>
+        </div>
       </div>
-      <div class="header-actions">
-        <button class="btn-secondary" id="btnToggleTheme">
-          <span id="themeIcon">☀️</span> <span id="themeLabel">Projector Mode</span>
+      <div class="console-actions">
+        <button class="console-btn" id="btnToggleTheme" title="Toggle Daylight Projector / Dark Hall">
+          <span id="themeIcon">☀️</span> <span id="themeLabel">Projector Hall</span>
         </button>
-        <button class="btn-secondary" id="btnToggleFullscreen">
+        <button class="console-btn" id="btnToggleFullscreen" title="Fullscreen Mode">
           ⛶ <span>Fullscreen</span>
         </button>
       </div>
     </div>
 
-    <!-- SUB NAVIGATION / TEST SELECTOR -->
-    <nav class="sub-nav">
-      <button class="nav-tab active" data-tab="tab-progress" style="color: var(--accent-gold); border-color: rgba(245, 158, 11, 0.4);">
-        📈 My Progress & Mastery
-      </button>
-      <button class="nav-tab" data-tab="tab-wat">⚡ WAT (60 Words)</button>
-      <button class="nav-tab" data-tab="tab-tat">🖼️ TAT (12 Pictures)</button>
-      <button class="nav-tab" data-tab="tab-srt">📝 SRT (60 Situations)</button>
-      <button class="nav-tab" data-tab="tab-sdt">👤 SDT (Self Description)</button>
-      <button class="nav-tab" data-tab="tab-oir">📊 OIR (PDF + OMR)</button>
-      <button class="nav-tab" data-tab="tab-fullmock">🎯 Full Mock Battery</button>
-      <button class="nav-tab" data-tab="tab-ai-assessor" style="border-color: rgba(56, 189, 248, 0.4); color: var(--accent-blue);">
-        🤖 AI Assessor (Free Evaluation)
-      </button>
+    <!-- OPERATIONAL NAVIGATION TABS -->
+    <nav class="operational-nav">
+      <div class="nav-track">
+        <button class="op-tab active" data-tab="tab-progress">
+          📊 Mission Mastery
+        </button>
+        <button class="op-tab" data-tab="tab-wat">⚡ WAT (60 Words)</button>
+        <button class="op-tab" data-tab="tab-tat">🖼️ TAT (12 Slides)</button>
+        <button class="op-tab" data-tab="tab-srt">📝 SRT (60 Scenarios)</button>
+        <button class="op-tab" data-tab="tab-sdt">👤 SDT (5 Prompts)</button>
+        <button class="op-tab" data-tab="tab-oir">📑 OIR (OMR Console)</button>
+        <button class="op-tab" data-tab="tab-fullmock">🎯 Full Mock Battery</button>
+        <button class="op-tab intel-tab" data-tab="tab-ai-assessor">
+          🤖 AI Assessor Dispatch
+        </button>
+      </div>
     </nav>
   </header>
 
-  <!-- MAIN VIEWPORT -->
+  <!-- MAIN WORKSPACE -->
   <main>
 
     <!-- ==============================================================
-         0. PROGRESS & PERFORMANCE TRACKER (DO NOT REPEAT ENGINE)
+         0. MISSION MASTERY (DO NOT REPEAT ENGINE)
          ============================================================== -->
-    <section class="module-container active" id="tab-progress">
-      <div class="card-box" style="max-width: 1040px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--bg-card-border); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+    <section class="workspace-module active" id="tab-progress">
+      <div class="command-panel" style="max-width: 1040px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1.25rem; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
           <div>
-            <h2 class="section-title" style="text-align: left; margin: 0;">Performance & Preparation Tracker</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">
-              Track completed sets, avoid unintentional repeats, and finish your target before your SSB reporting date.
+            <h2 class="module-heading">Preparation & Performance Tracker</h2>
+            <p class="module-desc" style="margin-bottom: 0;">
+              Zero-repeat operational control. Complete all official sets systematically prior to your SSB reporting date.
             </p>
           </div>
           <div style="display: flex; gap: 0.5rem;">
-            <button class="btn-secondary" onclick="exportProgressJSON()">📥 Backup Progress</button>
+            <button class="btn-aux" onclick="exportProgressJSON()">📥 Backup Progress</button>
             <input type="file" id="importProgressInput" accept=".json" style="display: none;">
-            <button class="btn-secondary" onclick="document.getElementById('importProgressInput').click()">📤 Restore Progress</button>
+            <button class="btn-aux" onclick="document.getElementById('importProgressInput').click()">📤 Restore Progress</button>
           </div>
         </div>
 
-        <!-- STATS OVERVIEW -->
-        <div class="stat-cards-grid">
-          <div class="stat-card">
-            <span class="stat-title">WAT Mastery (21 Sets)</span>
-            <span class="stat-value" id="progWatVal">0 / 21</span>
-            <div class="stat-bar-bg"><div class="stat-bar-fill" id="progWatBar" style="width: 0%;"></div></div>
+        <!-- METRIC CARDS -->
+        <div class="metric-grid">
+          <div class="metric-slate">
+            <span class="metric-label">WAT Syllabus (21 Sets)</span>
+            <div class="metric-digit" id="progWatVal">0 / 21</div>
+            <div class="metric-bar-bg"><div class="metric-bar-fill" id="progWatBar" style="width: 0%;"></div></div>
           </div>
-          <div class="stat-card">
-            <span class="stat-title">TAT Mastery (12 Sets)</span>
-            <span class="stat-value" id="progTatVal">0 / 12</span>
-            <div class="stat-bar-bg"><div class="stat-bar-fill" id="progTatBar" style="width: 0%; background: var(--accent-blue);"></div></div>
+          <div class="metric-slate">
+            <span class="metric-label">TAT Syllabus (12 Sets)</span>
+            <div class="metric-digit" id="progTatVal" style="color: var(--accent-intel);">0 / 12</div>
+            <div class="metric-bar-bg"><div class="metric-bar-fill" id="progTatBar" style="width: 0%; background: var(--accent-intel);"></div></div>
           </div>
-          <div class="stat-card">
-            <span class="stat-title">SRT Mastery (2 Sets)</span>
-            <span class="stat-value" id="progSrtVal">0 / 2</span>
-            <div class="stat-bar-bg"><div class="stat-bar-fill" id="progSrtBar" style="width: 0%; background: var(--accent-green);"></div></div>
+          <div class="metric-slate">
+            <span class="metric-label">SRT Syllabus (2 Sets)</span>
+            <div class="metric-digit" id="progSrtVal" style="color: var(--accent-ready);">0 / 2</div>
+            <div class="metric-bar-bg"><div class="metric-bar-fill" id="progSrtBar" style="width: 0%; background: var(--accent-ready);"></div></div>
           </div>
-          <div class="stat-card">
-            <span class="stat-title">Total Sessions Logged</span>
-            <span class="stat-value" id="progTotalSessions">0</span>
-            <span style="font-size: 0.75rem; color: var(--text-muted);">Practiced without repeats</span>
+          <div class="metric-slate">
+            <span class="metric-label">Completed Sessions</span>
+            <div class="metric-digit" id="progTotalSessions">0</div>
+            <span style="font-size: 0.75rem; color: var(--text-tertiary);">Tracked without repetition</span>
           </div>
         </div>
 
-        <!-- SMART NEXT UNATTEMPTED RECOMMENDATION -->
-        <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 1.25rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <!-- RECOMMENDED NEXT ACTION -->
+        <div style="background: var(--accent-brass-subtle); border: 1px solid var(--accent-brass); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
           <div>
-            <strong style="color: var(--accent-gold); font-size: 1.05rem;">🎯 Next Recommended Unattempted Drill:</strong>
-            <div style="color: var(--text-main); font-size: 0.95rem; margin-top: 0.25rem;" id="nextRecText">
-              Loading recommendations...
+            <strong style="font-family: var(--font-tactical); font-size: 1.1rem; color: var(--accent-brass); letter-spacing: 0.5px; text-transform: uppercase;">
+              🎯 Recommended Next Objective:
+            </strong>
+            <div style="color: var(--text-primary); font-size: 0.95rem; margin-top: 0.25rem;" id="nextRecText">
+              Scanning unattempted sets...
             </div>
           </div>
-          <button class="btn-start" style="width: auto; padding: 0.65rem 1.75rem; font-size: 0.9rem;" id="btnLaunchNextRec">
-            Launch Next Set ❯
+          <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.65rem 1.75rem; font-size: 0.95rem;" id="btnLaunchNextRec">
+            Launch Set ❯
           </button>
         </div>
 
-        <!-- SET COMPLETION BREAKDOWN -->
+        <!-- SETS INVENTORY GRID -->
         <div style="display: flex; flex-direction: column; gap: 1.75rem;">
-          
           <div>
-            <strong style="color: var(--accent-gold); font-size: 1rem;">⚡ Word Association Test Sets (WAT 1 to 21)</strong>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem;">Click any set to launch or view status:</p>
-            <div class="set-pills-wrap" id="pillsWat"></div>
+            <strong style="font-family: var(--font-tactical); font-size: 1.05rem; letter-spacing: 0.5px; color: var(--accent-brass); text-transform: uppercase;">
+              ⚡ Word Association Test Sets (WAT 1 to 21)
+            </strong>
+            <div class="pill-grid" id="pillsWat"></div>
           </div>
 
           <div>
-            <strong style="color: var(--accent-blue); font-size: 1rem;">🖼️ Thematic Apperception Test Sets (TAT 1 to 12)</strong>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem;">11 Pictures + 1 Blank Slide each:</p>
-            <div class="set-pills-wrap" id="pillsTat"></div>
+            <strong style="font-family: var(--font-tactical); font-size: 1.05rem; letter-spacing: 0.5px; color: var(--accent-intel); text-transform: uppercase;">
+              🖼️ Thematic Apperception Test Sets (TAT 1 to 12)
+            </strong>
+            <div class="pill-grid" id="pillsTat"></div>
           </div>
 
           <div>
-            <strong style="color: var(--accent-green); font-size: 1rem;">📝 Situation Reaction Test Sets (SRT 1 and 2)</strong>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem;">60 Situations each in 30 minutes:</p>
-            <div class="set-pills-wrap" id="pillsSrt"></div>
+            <strong style="font-family: var(--font-tactical); font-size: 1.05rem; letter-spacing: 0.5px; color: var(--accent-ready); text-transform: uppercase;">
+              📝 Situation Reaction Test Sets (SRT 1 and 2)
+            </strong>
+            <div class="pill-grid" id="pillsSrt"></div>
           </div>
-
         </div>
 
-        <!-- RECENT ACTIVITY LOG -->
-        <div style="margin-top: 2.5rem; border-top: 1px solid var(--bg-card-border); padding-top: 1.5rem;">
+        <!-- SESSION HISTORY -->
+        <div style="margin-top: 2.5rem; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-            <strong style="font-size: 1.05rem;">📜 Practice History & Log</strong>
-            <button class="btn-secondary" style="font-size: 0.8rem; padding: 0.3rem 0.6rem; color: var(--accent-red);" onclick="clearPracticeHistory()">Clear History</button>
+            <strong style="font-family: var(--font-tactical); font-size: 1.1rem; letter-spacing: 0.5px; text-transform: uppercase;">Operation Log</strong>
+            <button class="btn-aux" style="font-size: 0.78rem; padding: 0.3rem 0.6rem; color: var(--accent-alert);" onclick="clearPracticeHistory()">Clear History</button>
           </div>
-          <div style="max-height: 280px; overflow-y: auto; border: 1px solid var(--bg-card-border); border-radius: 8px;">
+          <div style="max-height: 260px; overflow-y: auto; border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
             <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
               <thead>
-                <tr style="background: var(--bg-primary); color: var(--accent-gold); text-transform: uppercase;">
+                <tr style="background: var(--bg-surface-elevated); color: var(--accent-brass); font-family: var(--font-tactical); font-size: 0.9rem; letter-spacing: 0.5px; text-transform: uppercase;">
                   <th style="padding: 0.6rem 1rem;">Timestamp</th>
                   <th style="padding: 0.6rem 1rem;">Module</th>
-                  <th style="padding: 0.6rem 1rem;">Set / Item</th>
-                  <th style="padding: 0.6rem 1rem;">Result</th>
+                  <th style="padding: 0.6rem 1rem;">Set</th>
+                  <th style="padding: 0.6rem 1rem;">Status</th>
                 </tr>
               </thead>
               <tbody id="historyTableBody"></tbody>
             </table>
           </div>
         </div>
-
       </div>
     </section>
 
     <!-- ==============================================================
          1. WAT MODULE
          ============================================================== -->
-    <section class="module-container" id="tab-wat">
+    <section class="workspace-module" id="tab-wat">
       
       <!-- WAT SETUP -->
-      <div class="card-box" id="watSetupScreen">
-        <h2 class="section-title">Word Association Test (WAT)</h2>
-        <p class="section-subtitle">
-          60 Words flashed for 15 seconds each. Instant spontaneous positive thought without preaching or clichés.
+      <div class="command-panel" id="watSetupScreen" style="max-width: 860px;">
+        <h2 class="module-heading">Word Association Test (WAT)</h2>
+        <p class="module-desc">
+          60 Stimulus words projected at 15-second intervals. Project immediate, positive, action-driven thoughts reflecting your natural subconscious qualities.
         </p>
 
-        <div class="info-banner">
-          <div>📄 Loaded: <strong>21 Sets ({len(all_wat_words)} Words)</strong></div>
-          <div>Interval: <strong>15 Seconds / Word</strong></div>
+        <div class="tactical-ribbon">
+          <div class="ribbon-item">Repository: <strong>21 Sets ({len(all_wat_words)} Words)</strong></div>
+          <div class="ribbon-item">Interval: <strong>15 Seconds / Word</strong></div>
         </div>
 
-        <div class="form-group">
-          <label>Select Practice Set</label>
+        <div class="param-group">
+          <label class="param-label">Select Practice Set</label>
           <select id="watSelectSet">
-            <option value="next_unattempted" selected>🎯 Next Unattempted Set (Recommended - No Repeat)</option>
-            <option value="random_60">🎲 Random 60 Words (Simulate Full Board Test)</option>
-            <option value="random_30">⚡ Quick Practice (30 Random Words)</option>
-            <optgroup label="── OFFICIAL DIPR SETS (60 Words Each) ──" id="watOptGroupSets">
+            <option value="next_unattempted" selected>🎯 Next Unattempted Set (No Repeat Guarantee)</option>
+            <option value="random_60">🎲 Random 60 Words (Full Board Simulation)</option>
+            <option value="random_30">⚡ Rapid 30 Words Drill</option>
+            <optgroup label="── OFFICIAL DIPR 60-WORD SETS ──" id="watOptGroupSets">
 '''
 
 for s in wat_sets:
     html += f'              <option value="set_{s["id"]}">Set {s["id"]} ({s["count"]} Words: {s["preview"]})</option>\n'
 
 html += f'''            </optgroup>
-            <optgroup label="── OTHER ──">
-              <option value="all">🔥 Marathon (All {len(all_wat_words)} Words)</option>
+            <optgroup label="── MARATHON ──">
+              <option value="all">🔥 Complete Repository ({len(all_wat_words)} Words)</option>
             </optgroup>
           </select>
         </div>
 
-        <div class="grid-2">
-          <div class="form-group">
-            <label>Timing Pace</label>
+        <div class="grid-duo">
+          <div class="param-group">
+            <label class="param-label">Cadence Pace</label>
             <select id="watSelectDuration">
               <option value="15" selected>15 Seconds (Official DIPR Standard)</option>
-              <option value="12">12 Seconds (Pressure Drill)</option>
-              <option value="10">10 Seconds (Ultra Speed)</option>
-              <option value="18">18 Seconds (Beginner Pace)</option>
+              <option value="12">12 Seconds (Stress Induction)</option>
+              <option value="10">10 Seconds (High Speed)</option>
+              <option value="18">18 Seconds (Training Cadence)</option>
             </select>
           </div>
-          <div class="form-group">
-            <label>Order</label>
+          <div class="param-group">
+            <label class="param-label">Order</label>
             <select id="watSelectOrder">
               <option value="sequential" selected>Original Order</option>
-              <option value="shuffle">Shuffled (Randomized)</option>
+              <option value="shuffle">Shuffled</option>
             </select>
           </div>
         </div>
 
-        <div class="form-group">
-          <label>Practice Mode</label>
-          <div class="mode-selector">
-            <div class="mode-option active" id="watModePaper" onclick="setWatMode('paper')">
+        <div class="param-group">
+          <label class="param-label">Practice Style</label>
+          <div class="format-selector">
+            <div class="format-card selected" id="watModePaper" onclick="setWatMode('paper')">
               <strong>📝 Pen & Paper (Recommended)</strong>
-              <span>Exact SSB exam condition. Write in your notebook as words flash.</span>
+              <span>Replicates real SSB board condition. Write responses in a physical notebook as words flash.</span>
             </div>
-            <div class="mode-option" id="watModeTyping" onclick="setWatMode('typing')">
+            <div class="format-card" id="watModeTyping" onclick="setWatMode('typing')">
               <strong>⌨️ Digital Typing</strong>
-              <span>Type your spontaneous responses directly on screen.</span>
+              <span>Type your response directly into the on-screen input field during the 15-second window.</span>
             </div>
           </div>
         </div>
 
-        <button class="btn-start" onclick="startWatTest()">START WAT SESSION</button>
+        <button class="btn-engage" onclick="startWatTest()">COMMENCE WAT DRILL ❯</button>
       </div>
 
-      <!-- WAT ACTIVE TEST -->
-      <div class="card-box" id="watActiveScreen" style="display: none; max-width: 900px; padding: 2rem;">
+      <!-- WAT ACTIVE TEST THEATER -->
+      <div class="command-panel" id="watActiveScreen" style="display: none; max-width: 920px; padding: 2rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 2rem;">
-          <div style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-gold); font-size: 1.1rem;" id="watProgressTag">
+          <div style="font-family: var(--font-tactical); font-size: 1.4rem; font-weight: 700; color: var(--accent-brass);" id="watProgressTag">
             WORD 1 / 60
           </div>
-          <div class="timer-ring-container">
-            <svg class="timer-ring-svg" viewBox="0 0 80 80">
-              <circle class="timer-ring-bg" cx="40" cy="40" r="36" />
-              <circle class="timer-ring-progress" id="watTimerCircle" cx="40" cy="40" r="36" />
+          <div class="precision-clock">
+            <svg class="clock-svg" viewBox="0 0 80 80">
+              <circle class="clock-track" cx="40" cy="40" r="36" />
+              <circle class="clock-fill" id="watTimerCircle" cx="40" cy="40" r="36" />
             </svg>
-            <div class="timer-number" id="watTimerNum">15</div>
+            <div class="clock-digits" id="watTimerNum">15</div>
           </div>
         </div>
 
-        <div style="background: var(--bg-primary); border: 2px solid var(--bg-card-border); border-radius: 16px; min-height: 240px; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; position: relative; overflow: hidden; padding: 2rem;">
-          <div style="font-size: clamp(2.8rem, 7vw, 5rem); font-weight: 800; letter-spacing: 3px; text-transform: uppercase;" id="watFlashedWord">
-            LEADER
-          </div>
-          <div style="position: absolute; bottom: 0; left: 0; height: 6px; width: 100%; background: rgba(255,255,255,0.05);">
-            <div style="height: 100%; width: 100%; background: linear-gradient(90deg, var(--accent-gold), #ef4444); transition: width 0.1s linear;" id="watLinearBar"></div>
+        <div class="theater-canvas">
+          <div class="stimulus-word" id="watFlashedWord">LEADER</div>
+          <div class="pace-meter-bar">
+            <div class="pace-meter-fill" id="watLinearBar"></div>
           </div>
         </div>
 
         <div id="watTypingArea" style="width: 100%; margin-top: 1.5rem; display: none;">
-          <input type="text" id="watInput" style="width: 100%; padding: 1rem; border-radius: 8px; font-size: 1.1rem; background: var(--bg-primary); border: 1px solid var(--bg-card-border); color: var(--text-main);" placeholder="Write your spontaneous association here..." autocomplete="off">
+          <input type="text" id="watInput" style="padding: 0.9rem; font-size: 1.1rem;" placeholder="Type spontaneous response here..." autocomplete="off">
         </div>
 
-        <div style="display: flex; gap: 1rem; margin-top: 2rem; justify-content: center;">
-          <button class="btn-secondary" onclick="toggleWatPause()"><span id="watPauseIcon">⏸</span> <span id="watPauseLabel">Pause</span></button>
-          <button class="btn-secondary" onclick="nextWatWord()">Next Word ❯</button>
-          <button class="btn-secondary" style="color: var(--accent-red);" onclick="abortWatTest()">✕ End Test</button>
+        <div style="display: flex; gap: 0.75rem; margin-top: 2rem; justify-content: center; flex-wrap: wrap;">
+          <button class="btn-aux" onclick="toggleWatPause()"><span id="watPauseIcon">⏸</span> <span id="watPauseLabel">Pause</span></button>
+          <button class="btn-aux" onclick="nextWatWord()">Next Word ❯</button>
+          <button class="btn-aux" style="color: var(--accent-alert);" onclick="abortWatTest()">✕ Abort Test</button>
         </div>
       </div>
 
-      <!-- WAT REVIEW -->
-      <div class="card-box" id="watReviewScreen" style="display: none; max-width: 940px;">
+      <!-- WAT REVIEW SCREEN -->
+      <div class="command-panel" id="watReviewScreen" style="display: none; max-width: 960px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem;">
           <div>
-            <h2>WAT Test Completed!</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">Review your words and evaluate with AI for free.</p>
+            <h2 class="module-heading">WAT Drill Completed</h2>
+            <p class="module-desc" style="margin-bottom: 0;">Review your stimulus responses and evaluate with AI for free.</p>
           </div>
-          <div style="display: flex; gap: 0.5rem;">
-            <button class="btn-secondary" onclick="copyWatResponses()">📋 Raw Words List</button>
-          </div>
+          <button class="btn-aux" onclick="copyWatResponses()">📋 Copy Raw Words</button>
         </div>
 
-        <!-- AI EVALUATION CARD -->
-        <div class="ai-eval-card">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+        <!-- AI DISPATCH CARD -->
+        <div class="eval-dispatch-card">
+          <div class="dispatch-header">
             <div>
-              <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <span style="font-size: 1.3rem;">🤖</span>
-                <strong style="color: var(--accent-blue); font-size: 1.1rem;">Free AI Psychologist Evaluation (ChatGPT / Claude / Gemini)</strong>
+              <div class="dispatch-title">
+                <span>🤖</span> Free AI Psychologist Evaluation (ChatGPT / Claude / Gemini)
               </div>
-              <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.35rem; max-width: 620px; line-height: 1.45;">
-                Get your 60 words and sentences graded by an AI trained as a <strong>Senior DIPR Psychologist</strong>. It checks against the 15 OLQs, flags preaching ("should/must") or passive pessimism, and gives officer-grade rewrites.
+              <p class="dispatch-desc">
+                Evaluate your responses using an AI prompted as a <strong>Senior DIPR Psychologist</strong>. It checks against the 15 OLQs, flags preaching (e.g. <em>'should/must'</em>), and provides concise, officer-grade model answers.
               </p>
             </div>
-            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-              <button class="btn-start" style="width: auto; padding: 0.6rem 1.25rem; font-size: 0.85rem; background: var(--accent-blue); color: #000;" onclick="copyWatAiPrompt()">📋 Copy AI Assessor Prompt</button>
-              <button class="btn-secondary" style="font-size: 0.85rem; padding: 0.6rem 1rem;" onclick="downloadWatAiDossier()">📥 Download Dossier (.txt)</button>
+            <div class="dispatch-actions">
+              <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.55rem 1.25rem; font-size: 0.9rem; background: var(--accent-intel);" onclick="copyWatAiPrompt()">📋 Copy AI Assessor Prompt</button>
+              <button class="btn-aux" onclick="downloadWatAiDossier()">📥 Download Dossier (.txt)</button>
             </div>
           </div>
-          <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--bg-card-border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
-            <span style="font-size: 0.8rem; color: var(--text-muted);">Step 2: Paste into your favorite free AI chat:</span>
+          <div class="model-links-row">
+            <span style="font-size: 0.8rem; color: var(--text-tertiary);">Step 2: Paste prompt into your chosen chat model:</span>
             <div style="display: flex; gap: 0.5rem;">
-              <a href="https://chatgpt.com" target="_blank" class="ai-model-btn" style="background: rgba(16, 185, 129, 0.15); border-color: var(--accent-green); color: var(--accent-green);">🚀 ChatGPT (Free) ↗</a>
-              <a href="https://claude.ai" target="_blank" class="ai-model-btn" style="background: rgba(217, 119, 6, 0.15); border-color: #d97706; color: #fbbf24;">🟣 Claude (Free) ↗</a>
-              <a href="https://gemini.google.com" target="_blank" class="ai-model-btn" style="background: rgba(56, 189, 248, 0.15); border-color: var(--accent-blue); color: var(--accent-blue);">✨ Google Gemini (Free) ↗</a>
+              <a href="https://chatgpt.com" target="_blank" class="model-chip chip-chatgpt">🚀 ChatGPT (Free) ↗</a>
+              <a href="https://claude.ai" target="_blank" class="model-chip chip-claude">🟣 Claude (Free) ↗</a>
+              <a href="https://gemini.google.com" target="_blank" class="model-chip chip-gemini">✨ Gemini (Free) ↗</a>
             </div>
           </div>
         </div>
 
-        <div style="max-height: 480px; overflow-y: auto; border: 1px solid var(--bg-card-border); border-radius: 8px; margin-bottom: 1.5rem;">
+        <div style="max-height: 480px; overflow-y: auto; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); margin-bottom: 1.5rem;">
           <table style="width: 100%; border-collapse: collapse; text-align: left;">
             <thead>
-              <tr style="background: var(--bg-primary); color: var(--accent-gold); font-size: 0.85rem; text-transform: uppercase;">
+              <tr style="background: var(--bg-surface-elevated); color: var(--accent-brass); font-family: var(--font-tactical); font-size: 0.88rem; text-transform: uppercase;">
                 <th style="padding: 0.75rem 1rem;">#</th>
-                <th style="padding: 0.75rem 1rem;">Word</th>
-                <th style="padding: 0.75rem 1rem;">Response</th>
+                <th style="padding: 0.75rem 1rem;">Stimulus Word</th>
+                <th style="padding: 0.75rem 1rem;">Candidate Response</th>
               </tr>
             </thead>
             <tbody id="watReviewTbody"></tbody>
           </table>
         </div>
-        <button class="btn-secondary" onclick="resetWatToSetup()">← Return to Setup</button>
+        <button class="btn-aux" onclick="resetWatToSetup()">← Return to Setup</button>
       </div>
 
     </section>
@@ -1096,24 +1221,24 @@ html += f'''            </optgroup>
     <!-- ==============================================================
          2. TAT MODULE
          ============================================================== -->
-    <section class="module-container" id="tab-tat">
+    <section class="workspace-module" id="tab-tat">
       
       <!-- TAT SETUP -->
-      <div class="card-box" id="tatSetupScreen">
-        <h2 class="section-title">Thematic Apperception Test (TAT)</h2>
-        <p class="section-subtitle">
-          12 Slides (11 authentic picture slides + 1 Blank Slide). 30 seconds observation followed by 4 minutes story writing per slide.
+      <div class="command-panel" id="tatSetupScreen" style="max-width: 860px;">
+        <h2 class="module-heading">Thematic Apperception Test (TAT)</h2>
+        <p class="module-desc">
+          12 Slides (11 authentic visual stimuli + 1 blank slide). 30 seconds observation followed by 4 minutes story writing per slide.
         </p>
 
-        <div class="info-banner">
-          <div>📸 Source: <strong>All Tat Combined .pdf (137 Pictures)</strong></div>
-          <div>Sets: <strong>12 Official Sets (12 Slides Each)</strong></div>
+        <div class="tactical-ribbon">
+          <div class="ribbon-item">Slide Imagery: <strong>137 Authentic DIPR Plates</strong></div>
+          <div class="ribbon-item">Syllabus: <strong>12 Official Sets (12 Slides Each)</strong></div>
         </div>
 
-        <div class="form-group">
-          <label>Select TAT Set</label>
+        <div class="param-group">
+          <label class="param-label">Select TAT Set</label>
           <select id="tatSelectSet">
-            <option value="next_unattempted" selected>🎯 Next Unattempted TAT Set (No Repeat)</option>
+            <option value="next_unattempted" selected>🎯 Next Unattempted Set (No Repeat Guarantee)</option>
             <option value="random_11">🎲 Random 11 Pictures + Slide 12 Blank</option>
             <optgroup label="── OFFICIAL 12-SLIDE SETS ──" id="tatOptGroupSets">
 '''
@@ -1125,141 +1250,135 @@ html += f'''            </optgroup>
           </select>
         </div>
 
-        <div class="grid-2">
-          <div class="form-group">
-            <label>Viewing Phase (Picture on Screen)</label>
+        <div class="grid-duo">
+          <div class="param-group">
+            <label class="param-label">Observation Window (Image on Screen)</label>
             <select id="tatViewTime">
               <option value="30" selected>30 Seconds (Official DIPR Standard)</option>
-              <option value="20">20 Seconds (Fast Observation)</option>
-              <option value="45">45 Seconds (Relaxed / Training)</option>
+              <option value="20">20 Seconds (High Speed Perception)</option>
+              <option value="45">45 Seconds (Training Cadence)</option>
             </select>
           </div>
-          <div class="form-group">
-            <label>Writing Phase (Screen Blank / Narrative)</label>
+          <div class="param-group">
+            <label class="param-label">Narrative Window (Story Writing)</label>
             <select id="tatWriteTime">
               <option value="240" selected>4 Minutes (Official DIPR Standard)</option>
-              <option value="180">3 Minutes (High Speed)</option>
-              <option value="300">5 Minutes (Beginner)</option>
+              <option value="180">3 Minutes (Speed Drill)</option>
+              <option value="300">5 Minutes (Training Cadence)</option>
             </select>
           </div>
         </div>
 
-        <div class="form-group">
-          <label>Practice Mode</label>
-          <div class="mode-selector">
-            <div class="mode-option active" id="tatModePaper" onclick="setTatMode('paper')">
+        <div class="param-group">
+          <label class="param-label">Practice Style</label>
+          <div class="format-selector">
+            <div class="format-card selected" id="tatModePaper" onclick="setTatMode('paper')">
               <strong>📝 Pen & Paper (Recommended)</strong>
-              <span>Observe picture on screen, then write your story in your SSB booklet.</span>
+              <span>Observe the visual stimuli on screen and write your 12 narratives in your physical booklet.</span>
             </div>
-            <div class="mode-option" id="tatModeTyping" onclick="setTatMode('typing')">
+            <div class="format-card" id="tatModeTyping" onclick="setTatMode('typing')">
               <strong>⌨️ Digital Typing</strong>
-              <span>Type your story directly with Hero, Action & Outcome boxes.</span>
+              <span>Type your story directly into the on-screen narrative editor during the 4-minute writing phase.</span>
             </div>
           </div>
         </div>
 
-        <button class="btn-start" onclick="startTatTest()">START TAT SESSION</button>
+        <button class="btn-engage" onclick="startTatTest()">COMMENCE TAT DRILL ❯</button>
       </div>
 
-      <!-- TAT ACTIVE TEST -->
-      <div class="card-box" id="tatActiveScreen" style="display: none; max-width: 960px; padding: 2rem;">
+      <!-- TAT ACTIVE STAGE -->
+      <div class="command-panel" id="tatActiveScreen" style="display: none; max-width: 960px; padding: 2rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 1.5rem;">
           <div>
-            <div style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-gold); font-size: 1.15rem;" id="tatSlideTag">
+            <div style="font-family: var(--font-tactical); font-size: 1.4rem; font-weight: 700; color: var(--accent-brass);" id="tatSlideTag">
               SLIDE 1 / 12
             </div>
             <div style="margin-top: 0.25rem;">
-              <span class="tat-phase-badge phase-viewing" id="tatPhaseBadge">👁️ OBSERVATION PHASE (30s)</span>
+              <span class="phase-pill observe" id="tatPhaseBadge">👁️ OBSERVATION PHASE (30s)</span>
             </div>
           </div>
 
-          <div class="timer-ring-container">
-            <svg class="timer-ring-svg" viewBox="0 0 80 80">
-              <circle class="timer-ring-bg" cx="40" cy="40" r="36" />
-              <circle class="timer-ring-progress" id="tatTimerCircle" cx="40" cy="40" r="36" />
+          <div class="precision-clock">
+            <svg class="clock-svg" viewBox="0 0 80 80">
+              <circle class="clock-track" cx="40" cy="40" r="36" />
+              <circle class="clock-fill" id="tatTimerCircle" cx="40" cy="40" r="36" />
             </svg>
-            <div class="timer-number" id="tatTimerNum">30</div>
+            <div class="clock-digits" id="tatTimerNum">30</div>
           </div>
         </div>
 
-        <!-- TAT DISPLAY CARD -->
-        <div class="tat-display-card" id="tatDisplayCard">
-          <div class="tat-image-container" id="tatImgWrap">
-            <img id="tatCurrentImg" src="" alt="TAT Picture">
+        <div class="tat-observation-frame" id="tatDisplayCard">
+          <div id="tatImgWrap" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;">
+            <img id="tatCurrentImg" src="" alt="TAT Stimulus">
           </div>
-          <div class="tat-blank-slide" id="tatBlankSlide" style="display: none; text-align: center;">
-            <h2 style="font-size: 2.2rem; margin-bottom: 1rem; color: var(--accent-gold);">BLANK SLIDE (12 / 12)</h2>
-            <p style="font-size: 1.1rem; max-width: 600px; line-height: 1.6; color: #cbd5e1;">
-              This is the 12th Slide. Write a story of your own choice, drawing from personal achievements, social service, adventurous experience, or constructive goals.
+          <div id="tatBlankSlide" style="display: none; text-align: center; padding: 2rem;">
+            <h2 style="font-family: var(--font-tactical); font-size: 2.8rem; color: var(--accent-brass); margin-bottom: 0.5rem;">BLANK SLIDE (12 / 12)</h2>
+            <p style="color: var(--text-secondary); max-width: 580px; margin: 0 auto; line-height: 1.6;">
+              This is the 12th Slide. Create a story of your own choice depicting constructive initiative, community leadership, adventure, or personal goals.
             </p>
           </div>
           <div id="tatWritingPrompt" style="display: none; text-align: center; padding: 2rem;">
-            <h3 style="font-size: 1.8rem; color: var(--accent-green); margin-bottom: 0.5rem;">✍️ WRITING PHASE</h3>
-            <p style="color: var(--text-muted); font-size: 1.05rem;">
-              Observe the past (what led to it), present (hero's planned action), and constructive future outcome.
+            <h3 style="font-family: var(--font-tactical); font-size: 2.2rem; color: var(--accent-ready); margin-bottom: 0.4rem;">✍️ NARRATIVE PHASE</h3>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">
+              Synthesize past context (what led to it), active present measures, and a realistic positive resolution.
             </p>
           </div>
         </div>
 
         <div id="tatTypingContainer" style="display: none; width: 100%; margin-top: 1.5rem;">
-          <textarea id="tatStoryInput" style="width: 100%; height: 160px; background: var(--bg-primary); border: 1px solid var(--bg-card-border); color: var(--text-main); padding: 1rem; border-radius: 8px; font-family: var(--font-body); font-size: 0.95rem; resize: vertical;" placeholder="Type your story here (Hero, Situation, Action taken, Resolution)..."></textarea>
+          <textarea id="tatStoryInput" style="height: 160px;" placeholder="Type your narrative here (Hero identification, situation, action taken, constructive outcome)..."></textarea>
         </div>
 
-        <div style="display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: center;">
-          <button class="btn-secondary" onclick="toggleTatPause()"><span id="tatPauseIcon">⏸</span> <span id="tatPauseLabel">Pause</span></button>
-          <button class="btn-secondary" style="border-color: var(--accent-green); color: var(--accent-green);" onclick="advanceTatPhaseEarly()">
+        <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem; justify-content: center; flex-wrap: wrap;">
+          <button class="btn-aux" onclick="toggleTatPause()"><span id="tatPauseIcon">⏸</span> <span id="tatPauseLabel">Pause</span></button>
+          <button class="btn-aux" style="border-color: var(--accent-ready); color: var(--accent-ready);" onclick="advanceTatPhaseEarly()">
             Finished Writing ➔ Next Slide
           </button>
-          <button class="btn-secondary" style="color: var(--accent-red);" onclick="abortTatTest()">✕ End Test</button>
+          <button class="btn-aux" style="color: var(--accent-alert);" onclick="abortTatTest()">✕ Abort Test</button>
         </div>
       </div>
 
-      <!-- TAT REVIEW -->
-      <div class="card-box" id="tatReviewScreen" style="display: none; max-width: 960px;">
+      <!-- TAT REVIEW SCREEN -->
+      <div class="command-panel" id="tatReviewScreen" style="display: none; max-width: 960px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem;">
           <div>
-            <h2>TAT Session Completed!</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">12 Slides completed successfully.</p>
+            <h2 class="module-heading">TAT Session Completed</h2>
+            <p class="module-desc" style="margin-bottom: 0;">12 Slides recorded. Ready for multimodal AI assessment.</p>
           </div>
-          <button class="btn-secondary" onclick="copyTatResponses()">📋 Raw Stories</button>
+          <button class="btn-aux" onclick="copyTatResponses()">📋 Copy Raw Stories</button>
         </div>
 
         <!-- MULTIMODAL AI EVALUATION PACKAGE -->
-        <div class="ai-eval-card" style="border-color: rgba(56, 189, 248, 0.4);">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+        <div class="eval-dispatch-card">
+          <div class="dispatch-header">
             <div>
-              <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <span style="font-size: 1.3rem;">🖼️🤖</span>
-                <strong style="color: var(--accent-blue); font-size: 1.1rem;">Free Multimodal TAT Evaluation (Images + Stories)</strong>
+              <div class="dispatch-title">
+                <span>🖼️🤖</span> Free Multimodal TAT Evaluation (Images + Stories)
               </div>
-              <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.35rem; max-width: 620px; line-height: 1.45;">
-                Download the complete package containing all <strong>slide picture images (.jpg) + your stories + the Senior DIPR Assessor Prompt</strong>. Upload them directly into ChatGPT-4o, Claude 3.5, or Gemini to evaluate how well your Hero, Action, and Resolution match the visual stimulus and the 15 OLQs!
+              <p class="dispatch-desc">
+                Download the package containing all <strong>slide picture images (.jpg) + your stories + the Senior DIPR Assessor Prompt</strong>. Upload them directly into ChatGPT-4o, Claude 3.5, or Gemini to evaluate how well your Hero and Action match the visual stimulus and the 15 OLQs!
               </p>
             </div>
-            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-              <button class="btn-start" id="btnDownloadTatZip" style="width: auto; padding: 0.6rem 1.25rem; font-size: 0.85rem; background: var(--accent-gold); color: #000;" onclick="downloadTatZipPackage()">
+            <div class="dispatch-actions">
+              <button class="btn-engage" id="btnDownloadTatZip" style="width: auto; margin-top: 0; padding: 0.55rem 1.25rem; font-size: 0.9rem;" onclick="downloadTatZipPackage()">
                 📦 Download Package (.ZIP: Images + Prompt)
               </button>
-              <button class="btn-secondary" style="font-size: 0.85rem; padding: 0.6rem 1rem;" onclick="copyTatAiPrompt()">
-                📋 Copy Prompt & Stories
-              </button>
-              <button class="btn-secondary" style="font-size: 0.85rem; padding: 0.6rem 1rem;" onclick="downloadTatAiDossier()">
-                📥 Download Text (.txt)
-              </button>
+              <button class="btn-aux" onclick="copyTatAiPrompt()">📋 Copy Prompt</button>
+              <button class="btn-aux" onclick="downloadTatAiDossier()">📥 Download Text</button>
             </div>
           </div>
-          <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--bg-card-border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
-            <span style="font-size: 0.8rem; color: var(--text-muted);">Step 2: Upload images & prompt to free AI chat:</span>
+          <div class="model-links-row">
+            <span style="font-size: 0.8rem; color: var(--text-tertiary);">Step 2: Upload images & prompt to free AI chat:</span>
             <div style="display: flex; gap: 0.5rem;">
-              <a href="https://chatgpt.com" target="_blank" class="ai-model-btn" style="background: rgba(16, 185, 129, 0.15); border-color: var(--accent-green); color: var(--accent-green);">🚀 ChatGPT (Free) ↗</a>
-              <a href="https://claude.ai" target="_blank" class="ai-model-btn" style="background: rgba(217, 119, 6, 0.15); border-color: #d97706; color: #fbbf24;">🟣 Claude (Free) ↗</a>
-              <a href="https://gemini.google.com" target="_blank" class="ai-model-btn" style="background: rgba(56, 189, 248, 0.15); border-color: var(--accent-blue); color: var(--accent-blue);">✨ Google Gemini (Free) ↗</a>
+              <a href="https://chatgpt.com" target="_blank" class="model-chip chip-chatgpt">🚀 ChatGPT (Free) ↗</a>
+              <a href="https://claude.ai" target="_blank" class="model-chip chip-claude">🟣 Claude (Free) ↗</a>
+              <a href="https://gemini.google.com" target="_blank" class="model-chip chip-gemini">✨ Gemini (Free) ↗</a>
             </div>
           </div>
         </div>
 
         <div id="tatReviewList" style="max-height: 520px; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;"></div>
-        <button class="btn-secondary" onclick="resetTatToSetup()">← Return to Setup</button>
+        <button class="btn-aux" onclick="resetTatToSetup()">← Return to Setup</button>
       </div>
 
     </section>
@@ -1267,106 +1386,105 @@ html += f'''            </optgroup>
     <!-- ==============================================================
          3. SRT MODULE
          ============================================================== -->
-    <section class="module-container" id="tab-srt">
+    <section class="workspace-module" id="tab-srt">
       
       <!-- SRT SETUP -->
-      <div class="card-box" id="srtSetupScreen">
-        <h2 class="section-title">Situation Reaction Test (SRT)</h2>
-        <p class="section-subtitle">
-          60 Real-world challenging situations in 30 minutes. Demonstrates practical intelligence, speed of decision, and social responsibility.
+      <div class="command-panel" id="srtSetupScreen" style="max-width: 860px;">
+        <h2 class="module-heading">Situation Reaction Test (SRT)</h2>
+        <p class="module-desc">
+          60 Real-world crises and dilemmas in 30 minutes. Demonstrates practical intelligence, speed of decision, and sense of personal responsibility.
         </p>
 
-        <div class="info-banner">
-          <div>📋 Bank: <strong>2 Official DIPR Sets (120 Situations)</strong></div>
-          <div>Allotted Time: <strong>30 Minutes for 60 Situations</strong></div>
+        <div class="tactical-ribbon">
+          <div class="ribbon-item">Question Bank: <strong>2 Official DIPR Sets (120 Scenarios)</strong></div>
+          <div class="ribbon-item">Time Standard: <strong>30 Minutes for 60 Scenarios</strong></div>
         </div>
 
-        <div class="form-group">
-          <label>Select SRT Set</label>
+        <div class="param-group">
+          <label class="param-label">Select SRT Set</label>
           <select id="srtSelectSet">
-            <option value="next_unattempted" selected>🎯 Next Unattempted SRT Set (No Repeat)</option>
-            <option value="1">DIPR Official SRT Set 1 (60 Situations)</option>
-            <option value="2">DIPR Official SRT Set 2 (60 Situations)</option>
-            <option value="random">🎲 Random 60 Situations</option>
+            <option value="next_unattempted" selected>🎯 Next Unattempted Set (No Repeat Guarantee)</option>
+            <option value="1">DIPR Official SRT Set 1 (60 Scenarios)</option>
+            <option value="2">DIPR Official SRT Set 2 (60 Scenarios)</option>
+            <option value="random">🎲 Random 60 Scenarios</option>
           </select>
         </div>
 
-        <div class="form-group">
-          <label>Practice Style</label>
-          <div class="mode-selector">
-            <div class="mode-option active" id="srtModeBooklet" onclick="setSrtMode('booklet')">
+        <div class="param-group">
+          <label class="param-label">Presentation Format</label>
+          <div class="format-selector">
+            <div class="format-card selected" id="srtModeBooklet" onclick="setSrtMode('booklet')">
               <strong>📖 Full Booklet Mode (30:00 Timer)</strong>
-              <span>All 60 situations scrollable with live clock, jump back & forth like real paper booklet.</span>
+              <span>Scrollable 60-scenario ledger with live clock. Replicates paper booklet navigation.</span>
             </div>
-            <div class="mode-option" id="srtModeFlash" onclick="setSrtMode('flash')">
+            <div class="format-card" id="srtModeFlash" onclick="setSrtMode('flash')">
               <strong>⚡ 30s Flash Mode</strong>
-              <span>Each situation flashes on screen for 30 seconds automatically.</span>
+              <span>Each situation flashes on screen individually for 30 seconds.</span>
             </div>
           </div>
         </div>
 
-        <button class="btn-start" onclick="startSrtTest()">COMMENCE SRT SESSION (30 MINS)</button>
+        <button class="btn-engage" onclick="startSrtTest()">COMMENCE SRT DRILL (30 MINS) ❯</button>
       </div>
 
-      <!-- SRT ACTIVE SCREEN (BOOKLET MODE) -->
-      <div class="card-box" id="srtActiveScreen" style="display: none; max-width: 960px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--bg-card-border);">
+      <!-- SRT ACTIVE WORKSPACE -->
+      <div class="command-panel" id="srtActiveScreen" style="display: none; max-width: 960px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-subtle);">
           <div>
-            <h3 style="font-size: 1.3rem;">Situation Reaction Booklet</h3>
-            <span style="font-size: 0.85rem; color: var(--text-muted);" id="srtCompletedCount">Answered: 0 / 60</span>
+            <h3 style="font-family: var(--font-tactical); font-size: 1.3rem;">Situation Reaction Ledger</h3>
+            <span style="font-size: 0.85rem; color: var(--text-secondary);" id="srtCompletedCount">Attempted: 0 / 60</span>
           </div>
           <div style="display: flex; align-items: center; gap: 1rem;">
-            <div style="font-family: var(--font-mono); font-size: 1.8rem; font-weight: 700; color: var(--accent-gold);" id="srtMasterTimer">
+            <div style="font-family: var(--font-tactical); font-size: 2.2rem; font-weight: 700; color: var(--accent-brass);" id="srtMasterTimer">
               30:00
             </div>
-            <button class="btn-start" style="width: auto; padding: 0.6rem 1.5rem; font-size: 0.9rem;" onclick="submitSrtTest()">
-              Submit Test
+            <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.55rem 1.5rem; font-size: 0.95rem;" onclick="submitSrtTest()">
+              Submit Booklet
             </button>
           </div>
         </div>
 
-        <div class="srt-booklet" id="srtBookletList"></div>
+        <div class="srt-scroll-deck" id="srtBookletList"></div>
       </div>
 
-      <!-- SRT REVIEW -->
-      <div class="card-box" id="srtReviewScreen" style="display: none; max-width: 960px;">
+      <!-- SRT REVIEW SCREEN -->
+      <div class="command-panel" id="srtReviewScreen" style="display: none; max-width: 960px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem;">
           <div>
-            <h2>SRT Test Summary</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem;" id="srtReviewStats">Attempted: 60 / 60</p>
+            <h2 class="module-heading">SRT Session Completed</h2>
+            <p class="module-desc" style="margin-bottom: 0;" id="srtReviewStats">Attempted: 60 / 60</p>
           </div>
-          <button class="btn-secondary" onclick="copySrtResponses()">📋 Raw Reactions</button>
+          <button class="btn-aux" onclick="copySrtResponses()">📋 Copy Raw Reactions</button>
         </div>
 
-        <!-- AI EVALUATION CARD -->
-        <div class="ai-eval-card">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+        <!-- AI DISPATCH CARD -->
+        <div class="eval-dispatch-card">
+          <div class="dispatch-header">
             <div>
-              <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <span style="font-size: 1.3rem;">🤖</span>
-                <strong style="color: var(--accent-blue); font-size: 1.1rem;">Free AI Psychologist SRT Evaluation</strong>
+              <div class="dispatch-title">
+                <span>🤖</span> Free AI SRT Evaluation
               </div>
-              <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.35rem; max-width: 620px; line-height: 1.45;">
-                Evaluate completeness of reaction, speed of decision, and sense of responsibility. Flags evasion ("called police and watched") and provides concise military-grade solutions.
+              <p class="dispatch-desc">
+                Evaluate completeness of reaction, speed of decision, and sense of responsibility. Flags evasion (e.g. <em>'called police and watched'</em>) and provides concise military-grade solutions.
               </p>
             </div>
-            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-              <button class="btn-start" style="width: auto; padding: 0.6rem 1.25rem; font-size: 0.85rem; background: var(--accent-blue); color: #000;" onclick="copySrtAiPrompt()">📋 Copy AI Assessor Prompt</button>
-              <button class="btn-secondary" style="font-size: 0.85rem; padding: 0.6rem 1rem;" onclick="downloadSrtAiDossier()">📥 Download Dossier (.txt)</button>
+            <div class="dispatch-actions">
+              <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.55rem 1.25rem; font-size: 0.9rem; background: var(--accent-intel);" onclick="copySrtAiPrompt()">📋 Copy AI Assessor Prompt</button>
+              <button class="btn-aux" onclick="downloadSrtAiDossier()">📥 Download Dossier</button>
             </div>
           </div>
-          <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--bg-card-border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
-            <span style="font-size: 0.8rem; color: var(--text-muted);">Step 2: Paste into free AI chat:</span>
+          <div class="model-links-row">
+            <span style="font-size: 0.8rem; color: var(--text-tertiary);">Step 2: Paste into free AI chat:</span>
             <div style="display: flex; gap: 0.5rem;">
-              <a href="https://chatgpt.com" target="_blank" class="ai-model-btn" style="background: rgba(16, 185, 129, 0.15); border-color: var(--accent-green); color: var(--accent-green);">🚀 ChatGPT (Free) ↗</a>
-              <a href="https://claude.ai" target="_blank" class="ai-model-btn" style="background: rgba(217, 119, 6, 0.15); border-color: #d97706; color: #fbbf24;">🟣 Claude (Free) ↗</a>
-              <a href="https://gemini.google.com" target="_blank" class="ai-model-btn" style="background: rgba(56, 189, 248, 0.15); border-color: var(--accent-blue); color: var(--accent-blue);">✨ Google Gemini (Free) ↗</a>
+              <a href="https://chatgpt.com" target="_blank" class="model-chip chip-chatgpt">🚀 ChatGPT (Free) ↗</a>
+              <a href="https://claude.ai" target="_blank" class="model-chip chip-claude">🟣 Claude (Free) ↗</a>
+              <a href="https://gemini.google.com" target="_blank" class="model-chip chip-gemini">✨ Gemini (Free) ↗</a>
             </div>
           </div>
         </div>
 
         <div id="srtReviewContent" style="max-height: 480px; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;"></div>
-        <button class="btn-secondary" onclick="resetSrtToSetup()">← Return to Setup</button>
+        <button class="btn-aux" onclick="resetSrtToSetup()">← Return to Setup</button>
       </div>
 
     </section>
@@ -1374,272 +1492,274 @@ html += f'''            </optgroup>
     <!-- ==============================================================
          4. SDT MODULE
          ============================================================== -->
-    <section class="module-container" id="tab-sdt">
-      <div class="card-box" style="max-width: 960px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--bg-card-border); padding-bottom: 1rem;">
+    <section class="workspace-module" id="tab-sdt">
+      <div class="command-panel" style="max-width: 960px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
           <div>
-            <h2 class="section-title" style="text-align: left; margin: 0;">Self Description Test (SDT)</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">
-              5 Official DIPR Paragraphs. 15 Minutes allotted. Be honest, balanced, and growth-oriented.
+            <h2 class="module-heading">Self Description Test (SDT)</h2>
+            <p class="module-desc" style="margin-bottom: 0;">
+              5 Official DIPR Dimensions. 15 Minutes allotted. Be honest, balanced, and growth-oriented.
             </p>
           </div>
           <div style="display: flex; align-items: center; gap: 1rem;">
-            <div style="font-family: var(--font-mono); font-size: 1.8rem; font-weight: 700; color: var(--accent-gold);" id="sdtTimer">
+            <div style="font-family: var(--font-tactical); font-size: 2.2rem; font-weight: 700; color: var(--accent-brass);" id="sdtTimer">
               15:00
             </div>
-            <button class="btn-secondary" id="btnSdtTimerToggle" onclick="toggleSdtTimer()">Start Timer</button>
+            <button class="btn-aux" id="btnSdtTimerToggle" onclick="toggleSdtTimer()">Start Timer</button>
           </div>
         </div>
 
-        <!-- AI EVALUATION CARD FOR SDT -->
-        <div class="ai-eval-card">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+        <!-- AI DISPATCH CARD FOR SDT -->
+        <div class="eval-dispatch-card">
+          <div class="dispatch-header">
             <div>
-              <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <span style="font-size: 1.3rem;">🤖</span>
-                <strong style="color: var(--accent-blue); font-size: 1.1rem;">Free AI SDT Triangulation & Authenticity Check</strong>
+              <div class="dispatch-title">
+                <span>🤖</span> Free SDT Triangulation & Authenticity Check
               </div>
-              <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.35rem; max-width: 620px; line-height: 1.45;">
-                AI compares your Parents, Teachers, Friends, and Self assessment to detect discrepancies, fake weaknesses ("perfectionist"), and prepare you for Interviewing Officer cross-examination.
+              <p class="dispatch-desc">
+                AI cross-references your Parents, Teachers, Friends, and Self assessments to detect contradictions, fake weaknesses (e.g. <em>'perfectionist'</em>), and prepare you for Interviewing Officer questions.
               </p>
             </div>
-            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-              <button class="btn-start" style="width: auto; padding: 0.6rem 1.25rem; font-size: 0.85rem; background: var(--accent-blue); color: #000;" onclick="copySdtAiPrompt()">📋 Copy AI Assessor Prompt</button>
-              <button class="btn-secondary" style="font-size: 0.85rem; padding: 0.6rem 1rem;" onclick="downloadSdtAiDossier()">📥 Download Dossier (.txt)</button>
+            <div class="dispatch-actions">
+              <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.55rem 1.25rem; font-size: 0.9rem; background: var(--accent-intel);" onclick="copySdtAiPrompt()">📋 Copy AI Assessor Prompt</button>
+              <button class="btn-aux" onclick="downloadSdtAiDossier()">📥 Download Dossier</button>
             </div>
           </div>
-          <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--bg-card-border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
-            <span style="font-size: 0.8rem; color: var(--text-muted);">Step 2: Paste into free AI chat:</span>
+          <div class="model-links-row">
+            <span style="font-size: 0.8rem; color: var(--text-tertiary);">Step 2: Paste into free AI chat:</span>
             <div style="display: flex; gap: 0.5rem;">
-              <a href="https://chatgpt.com" target="_blank" class="ai-model-btn" style="background: rgba(16, 185, 129, 0.15); border-color: var(--accent-green); color: var(--accent-green);">🚀 ChatGPT (Free) ↗</a>
-              <a href="https://claude.ai" target="_blank" class="ai-model-btn" style="background: rgba(217, 119, 6, 0.15); border-color: #d97706; color: #fbbf24;">🟣 Claude (Free) ↗</a>
-              <a href="https://gemini.google.com" target="_blank" class="ai-model-btn" style="background: rgba(56, 189, 248, 0.15); border-color: var(--accent-blue); color: var(--accent-blue);">✨ Google Gemini (Free) ↗</a>
+              <a href="https://chatgpt.com" target="_blank" class="model-chip chip-chatgpt">🚀 ChatGPT (Free) ↗</a>
+              <a href="https://claude.ai" target="_blank" class="model-chip chip-claude">🟣 Claude (Free) ↗</a>
+              <a href="https://gemini.google.com" target="_blank" class="model-chip chip-gemini">✨ Gemini (Free) ↗</a>
             </div>
           </div>
         </div>
 
-        <div class="sdt-editor-box">
-          <div class="sdt-card">
-            <div class="sdt-label">1. Parents' Opinion</div>
-            <div class="sdt-help">What do your father and mother think of you? (Habits, obedience, responsibility, emotional bond)</div>
-            <textarea class="sdt-textarea" id="sdt1" placeholder="My parents consider me to be..."></textarea>
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <div class="param-group">
+            <label class="param-label">1. Parents' Opinion</label>
+            <textarea id="sdt1" style="height: 100px;" placeholder="What do your parents honestly perceive in your habits, sense of responsibility, emotional maturity, and conduct?"></textarea>
           </div>
 
-          <div class="sdt-card">
-            <div class="sdt-label">2. Teachers' / Instructors' Opinion</div>
-            <div class="sdt-help">What do your teachers/professors think of you? (Grasp, punctuality, participation, sincerity)</div>
-            <textarea class="sdt-textarea" id="sdt2" placeholder="My teachers describe me as..."></textarea>
+          <div class="param-group">
+            <label class="param-label">2. Teachers' / Instructors' Opinion</label>
+            <textarea id="sdt2" style="height: 100px;" placeholder="What do your professors or commanding mentors say regarding your intellect, discipline, teamwork, and sincerity?"></textarea>
           </div>
 
-          <div class="sdt-card">
-            <div class="sdt-label">3. Friends' / Colleagues' Opinion</div>
-            <div class="sdt-help">What do your friends or peers say about you? (Trustworthiness, helping nature, fun to be with, crisis support)</div>
-            <textarea class="sdt-textarea" id="sdt3" placeholder="My close friends appreciate that I..."></textarea>
+          <div class="param-group">
+            <label class="param-label">3. Friends' / Peers' Opinion</label>
+            <textarea id="sdt3" style="height: 100px;" placeholder="What do your close friends appreciate most about you, and what help do they seek in times of crisis?"></textarea>
           </div>
 
-          <div class="sdt-card">
-            <div class="sdt-label">4. Your Own Opinion (Self Assessment)</div>
-            <div class="sdt-help">What are your genuine strengths and authentic modifiable weaknesses?</div>
-            <textarea class="sdt-textarea" id="sdt4" placeholder="I consider myself to be... Areas where I can improve include..."></textarea>
+          <div class="param-group">
+            <label class="param-label">4. Your Own Opinion (Self Assessment)</label>
+            <textarea id="sdt4" style="height: 100px;" placeholder="State your genuine strengths and authentic, remediable weaknesses that you are currently working on."></textarea>
           </div>
 
-          <div class="sdt-card">
-            <div class="sdt-label">5. Future Aspirations (What you want to become)</div>
-            <div class="sdt-help">What kind of officer, professional, and citizen do you strive to develop into?</div>
-            <textarea class="sdt-textarea" id="sdt5" placeholder="In the future, I aspire to become an officer who..."></textarea>
+          <div class="param-group">
+            <label class="param-label">5. Future Aspirations (Qualities Striving to Develop)</label>
+            <textarea id="sdt5" style="height: 100px;" placeholder="What qualities do you wish to cultivate to become an effective military leader and responsible citizen?"></textarea>
           </div>
         </div>
 
-        <div style="display: flex; justify-content: space-between; margin-top: 1.5rem; gap: 1rem;">
-          <button class="btn-secondary" onclick="saveSdtLocal()">💾 Save Draft</button>
-          <button class="btn-start" style="width: auto; padding: 0.75rem 2rem;" onclick="copySdtText()">📋 Copy All 5 Paragraphs</button>
+        <div style="display: flex; justify-content: space-between; margin-top: 1.5rem; gap: 1rem; flex-wrap: wrap;">
+          <button class="btn-aux" onclick="saveSdtLocal()">💾 Save Draft</button>
+          <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.65rem 2rem; font-size: 0.95rem;" onclick="copySdtText()">📋 Copy All 5 Paragraphs</button>
         </div>
       </div>
     </section>
 
     <!-- ==============================================================
-         5. OIR MODULE (PDF UPLOAD + DIGITAL OMR SHEET)
+         5. OIR MODULE (SPLIT VIEWPORT)
          ============================================================== -->
-    <section class="module-container" id="tab-oir">
-      <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <section class="workspace-module" id="tab-oir">
+      <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
         <div>
-          <h2 style="font-size: 1.5rem; font-weight: 700;">Officer Intelligence Rating (OIR) Test</h2>
-          <p style="color: var(--text-muted); font-size: 0.85rem;">Upload your Verbal/Non-Verbal Question Paper PDF & mark responses on the live OMR.</p>
+          <h2 class="module-heading" style="font-size: 1.4rem; margin: 0;">Officer Intelligence Rating (OIR) Console</h2>
+          <p style="color: var(--text-secondary); font-size: 0.85rem;">Upload your Verbal/Non-Verbal Question Paper PDF and mark responses on the live digital OMR.</p>
         </div>
-        <div style="display: flex; gap: 0.75rem; align-items: center;">
+        <div style="display: flex; gap: 0.6rem; align-items: center;">
           <input type="file" id="oirPdfInput" accept=".pdf" style="display: none;">
-          <button class="btn-secondary" onclick="document.getElementById('oirPdfInput').click()">
-            📂 Upload OIR PDF
-          </button>
-          <div style="background: var(--bg-card); border: 1px solid var(--bg-card-border); padding: 0.4rem 0.8rem; border-radius: 6px; font-family: var(--font-mono); font-size: 1.3rem; font-weight: 700; color: var(--accent-gold);" id="oirTimerNum">
+          <button class="btn-aux" onclick="document.getElementById('oirPdfInput').click()">📂 Upload OIR PDF</button>
+          <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); padding: 0.35rem 0.75rem; border-radius: var(--radius-sm); font-family: var(--font-tactical); font-size: 1.4rem; font-weight: 700; color: var(--accent-brass);" id="oirTimerNum">
             20:00
           </div>
-          <button class="btn-secondary" id="btnOirTimerToggle" onclick="toggleOirTimer()">Start Timer</button>
-          <button class="btn-start" style="width: auto; padding: 0.5rem 1.25rem; font-size: 0.85rem;" onclick="submitOirOMR()">Submit OMR</button>
+          <button class="btn-aux" id="btnOirTimerToggle" onclick="toggleOirTimer()">Start Timer</button>
+          <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.45rem 1.25rem; font-size: 0.9rem;" onclick="submitOirOMR()">Submit OMR</button>
         </div>
       </div>
 
-      <div class="oir-workspace">
-        <div class="oir-pdf-viewer">
+      <div style="display: grid; grid-template-columns: 1.35fr 1fr; gap: 1.25rem; width: 100%; height: calc(100vh - 160px);">
+        <!-- PDF VIEWPORT -->
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); overflow: hidden; display: flex; flex-direction: column; height: 100%;">
           <div id="oirPdfPlaceholder" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center;">
-            <div style="font-size: 3rem; margin-bottom: 1rem;">📑</div>
-            <h3 style="margin-bottom: 0.5rem;">No OIR Question Paper Loaded</h3>
-            <p style="color: var(--text-muted); max-width: 440px; font-size: 0.9rem; margin-bottom: 1.5rem;">
-              Upload any OIR test PDF (e.g. 50 Verbal/Non-Verbal questions) to view questions here and solve them directly using the OMR sheet on the right.
+            <div style="font-size: 3rem; margin-bottom: 0.75rem;">📑</div>
+            <h3 style="font-family: var(--font-tactical); font-size: 1.4rem; margin-bottom: 0.4rem;">No OIR Paper Loaded</h3>
+            <p style="color: var(--text-secondary); max-width: 420px; font-size: 0.9rem; margin-bottom: 1.5rem;">
+              Upload any OIR test PDF (e.g. 50 Verbal/Non-Verbal questions) to inspect problems on the left while marking answers on the live OMR punch sheet.
             </p>
-            <button class="btn-start" style="width: auto; padding: 0.75rem 2rem;" onclick="document.getElementById('oirPdfInput').click()">
+            <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.65rem 2rem; font-size: 0.95rem;" onclick="document.getElementById('oirPdfInput').click()">
               Upload OIR PDF File
             </button>
           </div>
           <iframe id="oirPdfIframe" style="width: 100%; height: 100%; border: none; display: none;"></iframe>
         </div>
 
-        <div class="oir-omr-pane">
-          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--bg-card-border); padding-bottom: 0.75rem;">
+        <!-- DIGITAL OMR PUNCH SHEET -->
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; flex-direction: column; height: 100%; overflow: hidden;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.75rem;">
             <div>
-              <strong style="font-size: 1.05rem;">Digital OMR Sheet</strong>
-              <div style="font-size: 0.8rem; color: var(--text-muted);" id="oirAttemptStats">Marked: 0 / 50 Questions</div>
+              <strong style="font-family: var(--font-tactical); font-size: 1.15rem; letter-spacing: 0.5px; text-transform: uppercase;">Digital OMR Sheet</strong>
+              <div style="font-size: 0.8rem; color: var(--text-tertiary);" id="oirAttemptStats">Marked: 0 / 50 Questions</div>
             </div>
-            <div style="display: flex; gap: 0.5rem;">
-              <select id="oirQuestionCount" onchange="generateOmrRows()" style="padding: 0.35rem 0.6rem; font-size: 0.85rem;">
-                <option value="40">40 Questions</option>
-                <option value="50" selected>50 Questions</option>
-                <option value="60">60 Questions</option>
-              </select>
-            </div>
+            <select id="oirQuestionCount" onchange="generateOmrRows()" style="padding: 0.35rem 0.6rem; font-size: 0.82rem; width: auto;">
+              <option value="40">40 Questions</option>
+              <option value="50" selected>50 Questions</option>
+              <option value="60">60 Questions</option>
+            </select>
           </div>
 
-          <div class="omr-grid-container" id="omrRowsList"></div>
+          <div class="omr-grid-scroll" id="omrRowsList" style="margin-top: 0.75rem;"></div>
         </div>
       </div>
     </section>
 
     <!-- ==============================================================
-         6. FULL MOCK BATTERY MODULE
+         6. FULL MOCK BATTERY
          ============================================================== -->
-    <section class="module-container" id="tab-fullmock">
-      <div class="card-box" style="max-width: 820px; text-align: center;">
-        <h2 class="section-title">Stage 2 Psychological Battery Mock</h2>
-        <p class="section-subtitle">
+    <section class="workspace-module" id="tab-fullmock">
+      <div class="command-panel" style="max-width: 820px; text-align: center;">
+        <h2 class="module-heading">Stage 2 Psychological Battery Simulation</h2>
+        <p class="module-desc" style="margin: 0 auto 2rem auto;">
           Experience the authentic, unbroken 3-hour psychological testing schedule of Services Selection Board (SSB).
         </p>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: left; margin-bottom: 2rem;">
-          <div style="background: var(--bg-primary); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--bg-card-border);">
-            <strong style="color: var(--accent-gold);">1. TAT (Thematic Apperception)</strong>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">12 Slides (11 pictures + 1 blank). 30s view, 4 min write per slide.</p>
+          <div style="background: var(--bg-surface-elevated); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+            <strong style="font-family: var(--font-tactical); font-size: 1.1rem; color: var(--accent-brass); display: block; margin-bottom: 0.25rem;">1. TAT (Thematic Apperception)</strong>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">12 Slides (11 visual stimuli + 1 blank slide). 30s observation, 4 min writing per slide.</p>
           </div>
-          <div style="background: var(--bg-primary); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--bg-card-border);">
-            <strong style="color: var(--accent-gold);">2. WAT (Word Association)</strong>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">60 Words. 15 seconds per word continuous.</p>
+          <div style="background: var(--bg-surface-elevated); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+            <strong style="font-family: var(--font-tactical); font-size: 1.1rem; color: var(--accent-brass); display: block; margin-bottom: 0.25rem;">2. WAT (Word Association)</strong>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">60 Words flashed at 15 seconds each continuously under high pace.</p>
           </div>
-          <div style="background: var(--bg-primary); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--bg-card-border);">
-            <strong style="color: var(--accent-gold);">3. SRT (Situation Reaction)</strong>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">60 Situations. Exactly 30 minutes to complete.</p>
+          <div style="background: var(--bg-surface-elevated); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+            <strong style="font-family: var(--font-tactical); font-size: 1.1rem; color: var(--accent-brass); display: block; margin-bottom: 0.25rem;">3. SRT (Situation Reaction)</strong>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">60 Real-world challenging situations to solve in exactly 30 minutes.</p>
           </div>
-          <div style="background: var(--bg-primary); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--bg-card-border);">
-            <strong style="color: var(--accent-gold);">4. SDT (Self Description)</strong>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">5 Paragraphs (Parents, Teachers, Friends, Self, Aim). 15 minutes.</p>
+          <div style="background: var(--bg-surface-elevated); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+            <strong style="font-family: var(--font-tactical); font-size: 1.1rem; color: var(--accent-brass); display: block; margin-bottom: 0.25rem;">4. SDT (Self Description)</strong>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">5 Comprehensive paragraphs (Parents, Teachers, Friends, Self, Future Aim). 15 minutes.</p>
           </div>
         </div>
 
-        <button class="btn-start" style="max-width: 400px; margin: 0 auto;" onclick="launchFullMockBattery()">
+        <button class="btn-engage" style="max-width: 400px; margin: 0 auto;" onclick="launchFullMockBattery()">
           🚀 COMMENCE FULL BATTERY SIMULATION
         </button>
       </div>
     </section>
 
     <!-- ==============================================================
-         7. DEDICATED AI ASSESSOR (FREE EVALUATION HUB)
+         7. AI ASSESSOR DISPATCH HUB
          ============================================================== -->
-    <section class="module-container" id="tab-ai-assessor">
-      <div class="card-box" style="max-width: 1040px;">
-        <div style="border-bottom: 1px solid var(--bg-card-border); padding-bottom: 1rem; margin-bottom: 1.5rem;">
-          <h2 class="section-title" style="text-align: left; margin: 0;">🤖 AI Psychologist Evaluation Hub (100% Free)</h2>
-          <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem; line-height: 1.5;">
-            Evaluate your SSB responses for free using modern foundation models (ChatGPT-4o, Claude 3.5 Sonnet, or Google Gemini). Download test stimuli (including high-res TAT images) and copy expert Senior DIPR Psychologist prompts with 1 click.
+    <section class="workspace-module" id="tab-ai-assessor">
+      <div class="command-panel" style="max-width: 1040px;">
+        <div style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 1.25rem; margin-bottom: 1.5rem;">
+          <h2 class="module-heading" style="color: var(--accent-intel);">🤖 AI Psychologist Evaluation Hub (100% Free)</h2>
+          <p class="module-desc" style="margin-bottom: 0;">
+            Zero-cost, professional psychological grading using free foundation models (ChatGPT-4o, Claude 3.5 Sonnet, or Google Gemini). Download stimuli packages (including high-resolution TAT images) and copy expert Senior DIPR Psychologist prompts with 1 click.
           </p>
         </div>
 
-        <!-- 3-STEP WORKFLOW GUIDE -->
+        <!-- 3-STEP PROTOCOL -->
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
-          <div style="background: var(--bg-primary); border: 1px solid var(--bg-card-border); border-radius: 8px; padding: 1.25rem;">
-            <div style="font-size: 1.6rem; margin-bottom: 0.5rem;">📥 1. Download Stimuli & Prompt</div>
-            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.45;">
+          <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem;">
+            <div style="font-family: var(--font-tactical); font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;">
+              📥 1. Extract Stimuli & Prompt
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
               Select any TAT set to download a <strong>ready-to-upload ZIP</strong> containing the slide images and your stories, or copy the formatted prompt for WAT, SRT, or SDT.
             </p>
           </div>
-          <div style="background: var(--bg-primary); border: 1px solid var(--bg-card-border); border-radius: 8px; padding: 1.25rem;">
-            <div style="font-size: 1.6rem; margin-bottom: 0.5rem;">💬 2. Open Free AI Chat</div>
-            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.45;">
-              Open <a href="https://chatgpt.com" target="_blank" style="color: var(--accent-green); text-decoration: underline;">ChatGPT</a>, <a href="https://claude.ai" target="_blank" style="color: #fbbf24; text-decoration: underline;">Claude</a>, or <a href="https://gemini.google.com" target="_blank" style="color: var(--accent-blue); text-decoration: underline;">Gemini</a>. You do not need any paid developer API key!
+          <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem;">
+            <div style="font-family: var(--font-tactical); font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;">
+              💬 2. Deploy to Free AI Chat
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+              Open <a href="https://chatgpt.com" target="_blank" style="color: var(--accent-ready); font-weight: 600;">ChatGPT</a>, <a href="https://claude.ai" target="_blank" style="color: #fbbf24; font-weight: 600;">Claude</a>, or <a href="https://gemini.google.com" target="_blank" style="color: var(--accent-intel); font-weight: 600;">Gemini</a>. No API keys or paid accounts required!
             </p>
           </div>
-          <div style="background: var(--bg-primary); border: 1px solid var(--bg-card-border); border-radius: 8px; padding: 1.25rem;">
-            <div style="font-size: 1.6rem; margin-bottom: 0.5rem;">🎖️ 3. Get OLQ Scoring</div>
-            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.45;">
+          <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem;">
+            <div style="font-family: var(--font-tactical); font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;">
+              🎖️ 3. Receive 15 OLQ Scoring
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
               The AI roleplays as a <strong>Senior DIPR Assessor</strong>, grading your responses across the 15 OLQs, highlighting red flags, and rewriting them into officer-level responses.
             </p>
           </div>
         </div>
 
-        <!-- ON-DEMAND SET PACKAGE DOWNLOADER -->
-        <div style="background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
-          <h3 style="color: var(--accent-gold); margin-bottom: 0.75rem; font-size: 1.2rem;">📦 On-Demand Test Stimuli & Prompt Generator</h3>
-          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
-            Even if you practiced in a physical notebook, select any set below to generate the exact DIPR prompt and slide images package for evaluation.
+        <!-- ON-DEMAND STIMULI GENERATOR -->
+        <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 2rem;">
+          <h3 style="font-family: var(--font-tactical); font-size: 1.25rem; font-weight: 700; color: var(--accent-brass); margin-bottom: 0.35rem; text-transform: uppercase;">
+            📦 On-Demand Test Package Downloader
+          </h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+            Practicing in a physical notebook? Select any set below to generate the exact DIPR prompt and slide images package for AI review.
           </p>
 
-          <div class="grid-2">
-            <div class="form-group">
-              <label>Select Test Type</label>
+          <div class="grid-duo">
+            <div class="param-group">
+              <label class="param-label">Select Test Type</label>
               <select id="hubSelectType" onchange="updateHubOptions()">
                 <option value="tat" selected>🖼️ Thematic Apperception Test (TAT) — With Slide Images ZIP</option>
                 <option value="wat">⚡ Word Association Test (WAT) — 60 Words List</option>
-                <option value="srt">📝 Situation Reaction Test (SRT) — 60 Situations</option>
+                <option value="srt">📝 Situation Reaction Test (SRT) — 60 Scenarios</option>
                 <option value="sdt">👤 Self Description Test (SDT) — 5 Dimensions</option>
               </select>
             </div>
-            <div class="form-group">
-              <label>Select Set</label>
+            <div class="param-group">
+              <label class="param-label">Select Set</label>
               <select id="hubSelectSet"></select>
             </div>
           </div>
 
           <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem;">
-            <button class="btn-start" style="width: auto; padding: 0.65rem 1.5rem; font-size: 0.9rem;" id="btnHubDownload" onclick="executeHubDownload()">
+            <button class="btn-engage" style="width: auto; margin-top: 0; padding: 0.65rem 1.5rem; font-size: 0.95rem;" id="btnHubDownload" onclick="executeHubDownload()">
               📦 Download Package / Dossier
             </button>
-            <button class="btn-secondary" style="font-size: 0.9rem;" onclick="executeHubCopyPrompt()">
+            <button class="btn-aux" onclick="executeHubCopyPrompt()">
               📋 Copy Prompt to Clipboard
             </button>
           </div>
         </div>
 
-        <!-- 15 OLQS REFERENCE ACCORDION -->
-        <div style="border-top: 1px solid var(--bg-card-border); padding-top: 1.5rem;">
-          <h3 style="color: var(--accent-blue); margin-bottom: 1rem; font-size: 1.15rem;">📋 Official 15 Officer Like Qualities (OLQ) Assessment Matrix</h3>
+        <!-- 15 OLQS REFERENCE MATRIX -->
+        <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
+          <h3 style="font-family: var(--font-tactical); font-size: 1.2rem; color: var(--text-primary); margin-bottom: 1rem; text-transform: uppercase;">
+            📋 Official 15 Officer Like Qualities (OLQ) Assessment Matrix
+          </h3>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
-            <div style="background: var(--bg-primary); border: 1px solid var(--bg-card-border); border-radius: 8px; padding: 1rem;">
-              <strong style="color: var(--accent-gold); font-size: 0.9rem;">Factor I: Planning & Organising</strong>
-              <ul style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; padding-left: 1.2rem; line-height: 1.6;">
+            <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.15rem;">
+              <strong style="font-family: var(--font-tactical); color: var(--accent-brass); font-size: 1.05rem; display: block; margin-bottom: 0.4rem;">Factor I: Planning & Organising</strong>
+              <ul style="font-size: 0.82rem; color: var(--text-secondary); padding-left: 1.2rem; line-height: 1.7;">
                 <li>1. Effective Intelligence</li>
                 <li>2. Reasoning Ability</li>
                 <li>3. Organising Ability</li>
                 <li>4. Power of Expression</li>
               </ul>
             </div>
-            <div style="background: var(--bg-primary); border: 1px solid var(--bg-card-border); border-radius: 8px; padding: 1rem;">
-              <strong style="color: var(--accent-blue); font-size: 0.9rem;">Factor II: Social Adjustment</strong>
-              <ul style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; padding-left: 1.2rem; line-height: 1.6;">
+            <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.15rem;">
+              <strong style="font-family: var(--font-tactical); color: var(--accent-intel); font-size: 1.05rem; display: block; margin-bottom: 0.4rem;">Factor II: Social Adjustment</strong>
+              <ul style="font-size: 0.82rem; color: var(--text-secondary); padding-left: 1.2rem; line-height: 1.7;">
                 <li>5. Social Adaptability</li>
                 <li>6. Co-operation</li>
                 <li>7. Sense of Responsibility</li>
               </ul>
             </div>
-            <div style="background: var(--bg-primary); border: 1px solid var(--bg-card-border); border-radius: 8px; padding: 1rem;">
-              <strong style="color: var(--accent-green); font-size: 0.9rem;">Factor III: Social Effectiveness</strong>
-              <ul style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; padding-left: 1.2rem; line-height: 1.6;">
+            <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.15rem;">
+              <strong style="font-family: var(--font-tactical); color: var(--accent-ready); font-size: 1.05rem; display: block; margin-bottom: 0.4rem;">Factor III: Social Effectiveness</strong>
+              <ul style="font-size: 0.82rem; color: var(--text-secondary); padding-left: 1.2rem; line-height: 1.7;">
                 <li>8. Initiative</li>
                 <li>9. Self-Confidence</li>
                 <li>10. Speed of Decision</li>
@@ -1647,9 +1767,9 @@ html += f'''            </optgroup>
                 <li>12. Liveliness</li>
               </ul>
             </div>
-            <div style="background: var(--bg-primary); border: 1px solid var(--bg-card-border); border-radius: 8px; padding: 1rem;">
-              <strong style="color: var(--accent-red); font-size: 0.9rem;">Factor IV: Dynamic</strong>
-              <ul style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; padding-left: 1.2rem; line-height: 1.6;">
+            <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.15rem;">
+              <strong style="font-family: var(--font-tactical); color: var(--accent-alert); font-size: 1.05rem; display: block; margin-bottom: 0.4rem;">Factor IV: Dynamic</strong>
+              <ul style="font-size: 0.82rem; color: var(--text-secondary); padding-left: 1.2rem; line-height: 1.7;">
                 <li>13. Determination</li>
                 <li>14. Courage</li>
                 <li>15. Stamina</li>
@@ -1665,7 +1785,7 @@ html += f'''            </optgroup>
 
   <script>
     // ==============================================================
-    // DATA STORES
+    // DATA REPOSITORY
     // ==============================================================
     const WAT_SETS = {wat_sets_json};
     const ALL_WAT_WORDS = {all_wat_words_json};
@@ -1673,20 +1793,20 @@ html += f'''            </optgroup>
     const TAT_SETS = {tat_sets_json};
 
     // ==============================================================
-    // TOAST HELPER
+    // TACTICAL TOAST
     // ==============================================================
     function showToast(msg) {{
-      const t = document.getElementById('toastNotice');
+      const t = document.getElementById('tacticalToast');
       t.textContent = msg;
       t.classList.add('visible');
-      setTimeout(() => t.classList.remove('visible'), 2400);
+      setTimeout(() => t.classList.remove('visible'), 2200);
     }}
 
     // ==============================================================
-    // NAVIGATION
+    // NAVIGATION TABS
     // ==============================================================
-    const tabs = document.querySelectorAll('.nav-tab');
-    const modules = document.querySelectorAll('.module-container');
+    const tabs = document.querySelectorAll('.op-tab');
+    const modules = document.querySelectorAll('.workspace-module');
 
     tabs.forEach(tab => {{
       tab.addEventListener('click', () => {{
@@ -1701,19 +1821,14 @@ html += f'''            </optgroup>
     }});
 
     // ==============================================================
-    // PROGRESS TRACKER & NO-REPEAT ENGINE
+    // PROGRESS TRACKER & ZERO-REPEAT LOGIC
     // ==============================================================
     const STORAGE_KEY = 'ssb_master_progress';
 
     function getProgressData() {{
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) {{
-        return {{
-          watCompleted: [],
-          tatCompleted: [],
-          srtCompleted: [],
-          history: []
-        }};
+        return {{ watCompleted: [], tatCompleted: [], srtCompleted: [], history: [] }};
       }}
       try {{
         return JSON.parse(raw);
@@ -1732,7 +1847,7 @@ html += f'''            </optgroup>
       const p = getProgressData();
       if (!p.watCompleted.includes(id)) p.watCompleted.push(id);
       p.history.unshift({{
-        date: new Date().toLocaleString(),
+        date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {{hour: '2-digit', minute:'2-digit'}}),
         module: 'WAT',
         item: `Set ${{id}} (60 Words)`,
         result: 'Completed'
@@ -1744,7 +1859,7 @@ html += f'''            </optgroup>
       const p = getProgressData();
       if (!p.tatCompleted.includes(id)) p.tatCompleted.push(id);
       p.history.unshift({{
-        date: new Date().toLocaleString(),
+        date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {{hour: '2-digit', minute:'2-digit'}}),
         module: 'TAT',
         item: `Set ${{id}} (12 Slides)`,
         result: 'Completed'
@@ -1756,9 +1871,9 @@ html += f'''            </optgroup>
       const p = getProgressData();
       if (!p.srtCompleted.includes(id)) p.srtCompleted.push(id);
       p.history.unshift({{
-        date: new Date().toLocaleString(),
+        date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {{hour: '2-digit', minute:'2-digit'}}),
         module: 'SRT',
-        item: `Set ${{id}} (60 Situations)`,
+        item: `Set ${{id}} (60 Scenarios)`,
         result: 'Completed'
       }});
       saveProgressData(p);
@@ -1767,7 +1882,7 @@ html += f'''            </optgroup>
     function logCompletedSession(mod, item, result) {{
       const p = getProgressData();
       p.history.unshift({{
-        date: new Date().toLocaleString(),
+        date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {{hour: '2-digit', minute:'2-digit'}}),
         module: mod,
         item: item,
         result: result
@@ -1776,7 +1891,7 @@ html += f'''            </optgroup>
     }}
 
     function clearPracticeHistory() {{
-      if (confirm("Reset practice history? (Completed sets records will be cleared)")) {{
+      if (confirm("Reset operation logs and completed status?")) {{
         localStorage.removeItem(STORAGE_KEY);
         updateProgressDashboard();
         updateDropdownBadges();
@@ -1802,9 +1917,9 @@ html += f'''            </optgroup>
           const parsed = JSON.parse(evt.target.result);
           if (parsed && Array.isArray(parsed.watCompleted)) {{
             saveProgressData(parsed);
-            alert("Progress successfully restored!");
+            alert("Progress state restored successfully!");
           }} else {{
-            alert("Invalid backup file format.");
+            alert("Unrecognized backup file format.");
           }}
         }} catch(err) {{
           alert("Error parsing backup JSON: " + err.message);
@@ -1836,8 +1951,8 @@ html += f'''            </optgroup>
       WAT_SETS.forEach(s => {{
         const isDone = p.watCompleted.includes(s.id);
         const pill = document.createElement('div');
-        pill.className = `set-pill ${{isDone ? 'completed' : ''}}`;
-        pill.innerHTML = `${{isDone ? '✅' : '⚡'}} Set ${{s.id}}`;
+        pill.className = `inventory-pill ${{isDone ? 'cleared' : ''}}`;
+        pill.innerHTML = `${{isDone ? '✓' : '⚡'}} Set ${{s.id}}`;
         pill.onclick = () => {{
           document.querySelector('[data-tab="tab-wat"]').click();
           document.getElementById('watSelectSet').value = `set_${{s.id}}`;
@@ -1851,8 +1966,8 @@ html += f'''            </optgroup>
       TAT_SETS.forEach(s => {{
         const isDone = p.tatCompleted.includes(s.id);
         const pill = document.createElement('div');
-        pill.className = `set-pill ${{isDone ? 'completed' : ''}}`;
-        pill.innerHTML = `${{isDone ? '✅' : '🖼️'}} TAT ${{s.id}}`;
+        pill.className = `inventory-pill ${{isDone ? 'cleared' : ''}}`;
+        pill.innerHTML = `${{isDone ? '✓' : '🖼️'}} TAT ${{s.id}}`;
         pill.onclick = () => {{
           document.querySelector('[data-tab="tab-tat"]').click();
           document.getElementById('tatSelectSet').value = `tat_set_${{s.id}}`;
@@ -1866,8 +1981,8 @@ html += f'''            </optgroup>
       [1, 2].forEach(num => {{
         const isDone = p.srtCompleted.includes(num);
         const pill = document.createElement('div');
-        pill.className = `set-pill ${{isDone ? 'completed' : ''}}`;
-        pill.innerHTML = `${{isDone ? '✅' : '📝'}} SRT Set ${{num}}`;
+        pill.className = `inventory-pill ${{isDone ? 'cleared' : ''}}`;
+        pill.innerHTML = `${{isDone ? '✓' : '📝'}} SRT Set ${{num}}`;
         pill.onclick = () => {{
           document.querySelector('[data-tab="tab-srt"]').click();
           document.getElementById('srtSelectSet').value = `${{num}}`;
@@ -1882,16 +1997,16 @@ html += f'''            </optgroup>
       const tbody = document.getElementById('historyTableBody');
       tbody.innerHTML = '';
       if (p.history.length === 0) {{
-        tbody.innerHTML = '<tr><td colspan="4" style="padding: 1.5rem; text-align: center; color: var(--text-muted);">No practice sessions recorded yet. Start any test to log your progress!</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="padding: 1.25rem; text-align: center; color: var(--text-tertiary);">No practice sessions logged yet. Begin any test to register activity.</td></tr>';
       }} else {{
         p.history.slice(0, 30).forEach(h => {{
           const tr = document.createElement('tr');
-          tr.style.borderBottom = '1px solid var(--bg-card-border)';
+          tr.style.borderBottom = '1px solid var(--border-subtle)';
           tr.innerHTML = `
-            <td style="padding: 0.6rem 1rem; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.8rem;">${{h.date}}</td>
-            <td style="padding: 0.6rem 1rem; font-weight: 700;">${{h.module}}</td>
+            <td style="padding: 0.6rem 1rem; color: var(--text-tertiary); font-family: var(--font-mono); font-size: 0.8rem;">${{h.date}}</td>
+            <td style="padding: 0.6rem 1rem; font-weight: 600;">${{h.module}}</td>
             <td style="padding: 0.6rem 1rem;">${{h.item}}</td>
-            <td style="padding: 0.6rem 1rem; color: var(--accent-green); font-weight: 600;">${{h.result}}</td>
+            <td style="padding: 0.6rem 1rem; color: var(--accent-ready); font-weight: 600;">${{h.result}}</td>
           `;
           tbody.appendChild(tr);
         }});
@@ -1913,19 +2028,19 @@ html += f'''            </optgroup>
           document.getElementById('watSelectSet').value = `set_${{nextWat.id}}`;
         }};
       }} else if (nextTat) {{
-        recDiv.innerHTML = `<strong>TAT Set ${{nextTat.id}}</strong> (11 Pictures + Slide 12 Blank) &mdash; Unattempted`;
+        recDiv.innerHTML = `<strong>TAT Set ${{nextTat.id}}</strong> (11 Pictures + 1 Blank Slide) &mdash; Unattempted`;
         btnRec.onclick = () => {{
           document.querySelector('[data-tab="tab-tat"]').click();
           document.getElementById('tatSelectSet').value = `tat_set_${{nextTat.id}}`;
         }};
       }} else if (nextSrt) {{
-        recDiv.innerHTML = `<strong>SRT Set ${{nextSrt}}</strong> (60 Situations in 30 Mins) &mdash; Unattempted`;
+        recDiv.innerHTML = `<strong>SRT Set ${{nextSrt}}</strong> (60 Scenarios in 30 Mins) &mdash; Unattempted`;
         btnRec.onclick = () => {{
           document.querySelector('[data-tab="tab-srt"]').click();
           document.getElementById('srtSelectSet').value = `${{nextSrt}}`;
         }};
       }} else {{
-        recDiv.innerHTML = `🏆 <strong style="color: var(--accent-green);">All Official Sets Mastered!</strong> Full syllabus completed. Practice Full Mock Battery next!`;
+        recDiv.innerHTML = `🏆 <strong style="color: var(--accent-ready);">Complete Syllabus Mastered!</strong> All official sets cleared. Proceed with Stage 2 Full Mock Battery.`;
         btnRec.textContent = 'Launch Full Mock ❯';
         btnRec.onclick = () => document.querySelector('[data-tab="tab-fullmock"]').click();
       }}
@@ -1938,8 +2053,8 @@ html += f'''            </optgroup>
         Array.from(watGroup.options).forEach(opt => {{
           const setId = parseInt(opt.value.replace('set_', ''), 10);
           const isDone = p.watCompleted.includes(setId);
-          const clean = opt.textContent.replace('✅ [COMPLETED] ', '');
-          opt.textContent = isDone ? `✅ [COMPLETED] ${{clean}}` : clean;
+          const clean = opt.textContent.replace('✓ [CLEARED] ', '');
+          opt.textContent = isDone ? `✓ [CLEARED] ${{clean}}` : clean;
         }});
       }}
 
@@ -1948,8 +2063,8 @@ html += f'''            </optgroup>
         Array.from(tatGroup.options).forEach(opt => {{
           const setId = parseInt(opt.value.replace('tat_set_', ''), 10);
           const isDone = p.tatCompleted.includes(setId);
-          const clean = opt.textContent.replace('✅ [COMPLETED] ', '');
-          opt.textContent = isDone ? `✅ [COMPLETED] ${{clean}}` : clean;
+          const clean = opt.textContent.replace('✓ [CLEARED] ', '');
+          opt.textContent = isDone ? `✓ [CLEARED] ${{clean}}` : clean;
         }});
       }}
     }}
@@ -1975,8 +2090,8 @@ html += f'''            </optgroup>
 
     function setWatMode(m) {{
       watMode = m;
-      document.getElementById('watModePaper').classList.toggle('active', m === 'paper');
-      document.getElementById('watModeTyping').classList.toggle('active', m === 'typing');
+      document.getElementById('watModePaper').classList.toggle('selected', m === 'paper');
+      document.getElementById('watModeTyping').classList.toggle('selected', m === 'typing');
     }}
 
     function startWatTest() {{
@@ -2032,7 +2147,7 @@ html += f'''            </optgroup>
       inp.value = watResponses[w] || '';
       if (watMode === 'typing') inp.focus();
 
-      playAudioBeep(600, 0.08);
+      playAudioBeep(640, 0.08);
     }}
 
     function runWatTimer() {{
@@ -2086,7 +2201,7 @@ html += f'''            </optgroup>
     }}
 
     function abortWatTest() {{
-      if (confirm("End WAT session? Completed responses will be shown.")) finishWatTest();
+      if (confirm("Terminate WAT drill? Current recorded responses will be displayed.")) finishWatTest();
     }}
 
     function finishWatTest() {{
@@ -2094,7 +2209,7 @@ html += f'''            </optgroup>
       if (watCurrentSetId) {{
         markWatSetDone(watCurrentSetId);
       }} else {{
-        logCompletedSession('WAT', 'Random 60 Drill', '60 Words Practiced');
+        logCompletedSession('WAT', 'Random 60 Drill', 'Completed');
       }}
 
       document.getElementById('watActiveScreen').style.display = 'none';
@@ -2105,10 +2220,11 @@ html += f'''            </optgroup>
       const list = watWords.slice(0, Math.max(watIndex, 1));
       list.forEach((w, i) => {{
         const tr = document.createElement('tr');
+        tr.style.borderBottom = '1px solid var(--border-subtle)';
         tr.innerHTML = `
-          <td style="padding: 0.6rem 1rem; border-bottom: 1px solid var(--bg-card-border); font-family: var(--font-mono); color: var(--text-muted);">${{i + 1}}</td>
-          <td style="padding: 0.6rem 1rem; border-bottom: 1px solid var(--bg-card-border); color: var(--accent-gold); font-weight: 700;">${{w}}</td>
-          <td style="padding: 0.6rem 1rem; border-bottom: 1px solid var(--bg-card-border);">${{escapeHtml(watResponses[w] || (watMode === 'typing' ? '—' : 'Written in notebook'))}}</td>
+          <td style="padding: 0.65rem 1rem; color: var(--text-tertiary); font-family: var(--font-mono); font-size: 0.85rem;">${{i + 1}}</td>
+          <td style="padding: 0.65rem 1rem; color: var(--accent-brass); font-weight: 700; font-family: var(--font-tactical); font-size: 1.1rem; letter-spacing: 0.5px;">${{w}}</td>
+          <td style="padding: 0.65rem 1rem;">${{escapeHtml(watResponses[w] || (watMode === 'typing' ? '—' : 'Written in notebook'))}}</td>
         `;
         tbody.appendChild(tr);
       }});
@@ -2119,7 +2235,7 @@ html += f'''            </optgroup>
       watWords.slice(0, Math.max(watIndex, 1)).forEach((w, i) => {{
         t += `${{i + 1}}. [${{w}}] => ${{watResponses[w] || 'Written on paper'}}\\n`;
       }});
-      navigator.clipboard.writeText(t).then(() => showToast("Copied responses to clipboard!"));
+      navigator.clipboard.writeText(t).then(() => showToast("RESPONSES COPIED TO CLIPBOARD"));
     }}
 
     function resetWatToSetup() {{
@@ -2144,8 +2260,8 @@ html += f'''            </optgroup>
 
     function setTatMode(m) {{
       tatMode = m;
-      document.getElementById('tatModePaper').classList.toggle('active', m === 'paper');
-      document.getElementById('tatModeTyping').classList.toggle('active', m === 'typing');
+      document.getElementById('tatModePaper').classList.toggle('selected', m === 'paper');
+      document.getElementById('tatModeTyping').classList.toggle('selected', m === 'typing');
     }}
 
     function startTatTest() {{
@@ -2180,7 +2296,7 @@ html += f'''            </optgroup>
           num: 12,
           type: 'blank',
           src: '',
-          label: 'Slide 12 — BLANK SLIDE (Own Story)'
+          label: 'Slide 12 — Blank Slide (Candidate Story)'
         }});
       }}
 
@@ -2215,7 +2331,7 @@ html += f'''            </optgroup>
       const typingWrap = document.getElementById('tatTypingContainer');
 
       if (phase === 'viewing') {{
-        badge.className = 'tat-phase-badge phase-viewing';
+        badge.className = 'phase-pill observe';
         badge.textContent = `👁️ OBSERVATION PHASE (${{tatViewDuration}}s)`;
         tatRemaining = tatViewDuration;
 
@@ -2230,10 +2346,10 @@ html += f'''            </optgroup>
 
         writingPrompt.style.display = 'none';
         typingWrap.style.display = 'none';
-        playAudioBeep(700, 0.15);
+        playAudioBeep(680, 0.12);
       }} else {{
-        badge.className = 'tat-phase-badge phase-writing';
-        badge.textContent = `✍️ WRITING PHASE (${{Math.floor(tatWriteDuration/60)}} MINS)`;
+        badge.className = 'phase-pill write';
+        badge.textContent = `✍️ NARRATIVE PHASE (${{Math.floor(tatWriteDuration/60)}} MINS)`;
         tatRemaining = tatWriteDuration;
 
         imgWrap.style.display = 'none';
@@ -2246,7 +2362,7 @@ html += f'''            </optgroup>
         }} else {{
           typingWrap.style.display = 'none';
         }}
-        playAudioBeep(500, 0.25);
+        playAudioBeep(520, 0.2);
       }}
 
       runTatTimer();
@@ -2309,7 +2425,7 @@ html += f'''            </optgroup>
     }}
 
     function abortTatTest() {{
-      if (confirm("End TAT test now? Stories written so far will be displayed.")) finishTatTest();
+      if (confirm("Terminate TAT session? Completed stories will be preserved.")) finishTatTest();
     }}
 
     function finishTatTest() {{
@@ -2317,7 +2433,7 @@ html += f'''            </optgroup>
       if (tatCurrentSetId) {{
         markTatSetDone(tatCurrentSetId);
       }} else {{
-        logCompletedSession('TAT', 'Random 11+Blank Drill', '12 Stories Practiced');
+        logCompletedSession('TAT', 'Random 11+Blank Drill', 'Completed');
       }}
 
       document.getElementById('tatActiveScreen').style.display = 'none';
@@ -2327,16 +2443,16 @@ html += f'''            </optgroup>
       wrap.innerHTML = '';
       tatSlides.slice(0, Math.max(tatIndex, 1)).forEach(s => {{
         const card = document.createElement('div');
-        card.style = 'background: var(--bg-primary); border: 1px solid var(--bg-card-border); border-radius: 8px; padding: 1rem; display: flex; gap: 1rem;';
+        card.style = 'background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.15rem; display: flex; gap: 1.25rem; align-items: flex-start;';
         const imgMarkup = s.type === 'blank' 
-          ? '<div style="width: 100px; height: 75px; background: #000; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; border-radius: 4px;">BLANK</div>'
-          : `<img src="${{s.src}}" style="width: 100px; height: 75px; object-fit: cover; border-radius: 4px;">`;
+          ? '<div style="width: 110px; height: 80px; background: #000; color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-tactical); font-size: 0.9rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">BLANK</div>'
+          : `<img src="${{s.src}}" style="width: 110px; height: 80px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">`;
         
         card.innerHTML = `
           ${{imgMarkup}}
           <div style="flex: 1;">
-            <strong style="color: var(--accent-gold);">Slide ${{s.num}}: ${{s.label}}</strong>
-            <p style="margin-top: 0.5rem; font-size: 0.9rem; line-height: 1.5;">${{escapeHtml(tatStories[s.num] || 'Written in booklet')}}</p>
+            <strong style="color: var(--accent-brass); font-family: var(--font-tactical); font-size: 1.1rem; letter-spacing: 0.5px;">Slide ${{s.num}}: ${{s.label}}</strong>
+            <p style="margin-top: 0.4rem; font-size: 0.92rem; line-height: 1.55; color: var(--text-primary);">${{escapeHtml(tatStories[s.num] || 'Written in booklet')}}</p>
           </div>
         `;
         wrap.appendChild(card);
@@ -2348,7 +2464,7 @@ html += f'''            </optgroup>
       tatSlides.slice(0, Math.max(tatIndex, 1)).forEach(s => {{
         t += `\\n[Slide ${{s.num}}: ${{s.label}}]\\n${{tatStories[s.num] || 'Written in booklet'}}\\n`;
       }});
-      navigator.clipboard.writeText(t).then(() => showToast("Copied stories to clipboard!"));
+      navigator.clipboard.writeText(t).then(() => showToast("STORIES COPIED TO CLIPBOARD"));
     }}
 
     function resetTatToSetup() {{
@@ -2368,8 +2484,8 @@ html += f'''            </optgroup>
 
     function setSrtMode(m) {{
       srtMode = m;
-      document.getElementById('srtModeBooklet').classList.toggle('active', m === 'booklet');
-      document.getElementById('srtModeFlash').classList.toggle('active', m === 'flash');
+      document.getElementById('srtModeBooklet').classList.toggle('selected', m === 'booklet');
+      document.getElementById('srtModeFlash').classList.toggle('selected', m === 'flash');
     }}
 
     function startSrtTest() {{
@@ -2411,13 +2527,13 @@ html += f'''            </optgroup>
 
       srtList.forEach((sit, idx) => {{
         const item = document.createElement('div');
-        item.className = 'srt-item';
+        item.className = 'srt-entry';
         item.innerHTML = `
-          <div class="srt-prompt">
-            <span style="color: var(--accent-gold); font-family: var(--font-mono); font-weight: 700; margin-right: 0.5rem;">#${{idx + 1}}</span>
+          <div class="srt-situation-text">
+            <span class="srt-num">#${{idx + 1}}</span>
             ${{sit}}
           </div>
-          <input type="text" class="srt-input" placeholder="He..." oninput="recordSrtInput(${{idx}}, this.value)">
+          <input type="text" placeholder="He..." oninput="recordSrtInput(${{idx}}, this.value)">
         `;
         wrap.appendChild(item);
       }});
@@ -2430,7 +2546,7 @@ html += f'''            </optgroup>
 
     function updateSrtProgressCount() {{
       const filled = Object.values(srtResponses).filter(v => v.trim().length > 0).length;
-      document.getElementById('srtCompletedCount').textContent = `Answered: ${{filled}} / ${{srtList.length}}`;
+      document.getElementById('srtCompletedCount').textContent = `Attempted: ${{filled}} / ${{srtList.length}}`;
     }}
 
     function runSrtMasterTimer() {{
@@ -2443,7 +2559,7 @@ html += f'''            </optgroup>
 
         if (srtRemainingSec <= 0) {{
           clearInterval(srtInterval);
-          alert("Time is up! 30 Minutes over for Situation Reaction Test.");
+          alert("Allotted time (30 minutes) elapsed for Situation Reaction Test.");
           submitSrtTest();
         }}
       }}, 1000);
@@ -2456,22 +2572,22 @@ html += f'''            </optgroup>
       if (srtCurrentSetId) {{
         markSrtSetDone(srtCurrentSetId);
       }} else {{
-        logCompletedSession('SRT', `Attempted ${{filled}} Situations`, 'Test Submitted');
+        logCompletedSession('SRT', `Attempted ${{filled}} Scenarios`, 'Submitted');
       }}
 
       document.getElementById('srtActiveScreen').style.display = 'none';
       document.getElementById('srtReviewScreen').style.display = 'block';
 
-      document.getElementById('srtReviewStats').textContent = `Completed ${{filled}} / ${{srtList.length}} Situations in allotted time`;
+      document.getElementById('srtReviewStats').textContent = `Attempted ${{filled}} / ${{srtList.length}} Scenarios in allotted 30 minutes`;
 
       const wrap = document.getElementById('srtReviewContent');
       wrap.innerHTML = '';
       srtList.forEach((sit, i) => {{
         const div = document.createElement('div');
-        div.style = 'background: var(--bg-primary); border: 1px solid var(--bg-card-border); border-radius: 8px; padding: 1rem;';
+        div.style = 'background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.15rem;';
         div.innerHTML = `
-          <strong>#${{i + 1}}: ${{sit}}</strong>
-          <p style="margin-top: 0.4rem; color: var(--accent-gold);">${{escapeHtml(srtResponses[i] || '(Unanswered)')}}</p>
+          <strong style="color: var(--text-primary); font-size: 0.95rem;">#${{i + 1}}: ${{sit}}</strong>
+          <p style="margin-top: 0.45rem; color: var(--accent-brass); font-size: 0.92rem;">${{escapeHtml(srtResponses[i] || '(Unanswered)')}}</p>
         `;
         wrap.appendChild(div);
       }});
@@ -2482,7 +2598,7 @@ html += f'''            </optgroup>
       srtList.forEach((sit, i) => {{
         t += `${{i + 1}}. ${{sit}} => ${{srtResponses[i] || '(Unanswered)'}}\\n`;
       }});
-      navigator.clipboard.writeText(t).then(() => showToast("Copied SRT responses!"));
+      navigator.clipboard.writeText(t).then(() => showToast("REACTIONS COPIED TO CLIPBOARD"));
     }}
 
     function resetSrtToSetup() {{
@@ -2509,8 +2625,8 @@ html += f'''            </optgroup>
           document.getElementById('sdtTimer').textContent = `${{String(m).padStart(2, '0')}}:${{String(s).padStart(2, '0')}}`;
           if (sdtSec <= 0) {{
             clearInterval(sdtInterval);
-            alert("15 Minutes time over for Self Description Test!");
-            logCompletedSession('SDT', 'Full 5 Paragraphs', '15m Session Completed');
+            alert("15 Minutes elapsed for Self Description Test.");
+            logCompletedSession('SDT', 'Full 5 Paragraphs', 'Completed');
           }}
         }}, 1000);
       }} else {{
@@ -2528,8 +2644,8 @@ html += f'''            </optgroup>
         p5: document.getElementById('sdt5').value
       }};
       localStorage.setItem('ssb_sdt_draft', JSON.stringify(d));
-      logCompletedSession('SDT', 'Draft Updated', 'Saved in browser');
-      showToast("Draft saved in browser!");
+      logCompletedSession('SDT', 'Draft Updated', 'Saved');
+      showToast("SDT DRAFT PRESERVED IN BROWSER");
     }}
 
     function copySdtText() {{
@@ -2539,7 +2655,7 @@ html += f'''            </optgroup>
       t += "3. FRIENDS' OPINION:\\n" + (document.getElementById('sdt3').value || '—') + "\\n\\n";
       t += "4. SELF ASSESSMENT:\\n" + (document.getElementById('sdt4').value || '—') + "\\n\\n";
       t += "5. FUTURE ASPIRATIONS:\\n" + (document.getElementById('sdt5').value || '—') + "\\n";
-      navigator.clipboard.writeText(t).then(() => showToast("Copied all 5 paragraphs to clipboard!"));
+      navigator.clipboard.writeText(t).then(() => showToast("5 PARAGRAPHS COPIED TO CLIPBOARD"));
     }}
 
     // ==============================================================
@@ -2558,7 +2674,7 @@ html += f'''            </optgroup>
       const iframe = document.getElementById('oirPdfIframe');
       iframe.src = url;
       iframe.style.display = 'block';
-      logCompletedSession('OIR', file.name, 'PDF Loaded for practice');
+      logCompletedSession('OIR', file.name, 'PDF Loaded');
     }});
 
     function generateOmrRows() {{
@@ -2569,14 +2685,14 @@ html += f'''            </optgroup>
 
       for (let i = 1; i <= count; i++) {{
         const row = document.createElement('div');
-        row.className = 'omr-row';
+        row.className = 'omr-line';
         row.innerHTML = `
-          <span class="omr-q-num">${{i}}.</span>
-          <div class="omr-options">
-            <div class="omr-bubble" onclick="selectOmrBubble(${{i}}, 'A', this)">A</div>
-            <div class="omr-bubble" onclick="selectOmrBubble(${{i}}, 'B', this)">B</div>
-            <div class="omr-bubble" onclick="selectOmrBubble(${{i}}, 'C', this)">C</div>
-            <div class="omr-bubble" onclick="selectOmrBubble(${{i}}, 'D', this)">D</div>
+          <span class="omr-num">${{i}}.</span>
+          <div class="bubble-cluster">
+            <div class="omr-bubble-cell" onclick="selectOmrBubble(${{i}}, 'A', this)">A</div>
+            <div class="omr-bubble-cell" onclick="selectOmrBubble(${{i}}, 'B', this)">B</div>
+            <div class="omr-bubble-cell" onclick="selectOmrBubble(${{i}}, 'C', this)">C</div>
+            <div class="omr-bubble-cell" onclick="selectOmrBubble(${{i}}, 'D', this)">D</div>
           </div>
         `;
         wrap.appendChild(row);
@@ -2585,9 +2701,9 @@ html += f'''            </optgroup>
     }}
 
     function selectOmrBubble(qNum, opt, el) {{
-      const row = el.closest('.omr-row');
-      row.querySelectorAll('.omr-bubble').forEach(b => b.classList.remove('selected'));
-      el.classList.add('selected');
+      const row = el.closest('.omr-line');
+      row.querySelectorAll('.omr-bubble-cell').forEach(b => b.classList.remove('filled'));
+      el.classList.add('filled');
       oirResponses[qNum] = opt;
       updateOmrAttemptStats();
     }}
@@ -2610,7 +2726,7 @@ html += f'''            </optgroup>
           document.getElementById('oirTimerNum').textContent = `${{String(m).padStart(2, '0')}}:${{String(s).padStart(2, '0')}}`;
           if (oirSec <= 0) {{
             clearInterval(oirInterval);
-            alert("OIR Allotted time over!");
+            alert("Allotted OIR testing time expired.");
             submitOirOMR();
           }}
         }}, 1000);
@@ -2623,14 +2739,14 @@ html += f'''            </optgroup>
     function submitOirOMR() {{
       const total = parseInt(document.getElementById('oirQuestionCount').value, 10);
       const marked = Object.keys(oirResponses).length;
-      logCompletedSession('OIR', `${{marked}}/${{total}} Marked`, 'Test Completed');
-      let summary = `OIR Test Completed!\\nMarked: ${{marked}} / ${{total}}\\nUnanswered: ${{total - marked}}\\n\\nCopy your marked answers?`;
+      logCompletedSession('OIR', `${{marked}}/${{total}} Marked`, 'Completed');
+      let summary = `OIR Test Complete!\\nMarked: ${{marked}} / ${{total}}\\nUnanswered: ${{total - marked}}\\n\\nCopy response sheet to clipboard?`;
       if (confirm(summary)) {{
         let t = "=== OIR ANSWER SHEET ===\\n";
         for (let i = 1; i <= total; i++) {{
           t += `Q${{i}}: ${{oirResponses[i] || '—'}}\\n`;
         }}
-        navigator.clipboard.writeText(t).then(() => showToast("OMR Answer sheet copied to clipboard!"));
+        navigator.clipboard.writeText(t).then(() => showToast("OMR RESPONSES COPIED TO CLIPBOARD"));
       }}
     }}
 
@@ -2638,7 +2754,7 @@ html += f'''            </optgroup>
     // 6. FULL MOCK BATTERY LAUNCHER
     // ==============================================================
     function launchFullMockBattery() {{
-      if (confirm("Commence Full Stage 2 Psychological Mock Test?\\n\\nSchedule:\\n1. 12 TAT Stories (approx 50 mins)\\n2. 60 WAT Words (15 mins)\\n3. 60 SRT Situations (30 mins)\\n4. 5 SDT Paragraphs (15 mins)")) {{
+      if (confirm("Commence Full Stage 2 Psychological Mock Test?\\n\\nSchedule:\\n1. 12 TAT Stories (approx 50 mins)\\n2. 60 WAT Words (15 mins)\\n3. 60 SRT Scenarios (30 mins)\\n4. 5 SDT Paragraphs (15 mins)")) {{
         document.querySelector('[data-tab="tab-tat"]').click();
         startTatTest();
       }}
@@ -2714,7 +2830,7 @@ html += f'''            </optgroup>
       t += `\\n### FORMAT YOUR EVALUATION AS FOLLOWS:\\n`;
       t += `1. **Quantitative Performance**: Total attempted, completed reactions vs incomplete/evasive reactions.\\n`;
       t += `2. **OLQ Matrix Assessment** across Factor I, II, III, and IV.\\n`;
-      t += `3. **Flagged Weak Reactions & Officer-Grade Rewrites** (Concise, telepathic, action-oriented military answers).\\n`;
+      t += `3. **Flagged Weak Reactions & Officer-Grade Rewrites** (Concise, action-oriented military answers).\\n`;
       t += `4. **Psychologist's Overall Verdict**.\\n`;
       return t;
     }}
@@ -2751,7 +2867,7 @@ html += f'''            </optgroup>
     function copyWatAiPrompt() {{
       const list = watWords.slice(0, Math.max(watIndex, 1));
       const prompt = generateWatPrompt(list, watResponses, watCurrentSetId ? `WAT Set ${{watCurrentSetId}}` : 'WAT Custom Set');
-      navigator.clipboard.writeText(prompt).then(() => showToast("Copied WAT AI Assessor Prompt!"));
+      navigator.clipboard.writeText(prompt).then(() => showToast("WAT EVALUATION PROMPT COPIED"));
     }}
 
     function downloadWatAiDossier() {{
@@ -2764,7 +2880,7 @@ html += f'''            </optgroup>
     function copyTatAiPrompt() {{
       const slides = tatSlides.slice(0, Math.max(tatIndex, 1));
       const prompt = generateTatPrompt(slides, tatStories, tatCurrentSetId ? `TAT Set ${{tatCurrentSetId}}` : 'TAT Custom Set');
-      navigator.clipboard.writeText(prompt).then(() => showToast("Copied TAT Prompt & Stories!"));
+      navigator.clipboard.writeText(prompt).then(() => showToast("TAT PROMPT & STORIES COPIED"));
     }}
 
     function downloadTatAiDossier() {{
@@ -2784,13 +2900,12 @@ html += f'''            </optgroup>
 
       try {{
         if (typeof JSZip === 'undefined') {{
-          throw new Error("JSZip library loading. Please try again in 2 seconds.");
+          throw new Error("JSZip library initializing. Please retry in 2 seconds.");
         }}
 
         const zip = new JSZip();
         const folder = zip.folder(`SSB_TAT_Set_${{setId}}_Package`);
 
-        // Slides to package
         let slidesToPack = [];
         if (!customSetId && tatSlides.length > 0) {{
           slidesToPack = tatSlides.slice(0, Math.max(tatIndex, 1));
@@ -2799,11 +2914,9 @@ html += f'''            </optgroup>
           slidesToPack = target.slides;
         }}
 
-        // Prompt file
         const promptText = generateTatPrompt(slidesToPack, tatStories, `TAT Set ${{setId}}`);
         folder.file(`DIPR_TAT_Evaluation_Prompt.txt`, promptText);
 
-        // Fetch slide images and pack them
         for (const s of slidesToPack) {{
           if (s.type === 'image' && s.src) {{
             try {{
@@ -2828,7 +2941,7 @@ html += f'''            </optgroup>
         a.click();
         document.body.removeChild(a);
 
-        alert("✅ TAT AI Package Downloaded!\\n\\nPackage contains:\\n1. All Slide Images (tat_xxx.jpg)\\n2. DIPR Senior Psychologist Evaluation Prompt\\n\\nUpload the images and paste the prompt into ChatGPT, Claude, or Gemini for a free psychological assessment!");
+        alert("✅ TAT AI Package Downloaded!\\n\\nContains:\\n1. Slide images (.jpg)\\n2. DIPR Senior Psychologist Evaluation Prompt\\n\\nUpload the images and paste the prompt into ChatGPT, Claude, or Gemini for a free psychological assessment!");
       }} catch(e) {{
         alert("Downloading text prompt instead: " + e.message);
         downloadTatAiDossier();
@@ -2843,7 +2956,7 @@ html += f'''            </optgroup>
     // --- SRT Evaluation Actions ---
     function copySrtAiPrompt() {{
       const prompt = generateSrtPrompt(srtList, srtResponses, srtCurrentSetId ? `SRT Set ${{srtCurrentSetId}}` : 'SRT Custom Set');
-      navigator.clipboard.writeText(prompt).then(() => showToast("Copied SRT AI Assessor Prompt!"));
+      navigator.clipboard.writeText(prompt).then(() => showToast("SRT EVALUATION PROMPT COPIED"));
     }}
 
     function downloadSrtAiDossier() {{
@@ -2859,7 +2972,7 @@ html += f'''            </optgroup>
       const p4 = document.getElementById('sdt4').value;
       const p5 = document.getElementById('sdt5').value;
       const prompt = generateSdtPrompt(p1, p2, p3, p4, p5);
-      navigator.clipboard.writeText(prompt).then(() => showToast("Copied SDT AI Assessor Prompt!"));
+      navigator.clipboard.writeText(prompt).then(() => showToast("SDT EVALUATION PROMPT COPIED"));
     }}
 
     function downloadSdtAiDossier() {{
@@ -2898,10 +3011,10 @@ html += f'''            </optgroup>
         [1, 2].forEach(n => {{
           const opt = document.createElement('option');
           opt.value = n;
-          opt.textContent = `SRT Official Set ${{n}} (60 Situations)`;
+          opt.textContent = `SRT Official Set ${{n}} (60 Scenarios)`;
           sel.appendChild(opt);
         }});
-        document.getElementById('btnHubDownload').textContent = '📥 Download Situations & Prompt (.txt)';
+        document.getElementById('btnHubDownload').textContent = '📥 Download Scenarios & Prompt (.txt)';
       }} else if (type === 'sdt') {{
         const opt = document.createElement('option');
         opt.value = '1';
@@ -2944,22 +3057,22 @@ html += f'''            </optgroup>
         const dummyResp = {{}};
         s.slides.forEach(sl => dummyResp[sl.num] = '(Write or paste your story here)');
         const prompt = generateTatPrompt(s.slides, dummyResp, `TAT Set ${{val}}`);
-        navigator.clipboard.writeText(prompt).then(() => showToast(`Copied TAT Set ${{val}} Evaluation Prompt!`));
+        navigator.clipboard.writeText(prompt).then(() => showToast(`TAT SET ${{val}} PROMPT COPIED`));
       }} else if (type === 'wat') {{
         const s = WAT_SETS.find(x => x.id === val) || WAT_SETS[0];
         const dummyResp = {{}};
         s.words.forEach(w => dummyResp[w] = '(Write or paste your responses here)');
         const prompt = generateWatPrompt(s.words, dummyResp, `WAT Set ${{val}}`);
-        navigator.clipboard.writeText(prompt).then(() => showToast(`Copied WAT Set ${{val}} Evaluation Prompt!`));
+        navigator.clipboard.writeText(prompt).then(() => showToast(`WAT SET ${{val}} PROMPT COPIED`));
       }} else if (type === 'srt') {{
         const list = val === 1 ? SRT_SETS[0] : SRT_SETS[1];
         const dummyResp = {{}};
         list.forEach((_, i) => dummyResp[i] = '(Write or paste your reaction here)');
         const prompt = generateSrtPrompt(list, dummyResp, `SRT Set ${{val}}`);
-        navigator.clipboard.writeText(prompt).then(() => showToast(`Copied SRT Set ${{val}} Evaluation Prompt!`));
+        navigator.clipboard.writeText(prompt).then(() => showToast(`SRT SET ${{val}} PROMPT COPIED`));
       }} else if (type === 'sdt') {{
         const prompt = generateSdtPrompt('', '', '', '', '');
-        navigator.clipboard.writeText(prompt).then(() => showToast("Copied SDT Evaluation Prompt Template!"));
+        navigator.clipboard.writeText(prompt).then(() => showToast("SDT PROMPT TEMPLATE COPIED"));
       }}
     }}
 
@@ -2977,7 +3090,7 @@ html += f'''            </optgroup>
       return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }}
 
-    function playAudioBeep(freq = 600, duration = 0.1) {{
+    function playAudioBeep(freq = 640, duration = 0.1) {{
       try {{
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const osc = ctx.createOscillator();
@@ -2996,9 +3109,9 @@ html += f'''            </optgroup>
     let isLight = false;
     document.getElementById('btnToggleTheme').addEventListener('click', () => {{
       isLight = !isLight;
-      document.body.classList.toggle('dipr-projector', isLight);
+      document.body.classList.toggle('projector-hall', isLight);
       document.getElementById('themeIcon').textContent = isLight ? '🌙' : '☀️';
-      document.getElementById('themeLabel').textContent = isLight ? 'Dark Hall' : 'Projector Mode';
+      document.getElementById('themeLabel').textContent = isLight ? 'Dark Hall' : 'Projector Hall';
     }});
 
     // Fullscreen toggle
@@ -3018,4 +3131,4 @@ html += f'''            </optgroup>
 with open(os.path.join(out_dir, 'index.html'), 'w', encoding='utf-8') as f:
     f.write(html)
 
-print("index.html successfully updated with AI Evaluation Hub and 1-Click Multimodal Downloaders!")
+print("Redesign complete with disciplined military DIPR design system!")
